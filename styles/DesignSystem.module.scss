@@ -1,86 +1,116 @@
 // SETTING FONT SIZE //
-
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
 // Display //
-$largeDisplay: (
-font-size: 72px,
-font-weight: 600,
-line-height: 1.2,
-letter-spacing: -0.025em,);
+// Display //
+.largeDisplay {
+    font-size: 72px;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+    font-family: 'Inter', sans-serif;
+}
 
-$mediumDisplay: (
-font-size: 60px,
-font-weight: 600,
-line-height: 1.2,
-letter-spacing: -0.025em,);
+.mediumDisplay {
+    font-size: 60px;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+    font-family: 'Inter', sans-serif;
+}
 
-$smallDisplay: (
-font-size: 48px,
-font-weight: 600,
-line-height: 1.2,
-letter-spacing: -0.025em,);
+.smallDisplay {
+    font-size: 48px;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+    font-family: 'Inter', sans-serif;
+}
 
 // Heading //
-$xLargeHeading: (
-font-size: 32px,
-font-weight: 600,
-line-height: 1.3,
-letter-spacing: -0.02em,);
+.xLargeHeading {
+    font-size: 32px;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+    font-family: 'Inter', sans-serif;
+}
 
-$largeHeading: (
-font-size: 28px,
-font-weight: 600,
-line-height: 1.3,
-letter-spacing: -0.02em,);
+.largeHeading {
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+    font-family: 'Inter', sans-serif;
+}
 
-$mediumHeading: (
-font-size: 24px,
-font-weight: 600,
-line-height: 1.3,
-letter-spacing: -0.015em,);
+.mediumHeading {
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.015em;
+    font-family: 'Inter', sans-serif;
+}
 
-$smallHeading: (
-font-size: 20px,
-font-weight: 600,
-line-height: 1.3,
-letter-spacing: -0.015em,);
+.smallHeading {
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.015em;
+    font-family: 'Inter', sans-serif;
+}
 
 // Body //
-$largeBody: (
-font-size: 18px,
-font-weight: 400,
-line-height: 1.5,);
+.largeBody {
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.5;
+    font-family: 'Inter', sans-serif;
+}
 
-$largeBodySB: (
-font-size: 18px,
-font-weight: 600,
-line-height: 1.5,);
+.largeBodySB {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.5;
+    font-family: 'Inter', sans-serif;
+}
 
-$mediumBody: (
-font-size: 16px,
-font-weight: 400,
-line-height: 1.5,);
+.mediumBody {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;
+    font-family: 'Inter', sans-serif;
+}
 
-$mediumBodySB: (
-font-size: 16px,
-font-weight: 600,
-line-height: 1.5,);
+.mediumBodySB {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.5;
+    font-family: 'Inter', sans-serif;
+}
 
-$smallBody: (
-font-size: 14px,
-font-weight: 400,
-line-height: 1.5,);
+.smallBody {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.5;
+    font-family: 'Inter', sans-serif;
+}
 
-$smallBodySB: (
-font-size: 14px,
-font-weight: 600,
-line-height: 1.5,);
+.smallBodySB {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.5;
+    font-family: 'Inter', sans-serif;
+}
 
 // Label //
-$label: (
-font-size: 12px,
-font-weight: 500,
-line-height: 1.5,
-letter-spacing: 0.02em,);
+.label {
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.5;
+    letter-spacing: 0.02em;
+    font-family: 'Inter', sans-serif;
+}
+
 
 
 
