@@ -1,3 +1,7 @@
+import React from 'react';
+import Header from './Header';
+import PrimaryButton from './Ui Kit/PrimaryButton';
+import Input from './Ui Kit/Input';
 import styles from '../styles/Home.module.css';
 
 import React, { useRef, useState } from 'react'
@@ -15,25 +19,12 @@ function Home() {
   const getImage = () => takeScreenshot(ref.current)
 
   return (
-    <div ref={ref}>
+    <div>
       <main className={styles.main}>
-
-        <button onClick={getImage}>
-          Take screenshot
-        </button>
-        <Box sx={{ width: 300 }}>
-
-          <Slider
-            size="small"
-            defaultValue={70}
-            aria-label="Small"
-            valueLabelDisplay="auto"
-          />
-          <Slider defaultValue={50} aria-label="Default" valueLabelDisplay="auto" />
-        </Box>
-        <img width={'1000px'} src={image} alt={'Screenshot'} />
+        <h1 className={styles.title}>
+          Welcome to <a href="https://nextjs.org">Next.js!</a>
+        </h1>
       </main>
-
     </div>
   );
 }
