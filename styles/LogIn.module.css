@@ -105,32 +105,43 @@
   font-family: "Inter", sans-serif;
 }
 
-.buttonPrimary {
-  padding: 8px 24px;
-  background-color: #0066ff;
-  color: #ffffff;
-  border-radius: 12px;
-  border: none;
-  cursor: pointer;
-}
-.buttonPrimary p {
-  display: block;
-  margin: 0;
-}
-.buttonPrimary:hover {
-  background-color: #003e9c;
-}
-
-.header {
-  width: 100%;
+.container {
+  width: 100vw;
+  height: 100vh;
+  background-image: url("../public/test1.gif");
+  background-size: cover;
+  background-position: center;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 16px;
-  background-color: #00020a;
-  border-bottom: 1px solid #1c1e25;
+}
+
+.quote {
+  position: fixed;
+  width: 20%;
+  bottom: 40px;
+  right: 40px;
   color: #ffffff;
 }
-.header .container {
+.quote p {
+  margin: 0;
+}
+
+.box {
+  margin-left: 80px;
+  width: 25%;
+  height: -moz-fit-content;
+  height: fit-content;
+  padding: 40px;
+  background-color: #ffffff;
+  border-radius: 8px;
+}
+.box .inputsContainer {
   display: flex;
-}/*# sourceMappingURL=UiKit.module.css.map */
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 40px;
+}
+.box .swtich {
+  display: flex;
+  align-items: center;
+}/*# sourceMappingURL=LogIn.module.css.map */

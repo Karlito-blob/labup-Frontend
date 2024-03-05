@@ -7,11 +7,12 @@ import { persistStore, persistReducer } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
 import storage from "redux-persist/lib/storage";
 import patternHistory from '../reducers/patternHistory';
+import user from '../reducers/user';
 import { Provider } from 'react-redux';
 
 // Import reducer persist + config
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
-const reducers = combineReducers({ patternHistory });
+const reducers = combineReducers({ patternHistory, user });
 const persistConfig = { key: 'LabUp', storage };
 
 // Configuration du store redux/persist

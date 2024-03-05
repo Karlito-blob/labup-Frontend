@@ -3,7 +3,7 @@ import Dashboard from '../components/Dashboard'
 
 export default function dashboard() {
   return (
-    <div>dashboard</div>
+    <Dashboard/>
   )
 }
 
