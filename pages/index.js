@@ -1,8 +1,5 @@
-import Header from '../components/Header';
 import Home from '../components/Home';
 
-function Index() {
+export default function Index() {
   return <Home />;
 }
-
-export default Index;

@@ -1,12 +1,66 @@
 import React from 'react'
-import DisplayMode from './Ui Kit/DisplayMode'
-import Account from './Account'
-import PrimaryButton from './Ui Kit/PrimaryButton'
-import SecondaryButton from './Ui Kit/SecondaryButton'
+import LogOut from './Connexion/Logout';
 import styles from '../styles/UiKit.module.css';
+import Button from '@mui/material/Button';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import { useRouter } from 'next/router';
+import { useSelector } from 'react-redux';
+
 
 
 export default function Header(props) {
+  const router = useRouter()
+  const user = useSelector(((state) => state.user.value))
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+
+  let headerContent;
+  console.log('User:', user);
+  if (user.token) {
+    // Display username if the user is connected
+    headerContent = (
+      <div>
+        <Button
+        id="basic-button"
+        aria-controls={open ? 'basic-menu' : undefined}
+        aria-haspopup="true"
+        aria-expanded={open ? 'true' : undefined}
+        onClick={handleClick}
+      >
+        {user.userName}
+      </Button>
+      <Menu
+        id="basic-menu"
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        MenuListProps={{
+          'aria-labelledby': 'basic-button',
+        }}
+      >
+        <MenuItem><LogOut/></MenuItem>
+      </Menu>
+    </div>
+    )
+  } else {
+    // Display sign in and sign up buttons if the user is not connected
+    headerContent = (
+      <div>
+        <Button onClick={() => router.push('/signIn')}>Sign in</Button>
+        <Button onClick={() => router.push('/signUp')}>Sign up</Button>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.header}>
       {/* import svg logo */}
@@ -19,10 +73,7 @@ export default function Header(props) {
 <path d="M11.1489 19.8727V13.4369L9.24516 11.5277V16.737L3.59705 11.2622C2.57585 10.276 2.03373 9.12537 1.9833 7.84834C1.92027 6.58395 2.46238 5.37014 3.59705 4.28277C4.71911 3.18275 5.96724 2.66435 7.2658 2.71493C8.57697 2.7655 9.74946 3.29654 10.7707 4.28277L11.1489 4.64944V2.14595C9.91336 1.2103 8.55176 0.767768 7.10191 0.818344C5.28644 0.894207 3.66009 1.61491 2.23545 2.99309C0.810815 4.38392 0.079586 5.92647 0.00394164 7.69661C-0.0590954 9.41618 0.634312 10.984 2.05895 12.3748L7.90878 18.0519H2.52542L4.34089 19.8727H11.1489Z" fill="white"/>
 <path d="M23.1 23.0202C24.5373 21.6294 25.2685 20.0868 25.3316 18.3167C25.3946 16.5971 24.7012 15.0293 23.2766 13.6384L17.4267 7.96134H22.8101L20.9946 6.14062H14.1992V12.5764L16.1029 14.4856V9.26366L21.7511 14.7385C22.7723 15.7247 23.3144 16.8753 23.3648 18.1523C23.4278 19.4293 22.8731 20.6305 21.7511 21.7305C20.629 22.8305 19.3935 23.3489 18.0823 23.2984C16.7711 23.2478 15.5986 22.7168 14.5774 21.7305L14.1992 21.3639V23.8547C15.4347 24.7903 16.7963 25.2329 18.2462 25.1823C20.0491 25.1191 21.688 24.3857 23.1 23.0202Z" fill="white"/>
       </svg>
-      <div className={styles.container}>
-        <SecondaryButton />
-        <PrimaryButton />
-      </div>
+      {headerContent}
     </div>
   )
 }

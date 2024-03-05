@@ -1,0 +1,43 @@
+@import 'DesignSystem.module';
+
+.container {
+    width: 100vw;
+    height: 100vh;
+    background-image: url('../public/test1.gif');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+}
+
+.quote {
+    position: fixed;
+    width: 20%;
+    bottom: 40px;
+    right: 40px;
+    color: $N0;
+    p {
+      margin: 0;
+    }
+  }
+
+.box {
+    margin-left: 80px;
+    width: 25%;
+    height: fit-content;
+    padding: 40px;
+    background-color: $N0;
+    border-radius: 8px;
+
+    .inputsContainer {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        margin-bottom: 40px;
+    }
+
+    .swtich {
+        display: flex;
+        align-items: center;
+    }
+}

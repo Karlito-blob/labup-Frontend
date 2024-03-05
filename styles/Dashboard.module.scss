@@ -1,0 +1,48 @@
+@import 'DesignSystem.module';
+
+.container {
+    width: 100vw;
+    height: 100vh;
+    background-color: $N800;
+    overflow: hidden;
+}
+
+.box {
+    padding: 40px 80px;
+    display: flex;
+    justify-content: space-between;
+
+    color: $N0;
+}
+
+.patternSection {
+    padding: 40px 80px;
+    color: $N0;
+}
+
+.wrapScrollH {
+    width: 100%;
+    overflow-y: scroll;
+}
+.patternsContainer {
+    display: flex;
+    gap: 24px;
+}
+.pattern {
+    width: 208px;
+    height: 350px;
+    color: $N0;
+
+    .imgContainer {
+        width: 208px;
+        height: 208px;
+        border-radius: 12px;
+        border: 1px solid $N600;
+    }
+    img {
+        width: 100%;
+        height: 100%;
+        border-radius: 12px;
+        object-fit: fill;
+    }
+}
