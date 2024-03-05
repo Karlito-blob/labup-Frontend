@@ -1,0 +1,51 @@
+.viewport {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background-color: black;
+}
+
+.container {
+    height: 100%;
+    display: flex;
+}
+
+.boxParams {
+    width: 35%;
+    padding: 40px 80px;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+
+    .inputs {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+
+        .hour {
+            display: flex;
+            justify-content: space-between;
+        }
+    }
+}
+
+.canvas {
+    width: 65%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .file {
+        width: 750px;
+        height: 750px;
+        display: flex;
+        flex-direction: column;
+        background-color: white;
+
+        p {
+            margin: 0;
+            position: relative;
+        }
+    }
+}

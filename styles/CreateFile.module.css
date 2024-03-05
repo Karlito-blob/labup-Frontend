@@ -1,0 +1,47 @@
+.viewport {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: black;
+}
+
+.container {
+  height: 100%;
+  display: flex;
+}
+
+.boxParams {
+  width: 35%;
+  padding: 40px 80px;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+}
+.boxParams .inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.boxParams .inputs .hour {
+  display: flex;
+  justify-content: space-between;
+}
+
+.canvas {
+  width: 65%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.canvas .file {
+  width: 750px;
+  height: 750px;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+}
+.canvas .file p {
+  margin: 0;
+  position: relative;
+}/*# sourceMappingURL=CreateFile.module.css.map */
