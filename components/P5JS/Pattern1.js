@@ -54,7 +54,7 @@ export default function Pattern1(props) {
       p.setup = () => {
         p.createCanvas(800, 800); // Taille de la fenetre du canva
         p.pixelDensity(3); //Densité de  pixel
-        p.frameRate(120); //Taux de rafraichissement 
+        p.frameRate(60); //Taux de rafraichissement 
 
         for (let i = 0; i <= p.width / props.nParticule; i++) { // nombre de particules
           particles.push(new Particle());

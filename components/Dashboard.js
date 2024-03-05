@@ -1,6 +1,7 @@
 import React from 'react'
 import Header from './Header'
 import { useSelector } from 'react-redux'
+import { useRouter } from 'next/router';
 
 import styles from '../styles/Dashboard.module.css';
 import { Button } from '@mui/material';
