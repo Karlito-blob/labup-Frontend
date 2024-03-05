@@ -1,5 +1,6 @@
 import React from 'react'
 import LogOut from './Connexion/Logout';
+import DeleteAccount from './Connexion/Delete';
 import styles from '../styles/UiKit.module.css';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
@@ -48,6 +49,7 @@ export default function Header(props) {
         }}
       >
         <MenuItem><LogOut/></MenuItem>
+        <MenuItem><DeleteAccount/></MenuItem>
       </Menu>
     </div>
     )
