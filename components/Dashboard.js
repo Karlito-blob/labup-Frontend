@@ -8,6 +8,8 @@ import { Button } from '@mui/material';
 
 export default function Dashboard(props) {
 
+  const router = useRouter();
+
   const patternData = [
     {
       image: 'background.jpg',
