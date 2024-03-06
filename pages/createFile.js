@@ -5,6 +5,8 @@ import CarrouselPatterns from '../components/CarrouselPatterns'
 
 export default function createFile() {
   return (
-    <div>createFile</div>
+    <>
+      <TextParams/>
+    </>
   )
 }

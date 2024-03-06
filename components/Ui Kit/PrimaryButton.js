@@ -4,6 +4,6 @@ import ds from '../../styles/DesignSystem.module.css';
 
 export default function PrimaryButton(props) {
   return (
-    <button className={styles.buttonPrimary}><p className={ds.mediumBodySB}>Coucou</p></button>
+    <button className={styles.buttonPrimary}><p className={ds.mediumBodySB}> {props.content}</p></button>
   )
 }
