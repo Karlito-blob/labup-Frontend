@@ -1,74 +1,107 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../reducers/user';
+import Button from '@mui/material/Button';
+import Modal from '@mui/material/Modal';
 
 const DeleteAccount = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
+  const [error, setError] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const token = useSelector(state => state.user.value.token)
-  const dispatch = useDispatch()
+  const token = useSelector(state => state.user.value.token);
+  const dispatch = useDispatch();
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
+    setError('');
   };
 
   const handleConfirmPasswordChange = (e) => {
     setConfirmPassword(e.target.value);
+    setError('');
   };
 
   const handleDeleteAccount = () => {
-    // Vérifiez si les mots de passe correspondent avant de delette
     if (password !== confirmPassword) {
-      alert('Les mots de passe ne correspondent pas.');
+      setError('Les mots de passe ne correspondent pas.');
       return;
     }
 
-    // Ajoutez ici la logique pour supprimer le compte (appel à une API, etc.)
-    // Actuellement, la suppression est simulée avec une alerte.
     setIsDeleting(true);
-    fetch('http://localhost:3000/users/delete', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token, password }),
-    }).then(response => response.json())
-        .then(data => {
-            if (data.result) {
-                dispatch(logout())
-                setIsDeleting(false)
-            }
-        });
+
+    fetch('http://localhost:3000/users/', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token, password }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.result) {
+          dispatch(logout());
+          setIsModalOpen(false);
+        } else {
+          setError('Erreur lors de la suppression du compte.');
+        }
+      })
+      .catch(error => {
+        setError('Une erreur s\'est produite lors de la communication avec le serveur.');
+      })
+      .finally(() => {
+        setIsDeleting(false);
+      });
   };
 
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
 
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setPassword('');
+    setConfirmPassword('');
+    setError('');
+  };
 
   return (
     <div>
-      <h2>Supprimer le compte</h2>
-      <p>Confirmez la suppression de votre compte en saisissant votre mot de passe.</p>
+      <Button onClick={handleOpenModal}>Supprimer le compte</Button>
 
-      <label htmlFor="password">Mot de passe :</label>
-      <input
-        type="password"
-        id="password"
-        value={password}
-        onChange={handlePasswordChange}
-        disabled={isDeleting}
-      />
+        <Modal open={isModalOpen} onClose={handleCloseModal}>
+          <div style={{ background: 'rgba(255, 255, 255, 0.8)', padding: '20px', borderRadius: '10px', position: 'relative' }}>
+            <h2>Supprimer le compte</h2>
+            <p>Confirmez la suppression de votre compte en saisissant votre mot de passe.</p>
 
-      <label htmlFor="confirmPassword">Confirmez le mot de passe :</label>
-      <input
-        type="password"
-        id="confirmPassword"
-        value={confirmPassword}
-        onChange={handleConfirmPasswordChange}
-        disabled={isDeleting}
-      />
+            <div style={{ position: 'relative' }}>
+              <label htmlFor="password">Mot de passe :</label>
+              <input
+                type="password"
+                id="password"
+                value={password}
+                onChange={handlePasswordChange}
+                style={{ marginBottom: '10px' }}
+              />
 
-      <button onClick={handleDeleteAccount} disabled={isDeleting}>
-        {isDeleting ? 'Suppression en cours...' : 'Supprimer le compte'}
-      </button>
+              <label htmlFor="confirmPassword" style={{ position: 'absolute', top: '0', left: '50%' }}>Confirmez le mot de passe :</label>
+              <input
+                type="password"
+                id="confirmPassword"
+                value={confirmPassword}
+                onChange={handleConfirmPasswordChange}
+                style={{ position: 'absolute', top: '30px', left: '50%' }}
+              />
+            </div>
+
+            {error && <p style={{ color: 'red' }}>{error}</p>}
+
+            <Button onClick={handleDeleteAccount} disabled={isDeleting}>
+              {isDeleting ? 'Suppression en cours...' : 'Supprimer le compte'}
+            </Button>
+          </div>
+        </Modal>
+
     </div>
   );
 };
