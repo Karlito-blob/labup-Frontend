@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../reducers/user';
 import Button from '@mui/material/Button';
+import { useRouter } from 'next/router';
 import Modal from '@mui/material/Modal';
 
 const DeleteAccount = () => {
@@ -10,6 +11,7 @@ const DeleteAccount = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const router = useRouter ();
 
   const token = useSelector(state => state.user.value.token);
   const dispatch = useDispatch();
@@ -57,6 +59,7 @@ const DeleteAccount = () => {
         if (data.result) {
           dispatch(logout());
           setIsModalOpen(false);
+          router.push("/")
         } else {
           setError('Erreur lors de la suppression du compte.');
         }
