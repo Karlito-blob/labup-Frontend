@@ -25,10 +25,10 @@ const DeleteAccount = () => {
       return;
     }
 
-    // Ajoutez ici la logique pour supprimer le compte (appel à une API, etc.)
-    // Actuellement, la suppression est simulée avec une alerte.
+    // --> supprimer un compte définitivement
+    
     setIsDeleting(true);
-    fetch('http://localhost:3000/users/delete', {
+    fetch('http://localhost:3000/users/', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token, password }),
@@ -41,8 +41,15 @@ const DeleteAccount = () => {
         });
   };
 
+  return (
+    <div>
+      <Button onClick={handleClick}>delete</Button>
+    </div>
+  );
 
+};
 
+/*
   return (
     <div>
       <h2>Supprimer le compte</h2>
@@ -72,5 +79,6 @@ const DeleteAccount = () => {
     </div>
   );
 };
+*/
 
 export default DeleteAccount;
