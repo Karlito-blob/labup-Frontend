@@ -3,12 +3,20 @@ import React, { useState, useEffect, useRef } from 'react'
 
 // Imports Material-UI
 import { ChromePicker as ColorPicker } from 'react-color';
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import Slider from '@mui/material/Slider';
+
+// Import icons 
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
+import ViewHeadlineRoundedIcon from '@mui/icons-material/ViewHeadlineRounded';
+import PatternRoundedIcon from '@mui/icons-material/PatternRounded';
+import CameraRoundedIcon from '@mui/icons-material/CameraRounded';
 
 // Import screenshot component
 import { useScreenshot } from 'use-react-screenshot'
+import html2canvas from 'html2canvas';
 
 // Imports des composants
 import Header from '../components/Header';
@@ -21,15 +29,83 @@ function valuetext(value) {
 const minDistance = 1;
 
 export default function createPatterns() {
+
+  // Gestion des screenshots
   const ref = useRef(null)
-  const [image, takeScreenshot] = useScreenshot()
-  const getImage = () => takeScreenshot(ref.current)
+  const [images, setImages] = useState([])
 
-  const [value, setValue] = useState([0, 10]);
+  console.log({ images });
 
+  const handleTakeScreenshot = () => {
+    console.log('Ref current:', ref.current);
+
+    if (ref.current) {
+      html2canvas(ref.current)
+        .then((canvas) => {
+          const imageData = canvas.toDataURL('image/png');
+          console.log('Screenshot taken successfully:', imageData);
+          setImages((prevImages) => [...prevImages, imageData]);
+          console.log('Updated images:', images); // Ajout de cette ligne pour vérifier le contenu du tableau après la mise à jour
+
+        })
+        .catch((error) => {
+          console.error('Error during screenshot capture:', error);
+        });
+    } else {
+      console.error('Ref current is null. Make sure the ref is correctly assigned.');
+    }
+
+  };
+
+  // Mapping des screenshots 
+  const handleDeleteScreenshot = (url) => {
+    setImages(images.filter((el) => el !== url));
+  };
+
+  const screenshots = images.map((img, index) => {
+    return (
+      <div key={index} style={{ position: 'relative' }}>
+        <img key={index} src={img} alt={`screenshot-${index}`} style={{ width: '230px', height: '230px', borderRadius: '10px', margin: '16px' }} />
+        <button
+          style={{
+            position: 'absolute',
+            top: '0',
+            right: '0',
+            background: 'white',
+            border: 'none',
+            cursor: 'pointer',
+            borderRadius:'10px', 
+          }}
+          onClick={() => setImages(images.filter((el) => el !== img))}
+        >
+          X
+        </button>
+      </div>
+    );
+  });
+
+
+
+  // Navigation bar 
+  const [navigation, setNavigation] = useState('Pattern')
+  const [showNavigation, setShowNavigation] = useState(false)
+  const [screenSize, setScreenSize] = useState('95vw')
+
+  const handleNavigation = (onglet) => {
+    setNavigation(onglet)
+    setShowNavigation(true)
+    setScreenSize('65vw')
+  }
+
+  const showPanel = () => {
+    setShowNavigation(!showNavigation)
+    setScreenSize('95vw')
+  }
 
   // Récupération des paramètres initiaux du Pattern
   const [params, setParams] = useState([]);
+  const [value, setValue] = useState([0, 10]);
+
 
   // Récupération des paramètres modifiés du Pattern
   const [modifiedParams, setModifiedParams] = useState([])
@@ -63,9 +139,9 @@ export default function createPatterns() {
 
               return ( // Retour d'un slider simple 
                 <div key={params.paramName + i} style={{ padding: 30, color: 'white' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <div onClick={() => setShowSlider(prevState => ({ ...prevState, [params.paramName]: !prevState[params.paramName] }))} style={{ cursor: 'pointer' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     {params.paramName}
-                    <div onClick={() => setShowSlider(prevState => ({ ...prevState, [params.paramName]: !prevState[params.paramName] }))}>
                       {showSlider[params.paramName] ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
                     </div>
                   </div>
@@ -117,9 +193,9 @@ export default function createPatterns() {
 
               return (
                 <div key={params.paramName + i} style={{ padding: 30, color: 'white' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    {params.paramName}
-                    <div onClick={() => setShowSlider(prevState => ({ ...prevState, [params.paramName]: !prevState[params.paramName] }))}>
+                  <div onClick={() => setShowSlider(prevState => ({ ...prevState, [params.paramName]: !prevState[params.paramName] }))} style={{ cursor: 'pointer' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      {params.paramName}
                       {showSlider[params.paramName] ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
                     </div>
                   </div>
@@ -151,9 +227,9 @@ export default function createPatterns() {
 
               return (
                 <div key={params.paramName + i} style={{ padding: 30, color: 'white' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    {params.paramName}
-                    <div onClick={() => setShowSlider(prevState => ({ ...prevState, [params.paramName]: !prevState[params.paramName] }))}>
+                  <div onClick={() => setShowSlider(prevState => ({ ...prevState, [params.paramName]: !prevState[params.paramName] }))} style={{ cursor: 'pointer' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      {params.paramName}
                       {showSlider[params.paramName] ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
                     </div>
                   </div>
@@ -174,22 +250,85 @@ export default function createPatterns() {
           setParams(newParams);
         }
       });
-  }, [modifiedParams, showSlider]);
+  }, [modifiedParams, showSlider, images]);
 
 
   return (
     <>
       <Header />
 
-      <div style={{ display: "flex" }}>
-        <div style={{ width: '35vw', height: '93.5vh', padding: '20px', backgroundColor: 'black', overflowX: 'auto', gap: '16px' }}>
-          <PrimaryButton content='Take ScreenShot' />
-          {params}
-        </div >
-        <div style={{ width: '65vw', height: '93.5vh', padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ boxShadow: '0 0 40px rgba(0, 0, 0, 0.5)', }} >
+      <div style={{ display: "flex", flexDirection: 'row' }}>
+
+        {/* Navigation bar icons  */}
+        <div style={{ color: 'white', display: "flex", alignItems: 'center', flexDirection: 'column', backgroundColor: 'black', gap: '16px', padding: '16px', cursor: 'pointer' }}>
+          <PatternRoundedIcon onClick={() => handleNavigation('Pattern')} style={{ fontSize: '50px', border: navigation === 'Pattern' ? 'solid 1px' : 'solid 0px', borderRadius: '10px' }} />
+          <ViewHeadlineRoundedIcon onClick={() => handleNavigation('Params')} style={{ fontSize: '50px', border: navigation === 'Params' ? 'solid 1px' : 'solid 0px', borderRadius: '10px' }} />
+          <AddPhotoAlternateIcon onClick={() => handleNavigation('Screens')} style={{ fontSize: '50px', border: navigation === 'Screens' ? 'solid 1px' : 'solid 0px', borderRadius: '10px' }} />
+        </div>
+
+        {showNavigation && <div style={{ width: '35vw', height: '93.5vh', padding: '20px', backgroundColor: 'black', overflowX: 'auto', gap: '16px' }}>
+
+          {navigation === 'Pattern' && <></>}
+
+          {navigation === 'Params' &&
+            <div>
+              <h1 style={{ color: 'white' }}> Paramètres</h1>
+              {params}
+            </div>
+          }
+
+          {navigation === 'Screens' &&
+            <div >
+              <h1 style={{ color: 'white' }}> Screenshots </h1>
+              <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                {screenshots}
+              </div>
+            </div>
+          }
+
+        </div >}
+
+        {/* Navigation bar  */}
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          {showNavigation ?
+            <KeyboardArrowLeftIcon
+              style={{ color: 'white', height: '80px', backgroundColor: 'black', borderTopRightRadius: '20px', borderBottomRightRadius: '20px' }}
+              onClick={() => showPanel()}
+            />
+            :
+            <KeyboardArrowRightIcon
+              style={{ color: 'white', height: '80px', backgroundColor: 'black', borderTopRightRadius: '20px', borderBottomRightRadius: '20px' }}
+              onClick={() => showPanel()}
+            />}
+        </div>
+
+
+        {/* Zone de visualisation */}
+        <div style={{ width: screenSize, height: '93.5vh', padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ boxShadow: '0 0 40px rgba(0, 0, 0, 0.5)', }} ref={ref} >
             <VisualizationPattern modifiedParams={modifiedParams} />
           </div>
+          <div
+            onClick={() => handleTakeScreenshot()}
+            style={{
+              display: 'flex',
+              position: 'absolute',
+              cursor: 'pointer',
+              bottom: '80px',
+              right: '80px',
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: '50px',
+              height: '50px',
+              padding: '20px',
+              borderRadius: '100px',
+              boxShadow: '0 0 40px rgba(0, 0, 0, 0.5)',
+
+            }}
+          >
+            <CameraRoundedIcon />
+          </div>
+
         </div>
       </div>
 
