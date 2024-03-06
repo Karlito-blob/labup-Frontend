@@ -9,6 +9,8 @@ import Slider from '@mui/material/Slider';
 
 // Import screenshot component
 import { useScreenshot } from 'use-react-screenshot'
+import html2canvas from 'html2canvas';
+
 
 // Imports des composants
 import Header from '../components/Header';
@@ -21,14 +23,27 @@ function valuetext(value) {
 const minDistance = 1;
 
 export default function createPatterns() {
-  const ref = useRef(null)
-  const [image, takeScreenshot] = useScreenshot()
-  const getImage = () => takeScreenshot(ref.current)
 
-  const [value, setValue] = useState([0, 10]);
+  // Gestion du screenshot
+  const ref = useRef(null)
+  const [screenshot, takeScreenshot] = useScreenshot()
+
+  const handleTakeScreenshot = () => {
+    console.log('Attempting to take a screenshot');
+    html2canvas(ref.current)
+      .then((canvas) => {
+        const imageData = canvas.toDataURL('image/png');
+        console.log('Screenshot taken successfully:', imageData);
+        takeScreenshot(ref.current);
+      }).catch((error) => {
+        console.error('Error during screenshot capture:', error);
+      });
+  };
+
 
 
   // Récupération des paramètres initiaux du Pattern
+  const [value, setValue] = useState([0, 10]);
   const [params, setParams] = useState([]);
 
   // Récupération des paramètres modifiés du Pattern
@@ -63,12 +78,12 @@ export default function createPatterns() {
 
               return ( // Retour d'un slider simple 
                 <div key={params.paramName + i} style={{ padding: 30, color: 'white' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+
+                  <div onClick={() => setShowSlider(prevState => ({ ...prevState, [params.paramName]: !prevState[params.paramName] }))} style={{ display: 'flex', justifyContent: 'space-between', cursor: 'pointer' }}>
                     {params.paramName}
-                    <div onClick={() => setShowSlider(prevState => ({ ...prevState, [params.paramName]: !prevState[params.paramName] }))}>
                       {showSlider[params.paramName] ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
                     </div>
-                  </div>
+
 
                   {showSlider[params.paramName] &&
                     <Slider
@@ -117,11 +132,9 @@ export default function createPatterns() {
 
               return (
                 <div key={params.paramName + i} style={{ padding: 30, color: 'white' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <div onClick={() => setShowSlider(prevState => ({ ...prevState, [params.paramName]: !prevState[params.paramName] }))} style={{ display: 'flex', justifyContent: 'space-between', cursor: 'pointer' }}>
                     {params.paramName}
-                    <div onClick={() => setShowSlider(prevState => ({ ...prevState, [params.paramName]: !prevState[params.paramName] }))}>
                       {showSlider[params.paramName] ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
-                    </div>
                   </div>
 
                   {showSlider[params.paramName] && <Slider
@@ -151,12 +164,12 @@ export default function createPatterns() {
 
               return (
                 <div key={params.paramName + i} style={{ padding: 30, color: 'white' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+
+                  <div onClick={() => setShowSlider(prevState => ({ ...prevState, [params.paramName]: !prevState[params.paramName] }))} style={{ display: 'flex', justifyContent: 'space-between', cursor: 'pointer' }}>
                     {params.paramName}
-                    <div onClick={() => setShowSlider(prevState => ({ ...prevState, [params.paramName]: !prevState[params.paramName] }))}>
                       {showSlider[params.paramName] ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
                     </div>
-                  </div>
+
 
                   {showSlider[params.paramName] &&
                     <ColorPicker
@@ -182,14 +195,27 @@ export default function createPatterns() {
       <Header />
 
       <div style={{ display: "flex" }}>
-        <div style={{ width: '35vw', height: '93.5vh', padding: '20px', backgroundColor: 'black', overflowX: 'auto', gap: '16px' }}>
-          <PrimaryButton content='Take ScreenShot' />
+        <div style={{ width: '35vw', height: '93.5vh', padding: '20px', backgroundColor: 'black', overflowX: 'auto', gap: '16px' }} >
+          <div onClick={handleTakeScreenshot}>
+            <PrimaryButton content='Take ScreenShot' />
+          </div>
+
+
+
           {params}
         </div >
-        <div style={{ width: '65vw', height: '93.5vh', padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ boxShadow: '0 0 40px rgba(0, 0, 0, 0.5)', }} >
+        <div style={{ width: '65vw', height: '93.5vh', padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} >
+          <div style={{ boxShadow: '0 0 40px rgba(0, 0, 0, 0.5)' }} ref={ref} >
             <VisualizationPattern modifiedParams={modifiedParams} />
           </div>
+
+          {screenshot && (
+            <div style={{ boxShadow: '0 0 40px rgba(0, 0, 0, 0.5)', margin: '10px' }}>
+              <img src={screenshot} alt="screenshot" style={{ width: '100px', height: '100px' }} />
+            </div>
+          )}
+
+
         </div>
       </div>
 
