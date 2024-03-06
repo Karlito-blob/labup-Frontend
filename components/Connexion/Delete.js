@@ -31,7 +31,9 @@ const DeleteAccount = () => {
       setError('Les mots de passe ne correspondent pas.');
       return;
     }
-  
+
+  /* Nav supp password avec TAB à vérifier et terminer
+
     const handleTabPress = (event) => {
       if (event.key === 'Tab') {
         event.preventDefault(); 
@@ -45,6 +47,8 @@ const DeleteAccount = () => {
         }
       }
     };
+
+  */
     
 
     setIsDeleting(true);
