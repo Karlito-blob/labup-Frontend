@@ -29,6 +29,21 @@ const DeleteAccount = () => {
       setError('Les mots de passe ne correspondent pas.');
       return;
     }
+  
+    const handleTabPress = (event) => {
+      if (event.key === 'Tab') {
+        event.preventDefault(); 
+
+        const isPasswordFieldFocused = event.target.id === 'password';
+        
+        if (isPasswordFieldFocused) {
+          document.getElementById('confirmPassword').focus();
+        } else {
+          document.getElementById('password').focus();
+        }
+      }
+    };
+    
 
     setIsDeleting(true);
 
