@@ -200,8 +200,6 @@ export default function createPatterns() {
             <PrimaryButton content='Take ScreenShot' />
           </div>
 
-
-
           {params}
         </div >
         <div style={{ width: '65vw', height: '93.5vh', padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} >
