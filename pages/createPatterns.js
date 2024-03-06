@@ -17,6 +17,7 @@ import CameraRoundedIcon from '@mui/icons-material/CameraRounded';
 // Import screenshot component
 import { useScreenshot } from 'use-react-screenshot'
 import html2canvas from 'html2canvas';
+const b64toBlob = require('b64-to-blob');
 
 // Imports des composants
 import Header from '../components/Header';
@@ -84,6 +85,55 @@ export default function createPatterns() {
     );
   });
 
+  //{TETEY} envoie des screenshots vers le back ROUTE POST (pour le moment un seul)
+  
+
+
+  const handleExport = async () => {
+    const token = "9yTfuzQ9WrJ9gppxz8TRtivt5dPRMjMz"
+    const initialPattern = "65e5fb2a8e69e1507d663e6f"
+    const patternName = "pattern1"
+    const paramsModif = {}
+    const fileName = "test001"
+    const formData = new FormData()
+    console.log(images)
+    /*
+    
+    formData.append("photoFromFront", {
+      url: images,
+      name: 'photo.png',
+      type: 'image/png',
+    })
+    const imageData = images.toString()
+    */
+    const temp = images.toString();
+    const imageData = temp.split(',')[1];
+    
+    const blob = b64toBlob(imageData, 'image/png');
+    const file = new File([blob], 'photo.png', { type: 'image/png' });
+    formData.append("photoFromFront", file);
+    formData.append("token", token);
+    formData.append("initialPattern", initialPattern);
+    formData.append("patternName", patternName);
+    formData.append("paramsModif", paramsModif);
+    formData.append("fileName", fileName);
+
+    console.log(temp, imageData, blob, file, formData)
+    
+    fetch("http://localhost:3000/modifiedPatterns/", {
+      method: 'POST',
+      /*
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: token, initialPattern: initialPattern, patternName: patternName, paramsModif: paramsModif, fileName: fileName, formData}),
+      */
+      body: formData,
+    })
+    
+    .then(res => res.json())
+    .then(data => {
+      console.log("TEST THEO", data)
+    })
+  }
 
 
   // Navigation bar 
@@ -283,6 +333,7 @@ export default function createPatterns() {
               <div style={{ display: 'flex', flexWrap: 'wrap' }}>
                 {screenshots}
               </div>
+              <button style={{width: "100px", height: "100px"}} onClick={() => handleExport()}>EXPORT</button>
             </div>
           }
 
