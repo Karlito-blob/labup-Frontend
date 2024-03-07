@@ -16,8 +16,13 @@ export const userSlice = createSlice({
       state.value.token = null;
       state.value.userName = null;
     },
+    delete: (state, action) => {
+      state.value.token = action.payload.token;
+      state.value.password = action.payload.password;
+    },
   },
 });
 
 export const { login, logout } = userSlice.actions;
 export default userSlice.reducer;
+
