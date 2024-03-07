@@ -27,6 +27,8 @@ import {
 // Import screenshot component
 import { useScreenshot } from 'use-react-screenshot'
 import html2canvas from 'html2canvas';
+const b64toBlob = require('b64-to-blob');
+import axios from 'axios';
 
 // Imports des composants
 import Header from '../components/Header';
@@ -85,6 +87,37 @@ export default function createPatterns() {
     );
   });
 
+  //{TETEY} envoie des screenshots vers le back ROUTE POST (pour le moment un seul screenshot)
+  const handleExport = async () => {
+    //constantes de simulation en attendant l'intéractivité totale de la page 
+    const token = "9yTfuzQ9WrJ9gppxz8TRtivt5dPRMjMz"
+    const initialPattern = "65e5fb2a8e69e1507d663e6f"
+    const patternName = "pattern1"
+    const paramsModif = {}
+    const fileName = "test001"
+    const formData = new FormData()
+    //recupere uniquement la partie base 64 du resultat de use react screen
+    const imageData = images.toString().split(',')[1];
+    //transformation en blob pour moins transfert
+    const blob = b64toBlob(imageData, 'image/png');
+    //transformation en file avant intégration au formData
+    const file = new File([blob], 'photo.png', { type: 'image/png' });
+    //construction du formData avec un file et des champs de texte (A FACTORISER MAIS FLEMME TOUT DE SUITE)
+    formData.append("photoFromFront", file);
+    formData.append("token", token);
+    formData.append("initialPattern", initialPattern);
+    formData.append("patternName", patternName);
+    formData.append("paramsModif", paramsModif);
+    formData.append("fileName", fileName);
+    //utilisation de axios pour la requete en multiple formData CAR FETCH CEST NUL A *****
+    axios.post("http://localhost:3000/modifiedPatterns/", formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }})
+    .then(res => {
+      console.log("TEST THEO", res)
+    })
+  }
   // Affichage screenshot
   const showScreenShot = (id) => {
     setScreenshot(images[id])
@@ -440,6 +473,7 @@ export default function createPatterns() {
               <div style={{ display: 'flex', flexWrap: 'wrap' }}>
                 {screenshots}
               </div>
+              <button style={{width: "100px", height: "100px"}} onClick={() => handleExport()}>EXPORT</button>
             </div>
           }
 
