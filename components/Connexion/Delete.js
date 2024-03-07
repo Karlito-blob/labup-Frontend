@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useRouter } from 'next/router';
 import { logout } from '../../reducers/user';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
@@ -10,6 +11,8 @@ const DeleteAccount = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const router = useRouter();
 
   const token = useSelector(state => state.user.value.token);
   const dispatch = useDispatch();
@@ -57,6 +60,7 @@ const DeleteAccount = () => {
         if (data.result) {
           dispatch(logout());
           setIsModalOpen(false);
+          router.push("/");
         } else {
           setError('Erreur lors de la suppression du compte.');
         }
@@ -84,38 +88,51 @@ const DeleteAccount = () => {
     <div>
       <Button onClick={handleOpenModal}>Supprimer le compte</Button>
 
-        <Modal open={isModalOpen} onClose={handleCloseModal}>
-          <div style={{ background: 'rgba(255, 255, 255, 0.8)', padding: '20px', borderRadius: '10px', position: 'relative' }}>
-            <h2>Supprimer le compte</h2>
-            <p>Confirmez la suppression de votre compte en saisissant votre mot de passe.</p>
+      <Modal open={isModalOpen} onClose={handleCloseModal}>
+  <div style={{
+    background: 'rgba(255, 255, 255, 0.8)',
+    padding: '20px',
+    borderRadius: '10px',
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '300px',  // Ajustez la largeur selon vos besoins
+  }}>
+    <h2 style={{ textAlign: 'center' }}>Supprimer le compte</h2>
+    <p style={{ textAlign: 'center' }}>Confirmez la suppression de votre compte en saisissant votre mot de passe. Elle sera définitive !</p>
 
-            <div style={{ position: 'relative' }}>
-              <label htmlFor="password">Mot de passe :</label>
-              <input
-                type="password"
-                id="password"
-                value={password}
-                onChange={handlePasswordChange}
-                style={{ marginBottom: '10px' }}
-              />
+    <div style={{ marginBottom: '10px', textAlign: 'left' }}>
+      <label htmlFor="password">Mot de passe :</label>
+      <input
+        type="password"
+        id="password"
+        value={password}
+        onChange={handlePasswordChange}
+        style={{ width: '100%' }}
+      />
+    </div>
 
-              <label htmlFor="confirmPassword" style={{ position: 'absolute', top: '0', left: '50%' }}>Confirmez le mot de passe :</label>
-              <input
-                type="password"
-                id="confirmPassword"
-                value={confirmPassword}
-                onChange={handleConfirmPasswordChange}
-                style={{ position: 'absolute', top: '30px', left: '50%' }}
-              />
-            </div>
+    <div style={{ marginBottom: '10px', textAlign: 'left' }}>
+      <label htmlFor="confirmPassword">Confirmez le mot de passe :</label>
+      <input
+        type="password"
+        id="confirmPassword"
+        value={confirmPassword}
+        onChange={handleConfirmPasswordChange}
+        style={{ width: '100%' }}
+      />
+    </div>
 
-            {error && <p style={{ color: 'red' }}>{error}</p>}
+    {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
 
-            <Button onClick={handleDeleteAccount} disabled={isDeleting}>
-              {isDeleting ? 'Suppression en cours...' : 'Supprimer le compte'}
-            </Button>
-          </div>
-        </Modal>
+    <div style={{ marginTop: '20px', textAlign: 'right' }}>
+      <Button onClick={handleDeleteAccount} disabled={isDeleting}>
+        {isDeleting ? 'Suppression en cours...' : 'Supprimer le compte'}
+      </Button>
+    </div>
+  </div>
+</Modal>
 
     </div>
   );
