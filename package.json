@@ -16,6 +16,7 @@
     "@mui/material": "^5.15.11",
     "@mui/styled-engine-sc": "^6.0.0-alpha.17",
     "@reduxjs/toolkit": "^2.2.1",
+    "axios": "^1.6.7",
     "b64-to-blob": "^1.2.19",
     "html2canvas": "^1.4.1",
     "next": "12.1.6",
