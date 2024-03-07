@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useRouter } from 'next/router';
 import { logout } from '../../reducers/user';
 import Button from '@mui/material/Button';
 import { useRouter } from 'next/router';
