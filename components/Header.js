@@ -25,7 +25,6 @@ export default function Header(props) {
 
 
   let headerContent;
-  console.log('User:', user);
   if (user.token) {
     // Display username if the user is connected
     headerContent = (
