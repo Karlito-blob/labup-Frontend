@@ -1,58 +1,67 @@
-// import React, { useEffect, useRef } from 'react';
-// import p5 from 'p5';
+import React, { useEffect, useRef } from 'react';
 
-// export default function WaterDrop(props) {
-//   const canvasRef = useRef();
-//   let sphereRadius = 150; // Rayon de la sphère
-//   let sphereSegments = 100; // Segments de la sphère
+export default function Pattern2(props) {
 
-//   useEffect(() => {
-//     const sketch = (p) => {
-//       let sphereVertices = []; // Vertices de la sphère
+    let sphereRadius = 150; // Rayon de la sphère
+    let sphereSegments = 100; // Segments de la sphère
+    const canvasRef = useRef();
 
-//       p.setup = () => {
-//         p.createCanvas(800, 800, p.WEBGL);
-//         p.noFill();
-//         p.stroke(255);
+    useEffect(() => {
+        const p5 = require('p5');
 
-//         // Générer les vertices de la sphère
-//         for (let i = 0; i <= sphereSegments; i++) {
-//           let lat = p.map(i, 0, sphereSegments, -p.HALF_PI, p.HALF_PI);
-//           let r = sphereRadius * p.cos(lat);
-//           let y = sphereRadius * p.sin(lat);
-//           for (let j = 0; j <= sphereSegments; j++) {
-//             let lon = p.map(j, 0, sphereSegments, -p.PI, p.PI);
-//             let x = r * p.cos(lon);
-//             let z = r * p.sin(lon);
-//             sphereVertices.push(p.createVector(x, y, z));
-//           }
-//         }
-//       };
+        const sketch = (p) => {
 
-//       p.draw = () => {
-//         p.background(0);
+            let sphereVertices = []; // Vertices de la sphère
 
-//         // Dessiner la sphère
-//         p.beginShape(p.TRIANGLE_STRIP);
-//         for (let i = 0; i < sphereVertices.length; i++) {
-//           let v = sphereVertices[i];
-//           // Calculer la distance entre le vertex et la souris
-//           let d = p.dist(v.x, v.y, v.z, p.mouseX - p.width / 2, p.mouseY - p.height / 2, 0);
-//           // Attirer les bords de la sphère vers la souris
-//           let newX = v.x + (p.mouseX - p.width / 2 - v.x) / d * 20;
-//           let newY = v.y + (p.mouseY - p.height / 2 - v.y) / d * 20;
-//           p.vertex(newX, newY, v.z);
-//         }
-//         p.endShape();
-//       };
-//     };
+            p.setup = () => {
+                p.createCanvas(800, 800, p.WEBGL);
+                p.noFill();
+                p.stroke(255);
 
-//     const myp5 = new p5(sketch, canvasRef.current);
+                // Générer les vertices de la sphère
+                for (let i = 0; i <= sphereSegments; i++) {
+                    let lat = p.map(i, 0, sphereSegments, -p.HALF_PI, p.HALF_PI);
+                    let r = sphereRadius * p.cos(lat);
+                    let y = sphereRadius * p.sin(lat);
+                    for (let j = 0; j <= sphereSegments; j++) {
+                        let lon = p.map(j, 0, sphereSegments, -p.PI, p.PI);
+                        let x = r * p.cos(lon);
+                        let z = r * p.sin(lon);
+                        sphereVertices.push(p.createVector(x, y, z));
+                    }
+                }
+            };
 
-//     return () => {
-//       myp5.remove();
-//     };
-//   }, []);
+            p.draw = () => {
+                p.background(0);
 
-//   return <div ref={canvasRef}></div>;
-// }
+                // Dessiner la sphère
+                p.beginShape(p.TRIANGLE_STRIP);
+                for (let i = 0; i < sphereVertices.length; i++) {
+                    let v = sphereVertices[i];
+                    // Calculer la distance entre le vertex et la souris
+                    let d = p.dist(v.x, v.y, v.z, p.mouseX - p.width / 2, p.mouseY - p.height / 2, 0);
+                    // Attirer les bords de la sphère vers la souris
+                    let newX = v.x + (p.mouseX - p.width / 2 - v.x) / d * 20;
+                    let newY = v.y + (p.mouseY - p.height / 2 - v.y) / d * 20;
+                    p.vertex(newX, newY, v.z);
+                }
+                p.endShape();
+            };
+        };
+
+        const myp5 = new p5(sketch);
+
+        return () => {
+            myp5.remove();
+        };
+    }, []);
+
+    return (
+
+        <div ref={canvasRef}>
+        </div>
+
+    )
+};
+

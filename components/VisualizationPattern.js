@@ -3,7 +3,6 @@ import Pattern2 from './P5JS/Pattern2'
 import Pattern3 from './P5JS/Pattern3'
 
 
-
 export default function VisualizationPattern({ initialParams, modifiedParams, pattern }) {
 
 

@@ -103,7 +103,6 @@ export default function Pattern2(props) {
     <div ref={canvasRef}>
     </div>
 
-
   )
 };
 
