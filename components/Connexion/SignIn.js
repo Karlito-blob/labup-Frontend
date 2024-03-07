@@ -22,7 +22,7 @@ export default function SignIn() {
 		fetch('http://localhost:3000/users/signin', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ userName: signInUserName, password: signInPassword }),
+			body: JSON.stringify({ credential: signInUserName, password: signInPassword }),
 		}).then(response => response.json())
 			.then(data => {
 				if (data.result) {
@@ -34,7 +34,7 @@ export default function SignIn() {
 				}
 			});
 	};
-
+	console.log(signInPassword)
 	// Get the button Enable
 	useEffect(() => {
 		setIsDisabled(!(signInUserName && signInPassword));
@@ -56,7 +56,7 @@ export default function SignIn() {
 		<div className={styles.box}>
 			<h1>Sign in to LabUp</h1>
 			<div className={styles.inputsContainer}>
-				<TextField id="outlined-basic" label="Username" variant="outlined" onChange={handleInputUsernameChange} value={signInUserName}/>
+				<TextField id="outlined-basic" label="Username or email" variant="outlined" onChange={handleInputUsernameChange} value={signInUserName}/>
 				<TextField id="outlined-basic" label="Password" type="password" variant="outlined" onChange={handlePasswordChange} value={signInPassword}/>
 			</div>
 			<Button variant="contained" disabled={isDisabled} onClick={handleConnection}> Se connecter </Button>
