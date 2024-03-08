@@ -1,6 +1,6 @@
 // Imports React
 import React, { useState, useEffect, useRef } from 'react'
-
+import { UseSelector, useSelector } from 'react-redux';
 // Style 
 import styles from '../styles/CreatePattern.module.css';
 
@@ -51,6 +51,8 @@ export default function createPatterns() {
   const [images, setImages] = useState([])
   const [screenshot, setScreenshot] = useState('')
 
+  const user = useSelector((state) => state.value)
+
   const handleTakeScreenshot = () => {
 
     if (ref.current) {
@@ -89,12 +91,12 @@ export default function createPatterns() {
 
   //{TETEY} envoie des screenshots vers le back ROUTE POST (pour le moment un seul screenshot)
   const handleExport = async () => {
-    //constantes de simulation en attendant l'intéractivité totale de la page 
-    const token = "9yTfuzQ9WrJ9gppxz8TRtivt5dPRMjMz"
+    //constantes de simulation en attendant l'intéractivité totale de la page
+    const token = "mS7GFK-Qa5Q0iqkOCA7NfSut1z5QrW8A"
     const initialPattern = "65e5fb2a8e69e1507d663e6f"
     const patternName = "pattern1"
-    const paramsModif = {clé: 'test001'}
-    const fileName = "test001"
+    const paramsModif = {clé: 'test004'}
+    const fileName = "test004"
     const formData = new FormData()
     //recupere uniquement la partie base 64 du resultat de use react screen
     const imageData = images.toString().split(',')[1];
