@@ -1,7 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import { useSelector } from 'react-redux';
 import { styled } from '@mui/material/styles';
+
+// Import screenshot components
+import html2canvas from 'html2canvas';
+const b64toBlob = require('b64-to-blob');
+import axios from 'axios';
 
 // IMPORT COMPONENTS MUI
 import TextField from '@mui/material/TextField';
@@ -44,6 +49,8 @@ import VerticalAlignTopRoundedIcon from '@mui/icons-material/VerticalAlignTopRou
 import VerticalAlignCenterRoundedIcon from '@mui/icons-material/VerticalAlignCenterRounded';
 import VerticalAlignBottomRoundedIcon from '@mui/icons-material/VerticalAlignBottomRounded';
 import FormatLineSpacingRoundedIcon from '@mui/icons-material/FormatLineSpacingRounded';
+import CameraRoundedIcon from '@mui/icons-material/CameraRounded';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import FormatSizeRoundedIcon from '@mui/icons-material/FormatSizeRounded';
 
 import styles from '../styles/CreateFile.module.css';
@@ -51,6 +58,87 @@ import styles from '../styles/CreateFile.module.css';
 export default function TextParams() {
 
   const router = useRouter();
+
+  const ref = useRef(null);
+
+  const [images, setImages] = useState([])
+  const [screenshot, setScreenshot] = useState('')
+
+  const handleTakeScreenshot = () => {
+    if (ref.current) {
+      html2canvas(ref.current)
+        .then((canvas) => {
+          console.log("j'ai cliqué")
+          const imageData = canvas.toDataURL('image/png');
+          console.log(imageData)
+          setImages((prevImages) => [...prevImages, imageData]);
+          console.log(imageData)
+        })
+    }  
+  };
+  // Mapping des screenshots 
+  const screenshots = images.map((img, index) => {
+    return (
+      <div key={index} style={{ position: 'relative', color: 'white' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <img key={index} src={img} alt={`screenshot-${index}`} style={{ width: '120px', height: '120px', borderRadius: '10px', margin: '16px' }} onClick={() => showScreenShot(index)} />
+          {`screenshot-${index + 1}`}
+        </div>
+
+        <button
+          style={{
+            position: 'absolute', top: '0', right: '0',
+            background: 'white', border: 'none', cursor: 'pointer', borderRadius: '30px', 
+          }}
+          onClick={() => setImages(images.filter((el) => el !== img))}
+        >
+          <CloseRoundedIcon />
+        </button>
+      </div>
+    );
+  });
+  // Affichage screenshot
+  const showScreenShot = (id) => {
+    setScreenshot(images[id])
+  }
+
+  //{TETEY} envoie des screenshots vers le back ROUTE POST (pour le moment un seul screenshot)
+  const handleExport = async () => {
+    //constantes de simulation en attendant l'intéractivité totale de la page 
+    const token = "v8Zt251kII7rwj5pWQv-YtpweEZJeQed"
+    const fileName = "Coucou"
+    const fileType = "coucou.jpg"
+    const documentContent = [{
+      zoneName: 'coucou',
+      contenu: 'coucou',
+      size: 8,
+      font: 'coucou',
+      color: 'coucou',
+      posX: 10,
+      posY: 8
+    }];
+    const formData = new FormData()
+    //recupere uniquement la partie base 64 du resultat de use react screen
+    const imageData = images.toString().split(',')[1];
+    //transformation en blob pour moins transfert
+    const blob = b64toBlob(imageData, 'image/png');
+    //transformation en file avant intégration au formData
+    const file = new File([blob], 'photo.png', { type: 'image/png' });
+    //construction du formData avec un file et des champs de texte (A FACTORISER MAIS FLEMME TOUT DE SUITE)
+    formData.append("photoFromFront", file);
+    formData.append("token", token);
+    formData.append("fileType", fileType);
+    formData.append("documentContent", JSON.stringify(documentContent));
+    formData.append("fileName", fileName);
+    //utilisation de axios pour la requete en multiple formData CAR FETCH CEST NUL A *****
+    axios.post("http://localhost:3000/documents/", formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }})
+    .then(res => {
+      console.log("TEST THEO", res)
+    })
+  }
 
   const handleParamsProject = () => (
     <Paper sx={{ width: 320, maxWidth: '100%' }}>
@@ -71,72 +159,72 @@ export default function TextParams() {
     </Paper>
   );
 
-    // Settings the format of the frame //
-    const [formatWidth, setFormatWidth] = useState(750); // State of width
-    const [formatHeight, setFormatHeight] = useState(750); // State of height
-    const [justifyContent, setJustifyContent] = useState('flex-start'); // State of justify-content
-    const [padding, setPadding] = useState(12);
-    const handleChangeFormat = (event, value) => {
-      const [newFormatWidth, newFormatHeight] = value;
-      setFormatWidth(newFormatWidth);
-      setFormatHeight(newFormatHeight);
-    }; // Action to change the format
-    const childrenFormat = [
-      <Tooltip title="Format square">
-        <ToggleButton value={[640, 640]} key="square">
-          <CropDinRoundedIcon />
+  // Settings the format of the frame //
+  const [formatWidth, setFormatWidth] = useState(750); // State of width
+  const [formatHeight, setFormatHeight] = useState(750); // State of height
+  const [justifyContent, setJustifyContent] = useState('flex-start'); // State of justify-content
+  const [padding, setPadding] = useState(12);
+  const handleChangeFormat = (event, value) => {
+    const [newFormatWidth, newFormatHeight] = value;
+    setFormatWidth(newFormatWidth);
+    setFormatHeight(newFormatHeight);
+  }; // Action to change the format
+  const childrenFormat = [
+    <Tooltip title="Format square">
+      <ToggleButton value={[640, 640]} key="square">
+        <CropDinRoundedIcon />
+      </ToggleButton>
+    </Tooltip>,
+    <Tooltip title="Format Story">
+      <ToggleButton value={[360, 640]} key="story">
+        <CropPortraitRoundedIcon />
+      </ToggleButton>
+    </Tooltip>,
+    <Tooltip title="Format Cover">
+      <ToggleButton value={[640, 360]} key="landscape">
+        <Crop32RoundedIcon />
+      </ToggleButton>
+    </Tooltip>,
+  ];
+  const controlFormat = {
+    value: formatWidth,
+    onChange: handleChangeFormat,
+    exclusive: true,
+  };
+  const handleChangeJustifyContent = (event, newJustifyContent) => {
+    setJustifyContent(newJustifyContent);
+  }; // Action to change justify-content
+  const childrenJustifyContent = [
+    <Tooltip title="Align Top">
+      <ToggleButton value="flex-start" key="Align Top">
+        <VerticalAlignTopRoundedIcon />
+      </ToggleButton>
+    </Tooltip>,
+    <Tooltip title="Align Center">
+      <ToggleButton value="center" key="Align Center">
+        <VerticalAlignCenterRoundedIcon />
+      </ToggleButton>
+    </Tooltip>,
+    <Tooltip title="Align Bottom">
+      <ToggleButton value="flex-end" key="Align Bottom">
+        <VerticalAlignBottomRoundedIcon />
+      </ToggleButton>
+    </Tooltip>,
+        <Tooltip title="Align Justify">
+        <ToggleButton value="space-between" key="Align Justify">
+          <FormatLineSpacingRoundedIcon />
         </ToggleButton>
       </Tooltip>,
-      <Tooltip title="Format Story">
-        <ToggleButton value={[360, 640]} key="story">
-          <CropPortraitRoundedIcon />
-        </ToggleButton>
-      </Tooltip>,
-      <Tooltip title="Format Cover">
-        <ToggleButton value={[640, 360]} key="landscape">
-          <Crop32RoundedIcon />
-        </ToggleButton>
-      </Tooltip>,
-    ];
-    const controlFormat = {
-      value: formatWidth,
-      onChange: handleChangeFormat,
-      exclusive: true,
-    };
-    const handleChangeJustifyContent = (event, newJustifyContent) => {
-      setJustifyContent(newJustifyContent);
-    }; // Action to change justify-content
-    const childrenJustifyContent = [
-      <Tooltip title="Align Top">
-        <ToggleButton value="flex-start" key="Align Top">
-          <VerticalAlignTopRoundedIcon />
-        </ToggleButton>
-      </Tooltip>,
-      <Tooltip title="Align Center">
-        <ToggleButton value="center" key="Align Center">
-          <VerticalAlignCenterRoundedIcon />
-        </ToggleButton>
-      </Tooltip>,
-      <Tooltip title="Align Bottom">
-        <ToggleButton value="flex-end" key="Align Bottom">
-          <VerticalAlignBottomRoundedIcon />
-        </ToggleButton>
-      </Tooltip>,
-          <Tooltip title="Align Justify">
-          <ToggleButton value="space-between" key="Align Justify">
-            <FormatLineSpacingRoundedIcon />
-          </ToggleButton>
-        </Tooltip>,
-    ];
-    const controlJustifyContent = {
-      value: justifyContent,
-      onChange: handleChangeJustifyContent,
-      exclusive: true,
-    };
-    const handleChangePadding = (event, newPadding) => {
-      setPadding(newPadding);
-    }; // Action to change the padding
-    // End of settings the format of the frame //
+  ];
+  const controlJustifyContent = {
+    value: justifyContent,
+    onChange: handleChangeJustifyContent,
+    exclusive: true,
+  };
+  const handleChangePadding = (event, newPadding) => {
+    setPadding(newPadding);
+  }; // Action to change the padding
+  // End of settings the format of the frame //
 
   const [zoomLevel, setZoomLevel] = useState(1);
   const handleZoomChange = (event, newZoomLevel) => {
@@ -456,7 +544,7 @@ export default function TextParams() {
       </IconButton>
       </div>
     </div>
-    <div className={styles.canvas} style={zoomStyle}>
+    <div className={styles.canvas} style={zoomStyle} ref={ref}>
       <div className={styles.file} style={{ width: `${formatWidth}px`, height: `${formatHeight}px`, padding: `${padding}px`}}>
         <div className={styles.textContainer} style={{ justifyContent }}>
           {valeursIndividuellesBloc}
@@ -465,6 +553,13 @@ export default function TextParams() {
       </div>
     </div>
     <div className={styles.bottom}>
+    <div >
+              <h1 style={{ color: 'white' }}> Screenshots </h1>
+              <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                {screenshots}
+              </div>
+              <button style={{width: "100px", height: "100px"}} onClick={() => handleExport()}>EXPORT</button>
+            </div>
       <div className={styles.boxLeft}>
         {inputs}
         <button onClick={ajouterInput}>Ajouter Input</button>
@@ -477,6 +572,9 @@ export default function TextParams() {
           <ToggleButtonGroup size="small" {...controlFormat} aria-label="Small sizes">
           {childrenFormat}
           </ToggleButtonGroup>
+          <IconButton aria-label="camera" onClick={() => handleTakeScreenshot()}>
+            <CameraRoundedIcon />
+          </IconButton>
         </Stack>
       </div>
       <div className={styles.boxRight}>
