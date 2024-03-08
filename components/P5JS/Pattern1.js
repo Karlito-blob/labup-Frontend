@@ -4,10 +4,10 @@ import React, { useEffect, useRef } from 'react';
 
 export default function Pattern1(props) {
 
+
   const canvasRef = useRef();
 
   useEffect(() => {
-    console.log(props.pointColor)
 
     const p5 = require('p5');
 
