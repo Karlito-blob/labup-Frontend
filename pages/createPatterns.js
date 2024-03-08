@@ -93,7 +93,7 @@ export default function createPatterns() {
     const token = "9yTfuzQ9WrJ9gppxz8TRtivt5dPRMjMz"
     const initialPattern = "65e5fb2a8e69e1507d663e6f"
     const patternName = "pattern1"
-    const paramsModif = {}
+    const paramsModif = {clé: 'test001'}
     const fileName = "test001"
     const formData = new FormData()
     //recupere uniquement la partie base 64 du resultat de use react screen
