@@ -1,51 +1,89 @@
+$polka-bg-image: radial-gradient(rgb(227, 227, 227) 10%, transparent 10%);
+$polka-bg-position: 8px 8px;
+$polka-bg-size: 16px 16px;
+$polka-bg-color: rgb(255, 255, 255);
+
 .viewport {
     width: 100vw;
     height: 100vh;
-    overflow: hidden;
-    background-color: black;
-}
-
-.container {
-    height: 100%;
-    display: flex;
-}
-
-.boxParams {
-    width: 35%;
-    padding: 40px 80px;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    background-image: $polka-bg-image;
+    background-position: $polka-bg-position;
+    background-size: $polka-bg-size;
+    background-color: $polka-bg-color;
+}
+
+.polka {
+    background-image: $polka-bg-image;
+    background-position: $polka-bg-position;
+    background-size: $polka-bg-size;
+    background-color: $polka-bg-color;
+}
+.header {
+    width: 100%;
+    padding: 8px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid black;
     background-color: white;
 
-    .inputs {
+    .settingProject {
         display: flex;
-        flex-direction: column;
-        gap: 24px;
+        align-items: center;
+        gap: 4px;
+    }
 
-        .hour {
-            display: flex;
-            justify-content: space-between;
-        }
+    .settingProfile {
+        display: flex;
+        align-items: center;
+        gap: 4px;
     }
 }
 
 .canvas {
-    width: 65%;
-    height: 100%;
+    .file {
+        border-radius: 4px;
+        background-color: white;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.15);
+    
+        .textContainer {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        
+            p {
+                margin: 0;
+                overflow-wrap: break-word;
+            }
+        }
+    }
+}
+
+.bottom {
+    width: 100%;
+    padding: 8px 16px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
 
-    .file {
-        width: 750px;
-        height: 750px;
+    .boxLeft {
         display: flex;
         flex-direction: column;
-        background-color: white;
+        align-items: center;
+    }
 
-        p {
-            margin: 0;
-            position: relative;
-        }
+    .boxMiddle {
+        display: flex;
+    }
+
+    .boxRight {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 }
