@@ -1,22 +1,45 @@
 import Pattern1 from './P5JS/Pattern1'
+import Pattern2 from './P5JS/Pattern2'
+import Pattern3 from './P5JS/Pattern3'
 
-export default function VisualizationPattern({ modifiedParams }) {
 
-  return (
-    <main>
-      <Pattern1
-        pointMin={modifiedParams.TaillePoints ? modifiedParams.TaillePoints[0] : 1}
-        pointMax={modifiedParams.TaillePoints ? modifiedParams.TaillePoints[1] : 10}
-        pointColor={modifiedParams.CouleurPoints || { r: 255, g: 0, b: 0, a: 1 }}
-        contourColor={modifiedParams.CouleurContourPoints || { r: 0, g: 0, b: 0, a: 1 }}
-        lineColor={modifiedParams.CouleurLigne || { r: 0, g: 0, b: 0, a: 1 }}
-        backColor={modifiedParams.CouleurBackground || { r: 255, g: 255, b: 255, a: 1 }}
-        vSpeed={modifiedParams.VitesseVerticale || 1}
-        hSpeed={modifiedParams.VitesseHorizontale || 1}
-        nParticule={modifiedParams.NombreParticules || 5}
-        distance={modifiedParams.DistanceMinPoints || 50}
-      />
-    </main>
+export default function VisualizationPattern({ initialParams, modifiedParams, pattern }) {
 
-  )
+
+  if (pattern === 'Pattern1') {
+    return (
+      <main>
+        <Pattern1
+          pointMin={modifiedParams ? modifiedParams.TaillePoints[0] : initialParams.TaillePoints[0]}
+          pointMax={modifiedParams ? modifiedParams.TaillePoints[1] : initialParams.TaillePoints[1]}
+          pointColor={modifiedParams?.CouleurPoints || initialParams.CouleurPoints}
+          contourColor={modifiedParams?.CouleurContourPoints || initialParams.CouleurPoints}
+          lineColor={modifiedParams?.CouleurLigne || initialParams.CouleurLigne}
+          backColor={modifiedParams?.CouleurBackground || initialParams.CouleurBackground}
+          vSpeed={modifiedParams?.VitesseVerticale || initialParams.VitesseVerticale}
+          hSpeed={modifiedParams?.VitesseHorizontale || initialParams.VitesseHorizontale}
+          nParticule={modifiedParams?.NombreParticules || initialParams.NombreParticules}
+          distance={modifiedParams?.DistanceMinPoints || initialParams.DistanceMinPoints}
+        />
+
+      </main>
+    )
+  } else if (pattern === 'Pattern2') {
+    return (
+      <main>
+        <Pattern2
+          vitesse={0.2} nunberOfPoints={300} linewWidth={0.1} backColor={{ r: 255, g: 255, b: 255, a: 0.5 }}
+        />
+
+      </main>
+    )
+
+  } else if (pattern === 'Pattern3') {
+    return (
+      <main>
+        <Pattern3 />
+      </main>
+    )
+  }
+
 }

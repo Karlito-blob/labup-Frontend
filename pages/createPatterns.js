@@ -1,100 +1,138 @@
 // Imports React
 import React, { useState, useEffect, useRef } from 'react'
 
+// Style 
+import styles from '../styles/CreatePattern.module.css';
+
 // Imports Material-UI
 import { ChromePicker as ColorPicker } from 'react-color';
 import Slider from '@mui/material/Slider';
 
 // Import icons 
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
-import ViewHeadlineRoundedIcon from '@mui/icons-material/ViewHeadlineRounded';
-import PatternRoundedIcon from '@mui/icons-material/PatternRounded';
-import CameraRoundedIcon from '@mui/icons-material/CameraRounded';
+import {
+  KeyboardArrowRight as KeyboardArrowRightIcon,
+  KeyboardArrowLeft as KeyboardArrowLeftIcon,
+  KeyboardArrowDown as KeyboardArrowDownIcon,
+  AddPhotoAlternate as AddPhotoAlternateIcon,
+  ViewHeadlineRounded as ViewHeadlineRoundedIcon,
+  PatternRounded as PatternRoundedIcon,
+  CameraRounded as CameraRoundedIcon,
+  AddRounded as AddRoundedIcon,
+  RemoveRounded as RemoveRoundedIcon,
+  ShuffleRounded as ShuffleRoundedIcon,
+  CloseRounded as CloseRoundedIcon,
+  UnfoldMoreRounded as UnfoldMoreRoundedIcon
+} from '@mui/icons-material';
 
 // Import screenshot component
 import { useScreenshot } from 'use-react-screenshot'
 import html2canvas from 'html2canvas';
+const b64toBlob = require('b64-to-blob');
+import axios from 'axios';
 
 // Imports des composants
 import Header from '../components/Header';
 import VisualizationPattern from '../components/VisualizationPattern'
-import PrimaryButton from '../components/Ui Kit/PrimaryButton';
 
-function valuetext(value) {
-  return `${value}°C`;
-}
-const minDistance = 1;
+///////////////////////////////////////////////////////////////////////
 
 export default function createPatterns() {
+
+  // Choix du pattern 
+  const [patterns, setPatterns] = useState([]);
+  const [patternID, setPatternID] = useState('65e5fb2a8e69e1507d663e6f')
+  const [patternName, setPatternName] = useState('')
+
+  // Gestion du zoom 
+  const [zoom, setZoom] = useState(1)
 
   // Gestion des screenshots
   const ref = useRef(null)
   const [images, setImages] = useState([])
-
-  console.log({ images });
+  const [screenshot, setScreenshot] = useState('')
 
   const handleTakeScreenshot = () => {
-    console.log('Ref current:', ref.current);
 
     if (ref.current) {
       html2canvas(ref.current)
         .then((canvas) => {
           const imageData = canvas.toDataURL('image/png');
-          console.log('Screenshot taken successfully:', imageData);
           setImages((prevImages) => [...prevImages, imageData]);
-          console.log('Updated images:', images); // Ajout de cette ligne pour vérifier le contenu du tableau après la mise à jour
 
         })
-        .catch((error) => {
-          console.error('Error during screenshot capture:', error);
-        });
-    } else {
-      console.error('Ref current is null. Make sure the ref is correctly assigned.');
-    }
+
+    }  
 
   };
 
   // Mapping des screenshots 
-  const handleDeleteScreenshot = (url) => {
-    setImages(images.filter((el) => el !== url));
-  };
-
   const screenshots = images.map((img, index) => {
     return (
-      <div key={index} style={{ position: 'relative' }}>
-        <img key={index} src={img} alt={`screenshot-${index}`} style={{ width: '230px', height: '230px', borderRadius: '10px', margin: '16px' }} />
+      <div key={index} style={{ position: 'relative', color: 'white' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <img key={index} src={img} alt={`screenshot-${index}`} style={{ width: '120px', height: '120px', borderRadius: '10px', margin: '16px' }} onClick={() => showScreenShot(index)} />
+          {`screenshot-${index + 1}`}
+        </div>
+
         <button
           style={{
-            position: 'absolute',
-            top: '0',
-            right: '0',
-            background: 'white',
-            border: 'none',
-            cursor: 'pointer',
-            borderRadius:'10px', 
+            position: 'absolute', top: '0', right: '0',
+            background: 'white', border: 'none', cursor: 'pointer', borderRadius: '30px', 
           }}
           onClick={() => setImages(images.filter((el) => el !== img))}
         >
-          X
+          <CloseRoundedIcon />
         </button>
       </div>
     );
   });
 
+  //{TETEY} envoie des screenshots vers le back ROUTE POST (pour le moment un seul screenshot)
+  const handleExport = async () => {
+    //constantes de simulation en attendant l'intéractivité totale de la page 
+    const token = "v8Zt251kII7rwj5pWQv-YtpweEZJeQed"
+    const initialPattern = "65e5fb2a8e69e1507d663e6f"
+    const patternName = "pattern1"
+    const paramsModif = {clé: 'test002'}
+    const fileName = "test002"
+    const formData = new FormData()
+    //recupere uniquement la partie base 64 du resultat de use react screen
+    const imageData = images.toString().split(',')[1];
+    //transformation en blob pour moins transfert
+    const blob = b64toBlob(imageData, 'image/png');
+    //transformation en file avant intégration au formData
+    const file = new File([blob], 'photo.png', { type: 'image/png' });
+    //construction du formData avec un file et des champs de texte (A FACTORISER MAIS FLEMME TOUT DE SUITE)
+    formData.append("photoFromFront", file);
+    formData.append("token", token);
+    formData.append("initialPattern", initialPattern);
+    formData.append("patternName", patternName);
+    formData.append("paramsModif", paramsModif);
+    formData.append("fileName", fileName);
+    //utilisation de axios pour la requete en multiple formData CAR FETCH CEST NUL A *****
+    axios.post("http://localhost:3000/modifiedPatterns/", formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }})
+    .then(res => {
+      console.log("TEST THEO", res)
+    })
+  }
+  // Affichage screenshot
+  const showScreenShot = (id) => {
+    setScreenshot(images[id])
 
+  }
 
   // Navigation bar 
   const [navigation, setNavigation] = useState('Pattern')
-  const [showNavigation, setShowNavigation] = useState(false)
-  const [screenSize, setScreenSize] = useState('95vw')
+  const [showNavigation, setShowNavigation] = useState(true)
+  const [screenSize, setScreenSize] = useState('')
 
   const handleNavigation = (onglet) => {
     setNavigation(onglet)
     setShowNavigation(true)
-    setScreenSize('65vw')
+    setScreenSize('75vw')
   }
 
   const showPanel = () => {
@@ -106,23 +144,148 @@ export default function createPatterns() {
   const [params, setParams] = useState([]);
   const [value, setValue] = useState([0, 10]);
 
+  // Randomisation des paramètres 
+  const randomParams = () => {
+
+    const updatedParams = {};
+
+    fetch('http://localhost:3000/initialPatterns/')
+      .then(response => response.json())
+      .then(data => {
+        if (data.result) {
+          const randomData = data.InitialPatterns[0].params.map(param => ({
+            paramName: param.paramName,
+            paramType: param.paramType,
+            valeurMinMax: param.valeurMinMax,
+          }));
+
+          randomData.forEach((param) => {
+            const { paramName, paramType, valeurMinMax } = param;
+
+            if (paramType === 'Slider') {
+              const randomValue = Math.random() * (valeurMinMax[1] - valeurMinMax[0]) + valeurMinMax[0];
+              updatedParams[paramName] = randomValue;
+            } else if (paramType === 'DoubleSlider') {
+              const randomValue1 = Math.random() * (valeurMinMax[1] - valeurMinMax[0]) + valeurMinMax[0];
+              const randomValue2 = Math.random() * (valeurMinMax[1] - valeurMinMax[0]) + valeurMinMax[0];
+              updatedParams[paramName] = [Math.min(randomValue1, randomValue2), Math.max(randomValue1, randomValue2)];
+            } else if (paramType === 'Color') {
+              const randomColor = {
+                r: Math.floor(Math.random() * 256),
+                g: Math.floor(Math.random() * 256),
+                b: Math.floor(Math.random() * 256),
+                a: Math.random() * (1 - 0) + 0
+              }
+              updatedParams[paramName] = randomColor;
+            }
+          });
+
+          setModifiedParams(updatedParams);
+        }
+      });
+
+
+  };
 
   // Récupération des paramètres modifiés du Pattern
-  const [modifiedParams, setModifiedParams] = useState([])
+  const [initialParams, setInitialParams] = useState(null)
+  const [modifiedParams, setModifiedParams] = useState(null); // Ajout de cette ligne
 
   // Track visibility state for each slider individually
   const [showSlider, setShowSlider] = useState({});
 
+  // Expand All parameters 
+  const expandAllParams = () => {
+    // Vérifier si au moins un élément est actuellement ouvert
+    const isAnyOpen = Object.values(showSlider).some(value => value);
+
+    // Mettre à jour chaque clé avec la valeur inverse de isAnyOpen
+    const updatedShowSlider = {};
+    Object.keys(showSlider).forEach(key => {
+      updatedShowSlider[key] = !isAnyOpen;
+    });
+
+    // Mettre à jour l'état showSlider avec le nouvel objet
+    setShowSlider(updatedShowSlider);
+  }
+
+  // Mappage des patterns 
+  const patternsData = patterns.map((pattern, index) => {
+    return (
+      <div key={index} style={{display:'flex', flexDirection:'column', color:'white', alignItems:'center'}}>
+        <img src={`${pattern.patternName}.png`} className={styles.patternCard} onClick={() => { handlePatternData(pattern._id, pattern.patternName) }} />
+        {pattern.patternLabel}
+      </div>
+    );
+  });
+
+
+  const handlePatternData = (id, name) => {
+    setPatternID(id)
+    setPatternName(name)
+  }
+
+  // UseEffect d'initialisation des patterns ////////////////////////
+  useEffect(() => {
+    // Récupération des paramètres du Pattern
+    fetch(`http://localhost:3000/initialPatterns/`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.result) {
+
+          // Récupéreration des noms des patterns disponibles
+          const patterns = data.InitialPatterns;
+          // Mise à jour de la state avec les noms des patterns
+          setPatterns(patterns);
+
+        }
+      });
+  }, []);
+
+  // UseEffect d'initialisation des paramètres ////////////////////////
+  useEffect(() => {
+    // Récupération des paramètres du Pattern
+    fetch(`http://localhost:3000/initialPatterns/${patternID}`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.result) {
+
+          setModifiedParams(null);
+
+          const initialParamsList = data.InitialPattern.params;
+
+          // Initialisez showSlider avec toutes les clés à true
+          const initialShowSliderState = {};
+          initialParamsList.forEach(param => {
+            initialShowSliderState[param.paramName] = true;
+          });
+
+          // Mettez à jour l'état showSlider avec le nouvel objet
+          setShowSlider(initialShowSliderState);
+
+          // console.log("Result => ", data.InitialPatterns);
+          const initialParamsData = data.InitialPattern.params.reduce((acc, param) => {
+            acc[param.paramName] = param.valeurInitiale;
+            return acc;
+          }, {});
+
+          setInitialParams(initialParamsData);
+        }
+      });
+  }, [patternName]);
+
+  /////////////////////////////////////////////////////
+
+  // UseEffect de modification ////////////////////////
   useEffect(() => {
 
     // Récupération des paramètres du Pattern
-    fetch('http://localhost:3000/initialPatterns/')
+    fetch(`http://localhost:3000/initialPatterns/${patternID}`)
       .then(response => response.json())
       .then(data => {
-
         if (data.result) {
 
-          const newParams = data.InitialPatterns[0].params.map((params, i) => {
+          const newParams = data.InitialPattern.params.map((params, i) => {
 
             if (params.paramType === 'Slider') {
 
@@ -137,11 +300,13 @@ export default function createPatterns() {
 
               };
 
-              return ( // Retour d'un slider simple 
+              return ( // Retour d'un slider simple
                 <div key={params.paramName + i} style={{ padding: 30, color: 'white' }}>
+                  <div className={styles.line}></div>
+
                   <div onClick={() => setShowSlider(prevState => ({ ...prevState, [params.paramName]: !prevState[params.paramName] }))} style={{ cursor: 'pointer' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    {params.paramName}
+                      {params.displayName}
                       {showSlider[params.paramName] ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
                     </div>
                   </div>
@@ -153,23 +318,24 @@ export default function createPatterns() {
                       step={0.1}
                       min={params.valeurMinMax[0]}
                       max={params.valeurMinMax[1]}
-                      value={modifiedParams[params.paramName]}
+                    value={modifiedParams ? modifiedParams[params.paramName] || params.valeurInitiale : params.valeurInitiale}
                       valueLabelDisplay="auto"
                       defaultValue={0} // Changez la valeur par défaut
                       onChange={(event, newValue) => handleSimpleSlider(event, newValue, params.paramName)}
                     />}
-
                 </div>
               );
 
 
             } else if (params.paramType === 'DoubleSlider') {
 
-              // Gestion du double slider 
+              // Gestion du double slider
               const handleDoubleSlider = (event, newValue, activeThumb, paramName) => {
                 if (!Array.isArray(newValue)) {
                   return;
                 }
+
+                const minDistance = 1;
 
                 if (newValue[1] - newValue[0] < minDistance) {
                   if (activeThumb === 0) {
@@ -193,20 +359,23 @@ export default function createPatterns() {
 
               return (
                 <div key={params.paramName + i} style={{ padding: 30, color: 'white' }}>
+                  <div className={styles.line}></div>
+
                   <div onClick={() => setShowSlider(prevState => ({ ...prevState, [params.paramName]: !prevState[params.paramName] }))} style={{ cursor: 'pointer' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      {params.paramName}
+                      {params.displayName}
                       {showSlider[params.paramName] ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
                     </div>
                   </div>
 
-                  {showSlider[params.paramName] && <Slider
+                  {showSlider[params.paramName] &&
+                    <Slider
                     key={i}
                     getAriaLabel={() => 'Minimum distance shift'}
-                    value={modifiedParams[params.paramName] || params.valeurMinMax} // Valeur par défaut en cas de valeur non définie
+                    value={modifiedParams ? modifiedParams[params.paramName] || params.valeurInitiale : params.valeurInitiale}
                     onChange={(event, newValue, activeThumb) => handleDoubleSlider(event, newValue, activeThumb, params.paramName)}
                     valueLabelDisplay="auto"
-                    getAriaValueText={valuetext}
+                    getAriaValueText={''}
                     disableSwap
                     step={0.1}
                   />}
@@ -227,9 +396,11 @@ export default function createPatterns() {
 
               return (
                 <div key={params.paramName + i} style={{ padding: 30, color: 'white' }}>
+                  <div className={styles.line}></div>
+
                   <div onClick={() => setShowSlider(prevState => ({ ...prevState, [params.paramName]: !prevState[params.paramName] }))} style={{ cursor: 'pointer' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      {params.paramName}
+                      {params.displayName}
                       {showSlider[params.paramName] ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
                     </div>
                   </div>
@@ -237,10 +408,11 @@ export default function createPatterns() {
                   {showSlider[params.paramName] &&
                     <ColorPicker
                       key={i}
-                      color={modifiedParams[params.paramName]} // Valeur par défaut en cas de couleur non définie
+                    color={modifiedParams ? modifiedParams[params.paramName] || params.valeurInitiale : params.valeurInitiale}
                       onChangeComplete={(color) => handleColor(color, params.paramName)}
                       style={{ alignSelf: 'center' }}
                     />}
+
                 </div>
               );
             }
@@ -248,45 +420,65 @@ export default function createPatterns() {
           });
 
           setParams(newParams);
+          console.log("modified =>", modifiedParams);
+
         }
       });
-  }, [modifiedParams, showSlider, images]);
-
+  }, [modifiedParams, showSlider, images, zoom]);
+  /////////////////////////////////////////////////////
 
   return (
     <>
       <Header />
 
-      <div style={{ display: "flex", flexDirection: 'row' }}>
+      <div className={styles.container} >
 
         {/* Navigation bar icons  */}
-        <div style={{ color: 'white', display: "flex", alignItems: 'center', flexDirection: 'column', backgroundColor: 'black', gap: '16px', padding: '16px', cursor: 'pointer' }}>
-          <PatternRoundedIcon onClick={() => handleNavigation('Pattern')} style={{ fontSize: '50px', border: navigation === 'Pattern' ? 'solid 1px' : 'solid 0px', borderRadius: '10px' }} />
-          <ViewHeadlineRoundedIcon onClick={() => handleNavigation('Params')} style={{ fontSize: '50px', border: navigation === 'Params' ? 'solid 1px' : 'solid 0px', borderRadius: '10px' }} />
-          <AddPhotoAlternateIcon onClick={() => handleNavigation('Screens')} style={{ fontSize: '50px', border: navigation === 'Screens' ? 'solid 1px' : 'solid 0px', borderRadius: '10px' }} />
+        <div className={styles.navigationBarIcons}>
+          <PatternRoundedIcon onClick={() => handleNavigation('Pattern')} className={styles.barIcons} style={{ border: navigation === 'Pattern' ? 'solid 1px' : 'solid 0px' }} />
+          <ViewHeadlineRoundedIcon onClick={() => handleNavigation('Params')} className={styles.barIcons} style={{ border: navigation === 'Params' ? 'solid 1px' : 'solid 0px' }} />
+          <AddPhotoAlternateIcon onClick={() => handleNavigation('Screens')} className={styles.barIcons} style={{ border: navigation === 'Screens' ? 'solid 1px' : 'solid 0px' }} />
         </div>
 
-        {showNavigation && <div style={{ width: '35vw', height: '93.5vh', padding: '20px', backgroundColor: 'black', overflowX: 'auto', gap: '16px' }}>
+        {/* Navigation  */}
+        {showNavigation && <div className={styles.navigationBar} >
 
-          {navigation === 'Pattern' && <></>}
+          {navigation === 'Pattern' &&
+            <>
+              <h1 style={{ color: 'white' }}> Choose a pattern </h1>
+              <div className={styles.patternBar}>
+                {patternsData}
 
-          {navigation === 'Params' &&
+              </div>
+            </>
+
+          }
+
+          {navigation === 'Params' && patternName &&
             <div>
-              <h1 style={{ color: 'white' }}> Paramètres</h1>
+              <div style={{ color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <h1 > Settings </h1>
+                <div >
+                  <UnfoldMoreRoundedIcon onClick={() => expandAllParams()} style={{ fontSize: '36px' }} />
+                  <ShuffleRoundedIcon onClick={() => randomParams()} style={{ fontSize: '36px' }} />
+                </div>
+              </div>
               {params}
             </div>
           }
 
-          {navigation === 'Screens' &&
+          {navigation === 'Screens' && patternName &&
             <div >
               <h1 style={{ color: 'white' }}> Screenshots </h1>
               <div style={{ display: 'flex', flexWrap: 'wrap' }}>
                 {screenshots}
               </div>
+              <button style={{width: "100px", height: "100px"}} onClick={() => handleExport()}>EXPORT</button>
             </div>
           }
 
-        </div >}
+        </div >
+        }
 
         {/* Navigation bar  */}
         <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -302,37 +494,43 @@ export default function createPatterns() {
             />}
         </div>
 
-
         {/* Zone de visualisation */}
         <div style={{ width: screenSize, height: '93.5vh', padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ boxShadow: '0 0 40px rgba(0, 0, 0, 0.5)', }} ref={ref} >
-            <VisualizationPattern modifiedParams={modifiedParams} />
+          <div style={{ boxShadow: '0 0 40px rgba(0, 0, 0, 0.5)', scale: `${zoom}` }} ref={ref}  >
+            {screenshot ?
+              <img src={screenshot} style={{ width: '800px', height: '800px' }} />
+              : <VisualizationPattern initialParams={initialParams} modifiedParams={modifiedParams} pattern={patternName} />
+            }
           </div>
-          <div
-            onClick={() => handleTakeScreenshot()}
-            style={{
-              display: 'flex',
-              position: 'absolute',
-              cursor: 'pointer',
-              bottom: '80px',
-              right: '80px',
-              justifyContent: 'center',
-              alignItems: 'center',
-              width: '50px',
-              height: '50px',
-              padding: '20px',
-              borderRadius: '100px',
-              boxShadow: '0 0 40px rgba(0, 0, 0, 0.5)',
 
-            }}
-          >
-            <CameraRoundedIcon />
+          {patternName && <div className={styles.rightIconsContainer}>
+
+            <div onClick={() => setZoom((prevZoom) => zoom <= 0.20 ? 1 : prevZoom - 0.10)} className={styles.rightIcons} >
+              <RemoveRoundedIcon />
+            </div>
+            <div onClick={() => setZoom((prevZoom) => zoom >= 1 ? 1 : prevZoom + 0.10)} className={styles.rightIcons} >
+              <AddRoundedIcon />
+            </div>
+            {screenshot ?
+              <div onClick={() => setScreenshot('')} className={styles.rightIcons} >
+                <CloseRoundedIcon />
+              </div>
+              :
+              <div onClick={() => handleTakeScreenshot()} className={styles.rightIcons} >
+                <CameraRoundedIcon />
+              </div>
+            }
           </div>
+
+          }
+
 
         </div>
+
       </div>
 
     </>
 
   );
+
 }
