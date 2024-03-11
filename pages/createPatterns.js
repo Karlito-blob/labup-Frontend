@@ -91,12 +91,12 @@ export default function createPatterns() {
 
   //{TETEY} envoie des screenshots vers le back ROUTE POST (pour le moment un seul screenshot)
   const handleExport = async () => {
-    //constantes de simulation en attendant l'intéractivité totale de la page
-    const token = "mS7GFK-Qa5Q0iqkOCA7NfSut1z5QrW8A"
+    //constantes de simulation en attendant l'intéractivité totale de la page 
+    const token = "v8Zt251kII7rwj5pWQv-YtpweEZJeQed"
     const initialPattern = "65e5fb2a8e69e1507d663e6f"
     const patternName = "pattern1"
-    const paramsModif = {clé: 'test004'}
-    const fileName = "test004"
+    const paramsModif = {clé: 'test002'}
+    const fileName = "test002"
     const formData = new FormData()
     //recupere uniquement la partie base 64 du resultat de use react screen
     const imageData = images.toString().split(',')[1];
