@@ -1,35 +1,63 @@
 import React from 'react';
 import Header from './Header';
+import { Button, Dialog, DialogTitle, DialogContent, TextField } from '@mui/material';
 import { useSelector } from 'react-redux';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { createSlice } from '@reduxjs/toolkit';
 
 import styles from '../styles/Dashboard.module.css';
-import { Button } from '@mui/material';
 
 export default function Dashboard(props) {
 
-  const [folders, setFolders] = useState([
-    { name: 'Dossier 1' },
-    { name: 'Dossier 2' },
-    // ... autres dossiers
-  ]);
+  const router = useRouter();
+  const [folders, setFolders] = useState([]);
+  const [newFolderName, setNewFolderName] = useState('');
+  const [openDialog, setOpenDialog] = useState(false);
+  const token = useSelector((state) => state.user.value.token);
 
-  const handleCreateFolder = () => {
-    const newFolderName = prompt('Enter the name for the new folder:');
-    if (newFolderName) {
-      setFolders([...folders, { name: newFolderName }]);
-    }
+  console.log (token)
+
+  // afficher les dossiers users dans le dashboard
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+      const response = await fetch(`http://localhost:3000/folders/${token}`);
+
+        if (!response.ok) {
+          throw new Error(`Erreur réseau: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const { result, Folders } = data;
+
+        if (result) {
+          setFolders(Folders);
+        } else {
+          console.error("Erreur lors de la récupération des dossiers :", data.message);
+        }
+      } catch (error) {
+        console.error("Erreur réseau :", error.message);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
   };
 
-  const folderList = folders.map((folder, index) => (
-    <div key={index} className="folder">
-      {folder.name}
-    </div>
-  ));
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setNewFolderName(''); // Réinitialise le champ de saisie après la fermeture de la boîte de dialogue
+  };
 
-
-  const router = useRouter();
+  const handleCreateFolder = () => {
+    setFolders([...folders, { name: newFolderName }]);
+    handleCloseDialog();
+  };
 
   const patternData = [
     {
@@ -83,14 +111,17 @@ export default function Dashboard(props) {
       update: 'Viewed 3 days ago'
     }
   ]
-  const foldersContainer = [
-    {
-      image: 'background.jpg',
-      title: 'Expérience 1',
-      update: 'Viewed 3 days ago'
-    },
-  ]
 
+  const folderList = folders.map((folder, index) => {
+    console.log(folder)
+    return (
+      <div key={index} className={styles.pattern}>
+        {folder.projectName}
+        <div className={styles.imgContainer}>
+        <img src="/Folder.png" alt={folder.projectName} />   
+        </div>
+      </div>
+    )});
 
   const pattern = patternData.map((pattern, index) => (
     <div key={index} className={styles.pattern}>
@@ -124,10 +155,21 @@ export default function Dashboard(props) {
           <div className={styles.foldersContainer}>{folderList}</div>
         </div>
       </div>
-      <div className="folder">
-        {folderList}
-        <button onClick={handleCreateFolder}>+</button>
-      </div>
-    </div>
+      
+
+      {/* Boîte de dialogue pour la création de dossier 
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <DialogTitle>Create a new folder</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Folder Name"
+            value={newFolderName}
+            onChange={(e) => setNewFolderName(e.target.value)}
+            fullWidth
+          />
+        </DialogContent>
+        <Button onClick={handleCreateFolder}>Create</Button>
+      </Dialog>  */}
+  </div>
   );
 }
