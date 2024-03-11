@@ -7,7 +7,6 @@ export default function Pattern2(props) {
     const canvasRef = useRef();
 
     useEffect(() => {
-        
         const p5 = require('p5');
 
         const sketch = (p) => {
