@@ -57,8 +57,11 @@ export default function VisualizationPattern({ initialParams, modifiedParams, pa
       </main>
     )
   } else if (pattern === 'Pattern5') {
-    <Pattern5 />
-
-  }
+    return (
+      <main>
+        <Pattern5 />
+      </main>
+    )
+  }  
 
 }
