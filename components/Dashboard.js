@@ -157,7 +157,7 @@ export default function Dashboard(props) {
       </div>
       
 
-      {/* Boîte de dialogue pour la création de dossier 
+      {/* Boîte de dialogue pour la création de dossier */}
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>Create a new folder</DialogTitle>
         <DialogContent>
@@ -169,7 +169,7 @@ export default function Dashboard(props) {
           />
         </DialogContent>
         <Button onClick={handleCreateFolder}>Create</Button>
-      </Dialog>  */}
+      </Dialog>  
   </div>
   );
 }
