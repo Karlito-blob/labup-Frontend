@@ -61,6 +61,8 @@ export default function createPatterns() {
   const [images, setImages] = useState([]) 
   const [screenshot, setScreenshot] = useState('')
 
+  const user = useSelector((state) => state.value)
+
   // Navigation 
   const [navigation, setNavigation] = useState('Pattern')
   const [showNavigation, setShowNavigation] = useState(true)
