@@ -4,7 +4,6 @@ import React, { useEffect, useRef } from 'react';
 
 export default function Pattern1(props) {
 
-
   const canvasRef = useRef();
 
   useEffect(() => {
