@@ -4,6 +4,7 @@ import { Button, Dialog, DialogTitle, DialogContent, TextField, IconButton } fro
 import { useSelector } from 'react-redux';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 
 import styles from '../styles/Dashboard.module.css';
@@ -42,7 +43,7 @@ export default function Dashboard(props) {
 
   const handleCreateFolder = async () => {
     try {
-      const response = await fetch('http://localhost:3000/notre-route', {
+      const response = await fetch('http://localhost:3000/folders', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -144,14 +145,18 @@ export default function Dashboard(props) {
     </div>
   ));
   
-    const handleCloseDialog = () => {
-      setOpenDialog(false);
-      setNewFolderName('');
-    };
+  // Ouvrir la boîte de dialogue
+  const handleOpenCreateFolderDialog = () => {
+    setIsCreatingFolder(true);
+  };
+
+    // Fonction pour fermer la boîte de dialogue
+  const handleCloseCreateFolderDialog = () => {
+    setIsCreatingFolder(false);
+    setNewFolderName('');
+  };
   
-    const handleOpenDialog = () => {
-      setOpenDialog(true);
-    };
+    
   
     const DialogBox = () => (
       <Dialog open={openDialog} onClose={handleCloseDialog}>
@@ -174,37 +179,59 @@ export default function Dashboard(props) {
     );
   
 
-  return (
-    <div className={styles.container}>
-      <Header />
-      <div className={styles.box}>
-        <h2>Dashboard</h2>
-        <div className={styles.buttonsContainer}>
-          <Button onClick={() => router.push('/createPatterns')}>Pattern File</Button>
-          <Button onClick={() => router.push('/createFile')}>Event File</Button>
+    return (
+      <div className={styles.container}>
+        <Header />
+        <div className={styles.box}>
+          <h2>Dashboard</h2>
+          <div className={styles.buttonsContainer}>
+            <Button onClick={() => router.push('/createPatterns')}>Pattern File</Button>
+            <Button onClick={() => router.push('/createFile')}>Event File</Button>
+          </div>
         </div>
-      </div>
-      <div className={styles.patternSection}>
-        <h3>My patterns</h3>
-        <div className={styles.wrapScrollH}>
-          <div className={styles.patternsContainer}>{pattern}</div>
+        <div className={styles.patternSection}>
+          <h3>My patterns</h3>
+          <div className={styles.wrapScrollH}>
+            <div className={styles.patternsContainer}>{pattern}</div>
+          </div>
         </div>
-      </div>
-      <div className={styles.folderSection}>
-        <h3>My folders</h3>
-        <div className={styles.wrapScrollH}>
-          <div className={styles.foldersContainer}>
-            {folderList}
-            {/* Bouton "+" pour créer un nouveau dossier */}
-            <div className={styles.container}>
+        <div className={styles.folderSection}>
+          <h3>My folders</h3>
+          <div className={styles.wrapScrollH}>
+            <div className={styles.foldersContainer}>
+              {folderList}
+            
             <div className={styles.pattern}>
-              <button onClick={handleOpenDialog}>+</button>
-              <h2>créer un nouveau dossier</h2>
+            Créer un nouveau dossier
+            <div className={styles.imgContainer} onClick={handleOpenCreateFolderDialog}>
+              <img src="/AddFolder.png" alt="Nouveau dossier" />   
             </div>
+          </div>
             </div>
+    
+            {/* Bouton "+" pour ouvrir la boîte de dialogue */}
+            
+    
+            {/* Boîte de dialogue pour créer un nouveau dossier */}
+            <Dialog open={isCreatingFolder} onClose={handleCloseCreateFolderDialog}>
+              <DialogTitle>
+                <span>Créer un nouveau dossier</span>
+                <IconButton aria-label="close" onClick={handleCloseCreateFolderDialog}>
+                  <CloseIcon />
+                </IconButton>
+              </DialogTitle>
+              <DialogContent>
+                <TextField
+                  label="Nom du dossier"
+                  value={newFolderName}
+                  onChange={(e) => setNewFolderName(e.target.value)}
+                  fullWidth
+                />
+              </DialogContent>
+              <Button onClick={handleCreateFolder}>Créer</Button>
+            </Dialog>
           </div>
         </div>
       </div>
-    </div>
-  );
-}
+    );
+}    
