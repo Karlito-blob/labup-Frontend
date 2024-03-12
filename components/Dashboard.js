@@ -12,6 +12,7 @@ import styles from '../styles/Dashboard.module.css';
 export default function Dashboard(props) {
   const router = useRouter();
   const [folders, setFolders] = useState([]);
+  const [files, setFiles] = useState([])
   const [newFolderName, setNewFolderName] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
   const token = useSelector((state) => state.user.value.token);
@@ -39,6 +40,30 @@ export default function Dashboard(props) {
     };
 
     fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchDataFile = async () => {
+      try {
+        const response = await fetch(`http://localhost:3000/dashboard/${token}`);
+
+        if (!response.ok) {
+          throw new Error(`Erreur réseau: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (data.result) {
+          setFiles(data.dashboardData);
+        } else {
+          console.error("Erreur lors de la récupération des dossiers :", data.message);
+        }
+      } catch (error) {
+        console.error("Erreur réseau :", error.message);
+      }
+    }
+
+    fetchDataFile();
   }, []);
 
   const handleCreateFolder = async () => {
@@ -125,13 +150,13 @@ export default function Dashboard(props) {
     }
   ]
 
-  const pattern = patternData.map((pattern, index) => (
+  const filesList = files.map((file, index) => (
     <div key={index} className={styles.pattern}>
       <div className={styles.imgContainer}>
-        <img src={pattern.image} alt={pattern.title} />   
+        <img src={file.image} />   
       </div>
-      <h5>{pattern.title}</h5>
-      <p>{pattern.update}</p>
+      <h5>{file.fileName}</h5>
+      {/* <p>{pattern.update}</p> */}
     </div>
   ))
 
@@ -192,7 +217,7 @@ export default function Dashboard(props) {
         <div className={styles.patternSection}>
           <h3>My patterns</h3>
           <div className={styles.wrapScrollH}>
-            <div className={styles.patternsContainer}>{pattern}</div>
+            <div className={styles.patternsContainer}>{filesList}</div>
           </div>
         </div>
         <div className={styles.folderSection}>
