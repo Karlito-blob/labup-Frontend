@@ -1,108 +1,57 @@
 import React, { useEffect, useRef } from 'react';
 
 export default function Pattern2(props) {
-
   const canvasRef = useRef();
 
   useEffect(() => {
+
     const p5 = require('p5');
 
+    const phases = [];
+    const frequencies = [];
+    const amplitudes = [];
+    const numLines = props.nbLignes; // Nombre de lignes
+    const maxY = props.maxY; // L'amplitude maximale de l'oscillation
+
     const sketch = (p) => {
-      class Star {
-        constructor() {
-          this.a = p.random(1 * p.TAU);
-          this.r = p.random(1000 * 0.5,  1 * 0.10); // Adjust initial sphere size
-          this.loc = p.createVector(p.width / 2 + p.sin(this.a) * this.r, p.height / 2 + p.cos(this.a) * this.r);
-          this.speed = p.createVector();
-          this.speed = p5.Vector.random2D();
-          this.bam = p.createVector();
-          this.m;
-        }
-
-        update() {
-          this.bam = p5.Vector.random2D();
-          this.bam.mult(0.00005); //Contraction du cercle
-          this.speed.add(this.bam);
-          this.m = p.constrain(p.map(p.dist(this.loc.x, this.loc.y, p.mouseX, p.mouseY), 0, p.width, 8, 0.05), 0.05, props.vitesse);
-          this.speed.normalize().mult(this.m);
-
-          if (p.dist(this.loc.x, this.loc.y, p.width / 2, p.height / 2) > (p.width / 2) * 0.5) { // taille du cercle (entre 0.1 et 1)
-            if (this.loc.x < p.width / 2) {
-              this.loc.x = p.width - this.loc.x - 4;
-            } else if (this.loc.x > p.width / 2) {
-              this.loc.x = p.width - this.loc.x + 4;
-            }
-            if (this.loc.y < p.height / 2) {
-              this.loc.y = p.height - this.loc.y - 4;
-            } else if (this.loc.y > p.height / 2) {
-              this.loc.y = p.height - this.loc.y + 4;
-            }
-          }
-          this.loc = this.loc.add(this.speed);
-        }
-
-        display() {
-          // Calculate color based on distance for a gradient from blue to pink
-          let inter = p.map(p.dist(this.loc.x, this.loc.y, p.width / 2, p.height / 2), 0, p.width / 2, 0, 1);
-          let dropColor = p.lerpColor(p.color(0, 102, 255), p.color(255, 0, 255), inter); // Couleur de la goutte
-          p.fill(dropColor);
-          p.ellipse(this.loc.x, this.loc.y, 10, 10); // Largeur et hauteur des points
-        }
-
-      }
-
-      let constellation = [];
-      let n;
-      let d;
-
       p.setup = () => {
         p.createCanvas(800, 800);
-        p.pixelDensity(3);
-        p.frameRate(60);
-        n = props.nunberOfPoints; // nombre de points
-
-        for (let i = 0; i <= n; i++) {
-          constellation.push(new Star());
+        p.noFill();
+        // Générer des propriétés aléatoires pour chaque ligne
+        for (let i = 0; i < numLines; i++) {
+          phases.push(p.random(0, p.TWO_PI));
+          frequencies.push(p.random(0, props.frequency)); // Fréquence aléatoire pour la variation de la phase
+          amplitudes.push(p.random(0, props.amplitude)); // Amplitude aléatoire
         }
       };
 
       p.draw = () => {
-        // Set background color to black
-        const { r, g, b, a } = props.backColor;
-        p.background(`rgba(${r}, ${g}, ${b}, ${a})`); // Background color + opacité (trainée)
+        p.background(0, props.blur); // Fond semi-transparent pour un effet de trainée
+        const { r, g, b, a } = props.lineColor;
+        p.stroke(`rgba(${r}, ${g}, ${b}, ${a})`);
+        p.translate(0, p.height / 2); // Déplacer le point d'origine au centre du canvas
 
-        for (let i = 0; i < constellation.length; i++) {
-          constellation[i].update();
-          for (let j = 0; j < constellation.length; j++) {
-            if (i > j) {
-              d = constellation[i].loc.dist(constellation[j].loc);
-              if (d <= p.width / 5) {
-                // Calculate color based on distance for a gradient from blue to pink
-                let inter = p.map(d, 0, p.width / 10, 0, 1);
-                let lineColor = p.lerpColor(p.color(0, 102, 255), p.color(255, 0, 0), inter); // couleur de ligne
-                p.stroke(lineColor);
-                p.strokeWeight(props.linewWidth);
-                p.line(constellation[i].loc.x, constellation[i].loc.y, constellation[j].loc.x, constellation[j].loc.y);
-              }
-            }
+        for (let i = 0; i < numLines; i++) {
+          const freq = frequencies[i];
+          const amp = amplitudes[i] * maxY;
+          p.beginShape();
+          for (let x = 0; x < p.width; x++) {
+            let angle = (x / p.width) * p.TWO_PI;
+            let y = p.sin(angle * freq + phases[i]) * amp;
+            p.vertex(x, y);
           }
-          constellation[i].display();
+          p.endShape();
+          phases[i] += props.phase; // Fait varier la phase au fil du temps
         }
       };
     };
 
-    const myp5 = new p5(sketch);
+    let myp5 = new p5(sketch, canvasRef.current);
 
     return () => {
       myp5.remove();
     };
-  }, [props.vitesse, props.n, props.linewWidth]);
+  }, [props]);
 
-  return (
-
-    <div ref={canvasRef}>
-    </div>
-
-  )
-};
-
+  return <div ref={canvasRef}></div>;
+}
