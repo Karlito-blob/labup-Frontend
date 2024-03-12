@@ -1,7 +1,6 @@
 // Imports React + redux
 import React, { useState, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux';
-import { HotKeys } from 'react-hotkeys';
 
 // Style 
 import styles from '../styles/CreatePattern.module.css';
@@ -43,11 +42,12 @@ import axios from 'axios';
 import Header from '../components/Header';
 import VisualizationPattern from '../components/VisualizationPattern'
 
-
 ///////////////////////////////////////////////////////////////////////
 
 export default function createPatterns() {
-  const token = useSelector((state) => state.user.value.token); // Remplacer par le token réel
+  // Reducer - token 
+  const token = useSelector((state) => state.user.value.token);
+
   // Choix du pattern 
   const [patterns, setPatterns] = useState([]);
   const [patternID, setPatternID] = useState('65e5fb2a8e69e1507d663e6f')
@@ -157,6 +157,7 @@ export default function createPatterns() {
     setShowNavigation(!showNavigation)
     setScreenSize('95vw')
   }
+  
   // Randomisation des paramètres 
   const handleRandomParams = () => {
     randomParams(setModifiedParams, patternID);
