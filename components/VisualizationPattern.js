@@ -8,7 +8,7 @@ export default function VisualizationPattern({ initialParams, modifiedParams, pa
 
   if (pattern === 'Pattern1') {
     return (
-      <main>
+      <main >
         <Pattern1
           pointMin={modifiedParams ? modifiedParams.TaillePoints[0] : initialParams.TaillePoints[0]}
           pointMax={modifiedParams ? modifiedParams.TaillePoints[1] : initialParams.TaillePoints[1]}
@@ -26,7 +26,7 @@ export default function VisualizationPattern({ initialParams, modifiedParams, pa
     )
   } else if (pattern === 'Pattern2') {
     return (
-      <main>
+      <main >
         <Pattern2
           nbLignes={modifiedParams?.nbLignes || initialParams.nbLignes}
           maxY={modifiedParams?.maxY || initialParams.maxY}
@@ -40,13 +40,13 @@ export default function VisualizationPattern({ initialParams, modifiedParams, pa
 
   } else if (pattern === 'Pattern3') {
     return (
-      <main>
+      <main >
         <Pattern3 />
       </main>
     )
   } else if (pattern === 'Pattern4') {
     return (
-      <main>
+      <main >
         <Pattern4
           oscillation={modifiedParams?.PlayPause || initialParams.PlayPause}
           bumpiness={modifiedParams?.Bumpiness || initialParams.Bumpiness}
@@ -58,7 +58,7 @@ export default function VisualizationPattern({ initialParams, modifiedParams, pa
     )
   } else if (pattern === 'Pattern5') {
     return (
-      <main>
+      <main >
         <Pattern5 />
       </main>
     )

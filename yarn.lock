@@ -1867,6 +1867,11 @@ data-urls@^3.0.1:
     whatwg-mimetype "^3.0.0"
     whatwg-url "^11.0.0"
 
+date-fns@^3.4.0:
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-3.4.0.tgz#19ac3c19a39af64acb21c23587cb08504dcdc3de"
+  integrity sha512-Akz4R8J9MXBsOgF1QeWeCsbv6pntT5KCPjU0Q9prBxVmWJYPLhwAIsNg3b0QAdr0ttiozYLD3L/af7Ra0jqYXw==
+
 debug@4, debug@^4.1.0, debug@^4.1.1, debug@^4.3.1:
   version "4.3.4"
   resolved "https://registry.yarnpkg.com/debug/-/debug-4.3.4.tgz#1319f6579357f2338d3337d2cdd4914bb5dcc865"
@@ -3647,6 +3652,11 @@ react-redux@^9.1.0:
   dependencies:
     "@types/use-sync-external-store" "^0.0.3"
     use-sync-external-store "^1.0.0"
+
+react-responsive-masonry@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/react-responsive-masonry/-/react-responsive-masonry-2.2.0.tgz#95ba1fe16295f2071dbe98e72420167aad4e7e8f"
+  integrity sha512-IYbnfe2tWCZ3pvyTLyBWPj7uv5ZmNOULYMcAZi5a47ZLhSotOck1vkkISq6gP2qiyWdMvPfeMhjvYzUYGw9BOQ==
 
 react-transition-group@^4.4.5:
   version "4.4.5"
