@@ -9,6 +9,8 @@ import CloseIcon from '@mui/icons-material/Close';
 
 import styles from '../styles/Dashboard.module.css';
 
+import {IosShareRounded as IosShareRoundedIcon} from '@mui/icons-material';
+
 export default function Dashboard(props) {
   const router = useRouter();
   const [folders, setFolders] = useState([]);
@@ -96,67 +98,18 @@ export default function Dashboard(props) {
     }
   };
 
-
-  const patternData = [
-    {
-      image: 'background.jpg',
-      title: 'Expérience 1',
-      update: 'Viewed 3 days ago'
-    },
-    {
-      image: 'background.jpg',
-      title: 'Expérience 1',
-      update: 'Viewed 3 days ago'
-    },
-    {
-      image: 'background.jpg',
-      title: 'Expérience 1',
-      update: 'Viewed 3 days ago'
-    },
-    {
-      image: 'background.jpg',
-      title: 'Expérience 1',
-      update: 'Viewed 3 days ago'
-    },
-    {
-      image: 'background.jpg',
-      title: 'Expérience 1',
-      update: 'Viewed 3 days ago'
-    },
-    {
-      image: 'background.jpg',
-      title: 'Expérience 1',
-      update: 'Viewed 3 days ago'
-    },
-    {
-      image: 'background.jpg',
-      title: 'Expérience 1',
-      update: 'Viewed 3 days ago'
-    },
-    {
-      image: 'background.jpg',
-      title: 'Expérience 1',
-      update: 'Viewed 3 days ago'
-    },
-    {
-      image: 'background.jpg',
-      title: 'Expérience 1',
-      update: 'Viewed 3 days ago'
-    },
-    {
-      image: 'background.jpg',
-      title: 'Expérience 1',
-      update: 'Viewed 3 days ago'
-    }
-  ]
+  const handleNavigation = (fileID) => {
+    router.push(`/createPatterns?id=${fileID}`);
+  }
 
   const filesList = files.map((file, index) => (
-    <div key={index} className={styles.pattern}>
+    <div key={index} id={file._id} className={styles.pattern}>
       <div className={styles.imgContainer}>
         <img src={file.image} />   
       </div>
       <h5>{file.fileName}</h5>
       {/* <p>{pattern.update}</p> */}
+      <IosShareRoundedIcon onClick={() => {handleNavigation(file._id)}}/>
     </div>
   ))
 
