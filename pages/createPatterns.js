@@ -1,6 +1,8 @@
 // Imports React + redux
 import React, { useState, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux';
+import { useParams } from 'react-router-dom';
+
 
 // Style 
 import styles from '../styles/CreatePattern.module.css';
@@ -48,6 +50,8 @@ import VisualizationPattern from '../components/VisualizationPattern'
 export default function createPatterns() {
   // Reducer - token 
   const token = useSelector((state) => state.user.value.token);
+  const { id } = useParams();
+
 
   // Choix du pattern 
   const [patterns, setPatterns] = useState([]);
@@ -282,31 +286,37 @@ export default function createPatterns() {
   // UseEffect d'initialisation des paramètres //////////////////////
   useEffect(() => {
 
-    // Récupération des paramètres du Pattern
-    fetch(`http://localhost:3000/initialPatterns/${patternID}`)
-      .then(response => response.json())
-      .then(data => {
-        if (data.result) {
-          const initialParamsList = data.InitialPattern.params;
 
-          // Initialisez showSlider avec toutes les clés à true
-          const initialShowSliderState = {};
-          initialParamsList.forEach(param => {
-            initialShowSliderState[param.paramName] = true;
-          });
+    if (!id) {
+      // Récupération des paramètres du Pattern
+      fetch(`http://localhost:3000/initialPatterns/${patternID}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.result) {
+            const initialParamsList = data.InitialPattern.params;
 
-          // Mettez à jour l'état showSlider avec le nouvel objet
-          setShowSlider(initialShowSliderState);
+            // Initialisez showSlider avec toutes les clés à true
+            const initialShowSliderState = {};
+            initialParamsList.forEach(param => {
+              initialShowSliderState[param.paramName] = true;
+            });
 
-          // console.log("Result => ", data.InitialPatterns);
-          const initialParamsData = data.InitialPattern.params.reduce((acc, param) => {
-            acc[param.paramName] = param.valeurInitiale;
-            return acc;
-          }, {});
+            // Mettez à jour l'état showSlider avec le nouvel objet
+            setShowSlider(initialShowSliderState);
 
-          setInitialParams(initialParamsData);
-        }
-      });
+            // console.log("Result => ", data.InitialPatterns);
+            const initialParamsData = data.InitialPattern.params.reduce((acc, param) => {
+              acc[param.paramName] = param.valeurInitiale;
+              return acc;
+            }, {});
+
+            setInitialParams(initialParamsData);
+          }
+        });
+    } else {
+      //Fetch les modified patterns 
+    }
+
 
   }, []);
 
