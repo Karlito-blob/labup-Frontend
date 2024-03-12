@@ -139,7 +139,7 @@
   height: 350px;
   color: #ffffff;
 }
-.pattern .imgContainer {
+.imgContainer {
   width: 208px;
   height: 208px;
   border-radius: 12px;
@@ -161,4 +161,16 @@
 .foldersContainer {
   display: flex;
   gap: 24px;
+}
+
+.newFolder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-self: flex-start;
+  width: 208px;
+  height: 208px;
+  border-radius: 12px;
+  border: 1px solid #2e3036;
+  margin-top: 20px;
 }
