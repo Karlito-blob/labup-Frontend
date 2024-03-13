@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import styles from '../styles/CreateFile.module.css';
 import ds from '../styles/DesignSystem.module.css'
 import { TwitterPicker as ColorPicker } from 'react-color';
+import { useRouter } from 'next/router';
 
 // Import screenshot components
 import html2canvas from 'html2canvas';
@@ -10,6 +11,7 @@ const b64toBlob = require('b64-to-blob');
 import axios from 'axios';
 
 // Import components
+import Header from './Header';
 import Avatar from './Atomes/Avatar';
 import PrimaryButton from './Atomes/PrimaryButton';
 import SecondaryButton from './Atomes/SecondaryButton';
@@ -48,6 +50,8 @@ import FormatItalicRoundedIcon from '@mui/icons-material/FormatItalicRounded';
 import FormatUnderlinedRoundedIcon from '@mui/icons-material/FormatUnderlinedRounded';
 
 export default function TextParams() {
+
+  const router = useRouter(); 
 
   const token = useSelector((state) => state.user.value.token)
   const ref = useRef(null);
