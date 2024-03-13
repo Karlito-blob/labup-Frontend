@@ -3,9 +3,6 @@ import { useSelector } from 'react-redux';
 
 import Stack from '@mui/material/Stack';
 import AvatarMUI from '@mui/material/Avatar';
-import IconButton from '@mui/material/IconButton';
-
-import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded';
 
 export default function Avatar() {
 
@@ -35,10 +32,7 @@ export default function Avatar() {
 
     return (
         <Stack direction='row'>
-        <AvatarMUI {...stringAvatar(user.userName)} sx={{ width: 32, height: 32 }} />
-        <IconButton aria-label="chevron" size="small">
-            <ExpandMoreRoundedIcon fontSize="inherit" />
-        </IconButton>
+            <AvatarMUI {...stringAvatar(user.userName)} sx={{ width: 32, height: 32 }} />
         </Stack>
     )
 }
