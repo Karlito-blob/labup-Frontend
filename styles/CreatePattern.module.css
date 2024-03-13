@@ -1,54 +1,103 @@
 .container {
-    display: flex;
-    flex-direction: row;
+display: flex;
+        align-items: space-between;
+            justify-content: space-between;
+            height: 85vh;
+            width: 100vw;
+            padding-top: 30px;
+            padding-inline: 36px;
 }
 
-.navigationBar {
-    width: 30vw;
-    height: 93.5vh;
-    padding: 20px;
-    background-color: black;
-    overflow-x: auto;
-    gap: 16px;
-    transition: width 1s ease-in-out;
-}
 
 .navigationBarIcons {
-    color: white;
     display: flex;
     align-items: center;
     flex-direction: column;
-    background-color: black;
     gap: 16px;
     padding: 16px;
     cursor: pointer;
 }
 
+.paramPanel {
+    height: 85vh;
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 7px 7px 13px #b0b0b0,
+        -7px -7px 13px #ffffff;
+    border-radius: 20px;
+
+}
+
+.params {
+    overflow-x: auto;
+}
+
+.visualisationPanel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 85vh;
+    width: 800px;
+    /* Ajustez la largeur comme nécessaire */
+}
+
+.visualisationCanva {
+    box-shadow: 7px 7px 13px #b0b0b0,
+        -7px -7px 13px #ffffff;
+    height: 800px;
+}
 .barIcons {
     font-size: 30px;
     border-radius: 8px;
 }
 
-.patternBar {
+.patternPanel {
+    width: 400px;
+    height: 85vh;
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 7px 7px 13px #b0b0b0,
+        -7px -7px 13px #ffffff;
+    border-radius: 20px;
 
+}
+
+.patternCardList {
+    display: flex;
+        flex-wrap: wrap;
+    overflow-x: auto;
+        justify-content: center;
 }
 
 .patternCard {
     width: 120px;
     height: 120px;
-    background-color: white;
     border-radius: 10px;
     margin: 16px;
     cursor: pointer;
+    box-shadow: 7px 7px 13px #b0b0b0,
+            -7px -7px 13px #ffffff;
+        border-radius: 20px;
+    }
+    
+    .screenshotCard {
+        width: 120px;
+        height: 120px;
+        cursor: pointer;
+        box-shadow: 7px 7px 13px #b0b0b0,
+            -7px -7px 13px #ffffff;
+        border-radius: 20px;
+        margin: 16px;
 }
 
 .rightIconsContainer {
     display: flex;
-    flex-direction: column;
-    padding-left: 48px;
-    gap: 24px;
+    flex-direction: row;
+        justify-content: center;
+        padding-bottom: 16px;
+        gap: 16px;
 }
 
 .rightIcons {
@@ -66,10 +115,36 @@
         -7px -7px 13px #ffffff;
 }
 
+.screenshotIcons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 30px; 
+    height: 30px;
+    width: 30px;
+    padding: 8px;
+    cursor: 'pointer';
+    color: black;
+    box-shadow: 1px 1px 3px #b0b0b0,
+        -1px -1px 3px #ffffff;
+
+}
 .rightIcons:active {
     border-radius: 205px;
     background: #ffffff;
     box-shadow: inset 7px 7px 13px #b0b0b0,
         inset -7px -7px 13px #ffffff;
+}
+.paramCard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 30px;
+    padding: 30px;
+    border-radius: 20px;
+    background: #ffffff;
+    box-shadow: 7px 7px 13px #b0b0b0,
+        -7px -7px 13px #ffffff;
+
 }
  

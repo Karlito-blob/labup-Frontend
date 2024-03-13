@@ -16,7 +16,7 @@ export const randomParams = async (setModifiedParams, patternID) => {
                         r: Math.floor(Math.random() * 256),
                         g: Math.floor(Math.random() * 256),
                         b: Math.floor(Math.random() * 256),
-                        a: 1 // Assumant que l'opacité est toujours à 1 pour la simplification
+                        a: (Math.random() * 1) 
                     };
                 }
                 return acc;
