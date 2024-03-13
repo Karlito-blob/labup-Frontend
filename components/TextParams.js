@@ -60,6 +60,7 @@ export default function TextParams() {
   const [titleFile, setTitleFile] = useState('');
   const [fontData, setFontData] = useState([]); // State of api fetch
   const [fontFamily, setFontFamily] = useState(''); // State of font-family
+  
   useEffect(() => {
     fetch('http://localhost:3000/fonts')
       .then(response => response.json())
@@ -447,7 +448,8 @@ export default function TextParams() {
 
     return (
         <Box className={`${styles.viewport} ${styles.polka}`}>
-          <style jsx> {`@import url(${importUrl})`} </style>
+        <style jsx> {`@import url(${importUrl})`} </style>
+        
             {/* HEADER SECTION  */}
             <Box sx={{
             width: '100%',
@@ -489,7 +491,8 @@ export default function TextParams() {
                     <Divider orientation="vertical" variant="middle" flexItem/>
                     <Avatar/>
                 </Stack>
-            </Box>
+        </Box>
+        
               {/* LAYOUT SECTION  */}
             <Box sx={{
               width: formatWidth,

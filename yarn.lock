@@ -906,11 +906,6 @@
     redux-thunk "^3.1.0"
     reselect "^5.0.1"
 
-"@remix-run/router@1.15.3":
-  version "1.15.3"
-  resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-1.15.3.tgz#d2509048d69dbb72d5389a14945339f1430b2d3c"
-  integrity sha512-Oy8rmScVrVxWZVOpEF57ovlnhpZ8CCPlnIIumVcV9nFdiSIrus99+Lw78ekXyGvVDlIsFJbSfmSovJUhCWYV3w==
-
 "@sinclair/typebox@^0.24.1":
   version "0.24.51"
   resolved "https://registry.yarnpkg.com/@sinclair/typebox/-/typebox-0.24.51.tgz#645f33fe4e02defe26f2f5c0410e1c094eac7f5f"
@@ -1993,9 +1988,9 @@ draft-js@^0.11.7:
     object-assign "^4.1.1"
 
 electron-to-chromium@^1.4.668:
-  version "1.4.701"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.701.tgz#7335e5761331774b4dea54cd24a1b84861d45cdf"
-  integrity sha512-K3WPQ36bUOtXg/1+69bFlFOvdSm0/0bGqmsfPDLRXLanoKXdA+pIWuf/VbA9b+2CwBFuONgl4NEz4OEm+OJOKA==
+  version "1.4.702"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.702.tgz#a05803c5a1a54f5eb727ce6a922a5923ef436261"
+  integrity sha512-LYLXyEUsZ3nNSwiOWjI88N1PJUAMU2QphQSgGLVkFnb3FxZxNui2Vzi2PaKPgPWbsWbZstZnh6BMf/VQJamjiQ==
 
 emittery@^0.10.2:
   version "0.10.2"
@@ -3676,21 +3671,6 @@ react-responsive-masonry@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/react-responsive-masonry/-/react-responsive-masonry-2.2.0.tgz#95ba1fe16295f2071dbe98e72420167aad4e7e8f"
   integrity sha512-IYbnfe2tWCZ3pvyTLyBWPj7uv5ZmNOULYMcAZi5a47ZLhSotOck1vkkISq6gP2qiyWdMvPfeMhjvYzUYGw9BOQ==
-
-react-router-dom@^6.22.3:
-  version "6.22.3"
-  resolved "https://registry.yarnpkg.com/react-router-dom/-/react-router-dom-6.22.3.tgz#9781415667fd1361a475146c5826d9f16752a691"
-  integrity sha512-7ZILI7HjcE+p31oQvwbokjk6OA/bnFxrhJ19n82Ex9Ph8fNAq+Hm/7KchpMGlTgWhUxRHMMCut+vEtNpWpowKw==
-  dependencies:
-    "@remix-run/router" "1.15.3"
-    react-router "6.22.3"
-
-react-router@6.22.3:
-  version "6.22.3"
-  resolved "https://registry.yarnpkg.com/react-router/-/react-router-6.22.3.tgz#9d9142f35e08be08c736a2082db5f0c9540a885e"
-  integrity sha512-dr2eb3Mj5zK2YISHK++foM9w4eBnO23eKnZEDs7c880P6oKbrjz/Svg9+nxqtHQK+oMW4OtjZca0RqPglXxguQ==
-  dependencies:
-    "@remix-run/router" "1.15.3"
 
 react-slick@^0.30.2:
   version "0.30.2"

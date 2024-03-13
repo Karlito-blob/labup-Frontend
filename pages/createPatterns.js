@@ -1,8 +1,7 @@
 // Imports React + redux
 import React, { useState, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux';
-import { useParams } from 'react-router-dom';
-
+import { useRouter } from 'next/router';
 
 // Style 
 import styles from '../styles/CreatePattern.module.css';
@@ -50,8 +49,12 @@ import VisualizationPattern from '../components/VisualizationPattern'
 export default function createPatterns() {
   // Reducer - token 
   const token = useSelector((state) => state.user.value.token);
-  const { id } = useParams();
+  const router = useRouter();
+  const { id } = router.query; // `id` est le nom du paramètre dynamique dans l'URL
 
+
+
+  console.log(id); // Utilise l'ID ici
 
   // Choix du pattern 
   const [patterns, setPatterns] = useState([]);
@@ -156,11 +159,6 @@ export default function createPatterns() {
     setNavigation(onglet)
     setShowNavigation(true)
   }
-
-  // Panneau de paramètres 
-  // const showPanel = () => {
-  //   setShowNavigation(!showNavigation)
-  // }
 
   // Randomisation des paramètres 
   const handleRandomParams = () => {
@@ -269,6 +267,7 @@ export default function createPatterns() {
   // UseEffects /////////////////////////////////////////////////////
   // UseEffect d'initialisation des patterns ////////////////////////
   useEffect(() => {
+
     // Récupération des paramètres du Pattern
     fetch(`http://localhost:3000/initialPatterns/`)
       .then(response => response.json())
@@ -285,7 +284,6 @@ export default function createPatterns() {
 
   // UseEffect d'initialisation des paramètres //////////////////////
   useEffect(() => {
-
 
     if (!id) {
       // Récupération des paramètres du Pattern
@@ -314,7 +312,42 @@ export default function createPatterns() {
           }
         });
     } else {
-      //Fetch les modified patterns 
+
+      //Fetch les modified patterns
+      // Récupération des paramètres du Pattern
+
+      fetch(`http://localhost:3000/modifiedPatterns/${token}/${id}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.result) {
+            setPatternID(id)
+
+            const { ModifiedPattern } = data;
+            const initialParamsList = ModifiedPattern.initialPattern.params;
+
+            // Initialisez showSlider avec toutes les clés à true
+            const initialShowSliderState = {};
+            initialParamsList.forEach(param => {
+              initialShowSliderState[param.paramName] = true;
+            });
+
+            // Mise à jour des paramètres modifiés à partir des données récupérées
+            const initialParamsData = ModifiedPattern.paramsModif.reduce((acc, param) => {
+              return { ...acc, ...param };
+            }, {});
+
+
+
+            // Mettez à jour l'état showSlider avec le nouvel objet
+            setShowSlider(initialShowSliderState);
+
+            setModifiedParams(initialParamsData);
+            setPatternName(ModifiedPattern.patternName);
+
+            console.log(initialParamsData);
+          }
+        })
+        .catch(error => console.log(error));
     }
 
 
@@ -504,7 +537,7 @@ export default function createPatterns() {
 
         }
       });
-  }, [modifiedParams, showSlider, images, zoom]);
+  }, [modifiedParams, showSlider, images, zoom, id]);
 
 
   // Rendu JSX /////////////////////////////////////////////////////
@@ -513,7 +546,7 @@ export default function createPatterns() {
 
       <Header />
 
-      <div className={styles.container} >
+      <div className={styles.container} style={{ marginTop: '100px' }}>
 
         {/* Zone de choix du pattern */}
         <div className={styles.patternPanel}>
