@@ -46,7 +46,7 @@ export default function Avatar() {
                     aria-expanded={open ? 'true' : undefined}
                     onClick={handleClick}
                 >
-                    <AvatarMUI {...stringAvatar(user.userName)} sx={{ width: 32, height: 32 }} />
+                    <AvatarMUI {...stringAvatar(user.userName)} sx={{ width: 40, height: 40 }} />
                 </Button>
 
                 <Menu
@@ -66,9 +66,35 @@ export default function Avatar() {
     } else {
         // Display sign in and sign up buttons if the user is not connected
         headerContent = (
+
             <div>
-                <Button onClick={() => router.push('/signIn')}>Sign in</Button>
-                <Button onClick={() => router.push('/signUp')}>Sign up</Button>
+                <Button
+                    id="basic-button"
+                    aria-controls={open ? 'basic-menu' : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={open ? 'true' : undefined}
+                    onClick={handleClick}
+                >
+                    <AvatarMUI sx={{ width: 40, height: 40 }} />
+                </Button>
+
+                <Menu
+                    id="basic-menu"
+                    anchorEl={anchorEl}
+                    open={open}
+                    onClose={handleClose}
+                    MenuListProps={{
+                        'aria-labelledby': 'basic-button',
+                    }}
+                >
+                    <MenuItem>
+                        <Button onClick={() => router.push('/signIn')}>Sign in</Button>
+                    </MenuItem>
+                    <MenuItem>
+                        <Button onClick={() => router.push('/signUp')}>Sign up</Button>
+                    </MenuItem>
+
+                </Menu>
             </div>
         );
     }
@@ -100,8 +126,6 @@ export default function Avatar() {
 
     return (
         <Stack direction='row'>
-            <Button onClick={() => router.push('/dashboard')}> Dashboard </Button>
-            <Button onClick={() => router.push('/feed')}> Feed </Button>
             {headerContent}
         </Stack>
     )

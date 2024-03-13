@@ -16,10 +16,11 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import { red } from '@mui/material/colors';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import ShareIcon from '@mui/icons-material/Share';
+import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { format } from 'date-fns'; // Pour formater les dates
+import { useRouter } from 'next/router';
 
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -33,6 +34,9 @@ const ExpandMore = styled((props) => {
 }));
 
 export default function FeedCard() {
+
+    const router = useRouter();
+
     const [feed, setFeed] = useState([]);
     const [expanded, setExpanded] = useState(null);
 
@@ -57,8 +61,8 @@ export default function FeedCard() {
     };
 
     const feedCards = feed.map((item, index) => (
-        <div key={index} style={{ marginTop: '100px' }}>
-            <Card sx={{ width: 320, maxWidth: 700, m: 2, borderRadius: '20px' }} key={item._id}>
+        <div key={index} >
+            <Card sx={{ width: 320, maxWidth: 700, m: 2, borderRadius: '20px', boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)' }} key={item._id}>
 
                 <CardMedia
                     component="img"
@@ -69,7 +73,7 @@ export default function FeedCard() {
 
                 <CardHeader
                     avatar={
-                        <Avatar sx={{ bgcolor: red[200] }} aria-label="recipe">
+                        <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
                             {item.user.userName[0]}
                         </Avatar>
                     }
@@ -92,8 +96,8 @@ export default function FeedCard() {
                     <IconButton aria-label="add to favorites">
                         <FavoriteIcon />
                     </IconButton>
-                    <IconButton aria-label="share">
-                        <ShareIcon />
+                    <IconButton aria-label="share" onClick={() => router.push(`/createPatterns?id=${item._id}`)}>
+                        <AutoFixHighIcon />
                     </IconButton>
                     <ExpandMore
                         expand={expanded === index}
@@ -119,15 +123,18 @@ export default function FeedCard() {
     ));
 
     return (
-        <div style={{ backgroundColor: 'black', width: '100vw', height: '100vh' }}>
-            <Header style={{ position: 'fixed', width: '100vw', top: 0, zIndex: 1000 }} />
+        <div style={{ width: '100vw', height: '100vh' }}>
+
+            <Header chemin={router.pathname} />
 
             <ResponsiveMasonry
                 columnsCountBreakPoints={{ 100: 1, 750: 2, 900: 3, 1200: 4, 1500: 5 }}
-             
+                style={{ paddingTop: '100px', }}
             >
+                <h1 style={{ padding: '40px 80px' }}>Feed</h1>
 
-                <Masonry>
+                <Masonry style={{ paddingLeft: '40px' }}>
+
                     {feedCards}
                 </Masonry>
             </ResponsiveMasonry>

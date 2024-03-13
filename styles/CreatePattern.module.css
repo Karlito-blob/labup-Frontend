@@ -1,8 +1,8 @@
 .container {
-display: flex;
+    display: flex;
         align-items: space-between;
-            justify-content: space-between;
-            height: 85vh;
+        justify-content: space-between;
+            height: 100vh;
             width: 100vw;
             padding-top: 30px;
             padding-inline: 36px;
@@ -19,6 +19,7 @@ display: flex;
 }
 
 .paramPanel {
+    background-color: white;
     height: 85vh;
     width: 400px;
     display: flex;
@@ -47,12 +48,14 @@ display: flex;
         -7px -7px 13px #ffffff;
     height: 800px;
 }
+
 .barIcons {
     font-size: 30px;
     border-radius: 8px;
 }
 
 .patternPanel {
+    background-color: white;
     width: 400px;
     height: 85vh;
     display: flex;

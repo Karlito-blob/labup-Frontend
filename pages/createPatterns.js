@@ -5,11 +5,13 @@ import { useRouter } from 'next/router';
 
 // Style 
 import styles from '../styles/CreatePattern.module.css';
+import styles2 from '../styles/CreateFile.module.css';
 
 // Import des modules 
 import { takeScreenshot } from '../modules/screenshotUtils';
-import { createGifFromDiv } from '../modules/gifCreationUtils';
 import { randomParams } from '../modules/randomisationUtils';
+import { createGIF } from 'gifshot';
+import ProgressBarComponent from '../components/Atomes/ProgressCircle';
 
 // Imports Material-UI
 import { ChromePicker as ColorPicker } from 'react-color';
@@ -33,7 +35,6 @@ import {
   IosShareRounded as IosShareRoundedIcon,
 
 } from '@mui/icons-material';
-
 import GifIcon from '@mui/icons-material/Gif';
 
 // Transfert des data vers cloudinary 
@@ -52,10 +53,6 @@ export default function createPatterns() {
   const router = useRouter();
   const { id } = router.query; // `id` est le nom du paramètre dynamique dans l'URL
 
-
-
-  console.log(id); // Utilise l'ID ici
-
   // Choix du pattern 
   const [patterns, setPatterns] = useState([]);
   const [patternID, setPatternID] = useState('65e5fb2a8e69e1507d663e6f')
@@ -68,6 +65,7 @@ export default function createPatterns() {
   const ref = useRef(null)
   const [images, setImages] = useState([])
   const [screenshot, setScreenshot] = useState('')
+  const [progress, setProgress] = useState(0);
 
   const user = useSelector((state) => state.value)
 
@@ -75,7 +73,6 @@ export default function createPatterns() {
   const [navigation, setNavigation] = useState('Pattern')
   const [showNavigation, setShowNavigation] = useState(true)
   const [activeTitle, setActiveTitle] = useState('Pattern');
-
 
   // Récupération des paramètres initiaux du Pattern
   const [params, setParams] = useState([]);
@@ -89,7 +86,6 @@ export default function createPatterns() {
   const [showSlider, setShowSlider] = useState({});
 
   // Fonctions ////////////////////////////////////////////////////////////////////
-
   // Screenshot 
   const handleTakeScreenshot = async () => {
     try {
@@ -108,17 +104,64 @@ export default function createPatterns() {
           fileName
         }
       ]);
+      setActiveTitle('ScreenShots')
+
     } catch (error) {
       console.error("Erreur lors de la prise de la capture d'écran:", error);
     }
   };
 
   // Generate a gif 
-  const handleCreateGif = () => {
-    createGifFromDiv(ref, setImages, 25, 40); // Pour un GIF de 1 seconde à 25fps
+  const handleCreateGif = async (setProgress) => {
+    // Initialisation de la progression
+    setProgress(0);
+
+    const fileName = `gif_${patternName}`; // Nom de fichier généré pour l'image
+
+    const totalFrames = 25;
+    const frameInterval = 40; // Temps en millisecondes
+    let frames = [];
+    const progressPerFrame = 100 / totalFrames; // Calcul de la progression par frame
+
+    // Capture des frames
+    for (let i = 0; i < totalFrames; i++) {
+      // Ajout d'un délai avant de capturer chaque frame
+      await new Promise(resolve => setTimeout(resolve, frameInterval));
+      const frame = await takeScreenshot(ref);
+      frames.push(frame);
+      setProgress((prevProgress) => prevProgress + progressPerFrame); // Mise à jour de la progression
+    }
+
+    const options = {
+      images: frames,
+      gifWidth: 500,
+      gifHeight: 500,
+      numWorkers: 5,
+      frameDuration: 0.01,
+      sampleInterval: 40,
+    };
+
+    createGIF(options, (obj) => {
+      if (!obj.error) {
+        setImages(prevImages => [
+          ...prevImages,
+          {
+            screenshot: obj.image,
+            token,
+            patternID,
+            patternName,
+            paramsModif: modifiedParams,
+            fileName
+          }
+        ]);
+        setProgress(100); // Assurez-vous que la progression est complète
+      }
+    });
+
+
   };
 
-  //{TETEY} envoie des screenshots vers le back ROUTE POST (pour le moment un seul screenshot)
+  //Export des screeshots
   const handleExport = async (index, img) => {
 
     //constantes de simulation en attendant l'intéractivité totale de la page 
@@ -277,6 +320,7 @@ export default function createPatterns() {
           // Récupéreration des noms des patterns disponibles
           const patterns = data.InitialPatterns;
           // Mise à jour de la state avec les noms des patterns
+
           setPatterns(patterns);
         }
       });
@@ -316,11 +360,13 @@ export default function createPatterns() {
       //Fetch les modified patterns
       // Récupération des paramètres du Pattern
 
-      fetch(`http://localhost:3000/modifiedPatterns/${token}/${id}`)
+      fetch(`http://localhost:3000/modifiedPatterns/one/${id}`)
         .then(response => response.json())
         .then(data => {
           if (data.result) {
-            setPatternID(id)
+
+            setPatternID(data.ModifiedPattern.initialPattern._id)
+            console.log(data.ModifiedPattern.initialPattern)
 
             const { ModifiedPattern } = data;
             const initialParamsList = ModifiedPattern.initialPattern.params;
@@ -335,7 +381,6 @@ export default function createPatterns() {
             const initialParamsData = ModifiedPattern.paramsModif.reduce((acc, param) => {
               return { ...acc, ...param };
             }, {});
-
 
 
             // Mettez à jour l'état showSlider avec le nouvel objet
@@ -537,14 +582,13 @@ export default function createPatterns() {
 
         }
       });
-  }, [modifiedParams, showSlider, images, zoom, id]);
-
+  }, [modifiedParams, showSlider, images, zoom]);
 
   // Rendu JSX /////////////////////////////////////////////////////
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around' }} className={styles2.viewport}>
 
-      <Header />
+      <Header chemin={router.pathname} />
 
       <div className={styles.container} style={{ marginTop: '100px' }}>
 
@@ -598,7 +642,7 @@ export default function createPatterns() {
           </div>
 
         </div>
-
+  
         {/* Zone de paramètres */}
         {patternName && <div className={styles.paramPanel}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingLeft: '20px', paddingRight: '12px' }}>
@@ -626,13 +670,12 @@ export default function createPatterns() {
                 <CameraRoundedIcon />
               </div>
             }
-            <div onClick={() => handleCreateGif()} className={styles.rightIcons} >
-              <GifIcon />
+            <div className={styles.rightIcons} onClick={() => handleCreateGif()}>
+              <GifIcon /> 
             </div>
           </div>
           <div className={styles.params}>
             {params}
-
           </div>
         </div>}
 

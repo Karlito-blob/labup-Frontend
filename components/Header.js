@@ -7,13 +7,12 @@ import Menu from '@mui/material/Menu';
 import { useRouter } from 'next/router';
 import { useSelector } from 'react-redux';
 
+
 // Import components
 import Avatar from './Atomes/Avatar';
-import PrimaryButton from './Atomes/PrimaryButton';
-import SecondaryButton from './Atomes/SecondaryButton';
-import GhostButton from './Atomes/GhostButton';
 import BackButton from './Atomes/BackButton';
-import Help from './Atomes/Help';
+import TextField from '@mui/material/TextField';
+
 
 // Import MUI components
 import Box from '@mui/material/Box';
@@ -25,9 +24,13 @@ import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded';
 
 
 
-export default function Header(props) {
+export default function Header({ chemin }) {
+
+  console.log(chemin)
   const router = useRouter()
   const user = useSelector(((state) => state.user.value))
+
+  const [titleFile, setTitleFile] = useState('');
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -38,40 +41,114 @@ export default function Header(props) {
     setAnchorEl(null);
   };
 
+  // État pour suivre le bouton actif
+  const [activeButton, setActiveButton] = useState('');
 
+  // Fonction pour gérer le clic sur un bouton
+  const handleButtonClick = (path) => {
+    router.push(path);
+    setActiveButton(path);
+  };
 
 
   return (
-    <div>
+    <div style={{
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: '16px',
+      position: 'fixed',
+      top: '20px', // Utilisez `top` au lieu de `marginTop` pour positionner correctement l'élément en mode `fixed`
+      left: 0,
+      right: 0,
+      zIndex: 1000,
+      backgroundColor: 'background.paper', // Assurez-vous que cette couleur correspond à votre thème
+      borderColor: 'divider',
+    }}>
+      {/* Bouton Retour */}
       <Box sx={{
-        width: '100vw',
+        width: '60px',
+        height: '60px',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between',
-        borderBottom: '1px solid',
+        justifyContent: 'center',
         borderColor: 'divider',
-        borderRadius: '50px',  
-        marginTop: '20px',
+        borderRadius: '50px',
+        padding: '10px',
         bgcolor: 'background.paper',
-        color: 'text.secondary', 
-        position: 'fixed', 
-        zIndex: 1000
+        color: 'text.secondary',
+        boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)'
+      }}>
+        <BackButton />
+      </Box>
+
+      {/* Boutons de Navigation */}
+      <Box sx={{
+        display: 'flex',
+        height: '60px',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderColor: 'divider',
+        borderRadius: '50px',
+        padding: '10px',
+        bgcolor: 'background.paper',
+        color: 'text.secondary',
+        boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)'
       }}>
 
-        <BackButton />
-        <Stack direction='row' alignItems='center' spacing={2}>
 
-        </Stack>
-        <Stack direction='row' spacing={2}>
-          {/* <GhostButton text="Export" size='medium' />
-          <PrimaryButton text="Save" size='medium' /> */}
-          <Divider orientation="vertical" variant="middle" flexItem />
-          <Avatar />
-          {/* {headerContent} */}
-        </Stack>
+
+        {chemin === '/dashboard' || chemin === '/feed' ?
+          <>
+            <Button onClick={() => router.push('/dashboard')}>Dashboard</Button>
+            <Divider orientation="vertical" variant="middle" flexItem />
+            <Button onClick={() => router.push('/feed')}>Community</Button>
+          </>
+
+          :
+
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '10px'}}>
+            {chemin === '/createFile' ? <div style={{ marginBottom: '6px' }}>Folder / </div> : <div style={{ marginBottom: '6px' }}>Pattern / </div>}
+            <TextField
+              size="small"
+              variant="standard"
+              placeholder="Untitled"
+              InputProps={{
+                disableUnderline: true,
+              }}
+              InputLabelProps={{ shrink: false }}
+              onChange={(e) => setTitleFile(e.target.value)} value={titleFile}
+            />
+
+            <Button>Save</Button>
+            {chemin === '/createFile' ? <Button>Export</Button> : <></>}
+
+
+          </div>
+
+
+        }
+
 
       </Box>
-    </div>
 
-  )
+      {/* Avatar */}
+      <Box sx={{
+        width: '60px',
+        height: '60px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderColor: 'divider',
+        borderRadius: '50px',
+        padding: '10px',
+        bgcolor: 'background.paper',
+        color: 'text.secondary',
+        boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)'
+      }}>
+        <Avatar />
+      </Box>
+    </div>
+  );
+
 }
