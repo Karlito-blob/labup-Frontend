@@ -1,5 +1,8 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useRef, useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import styles from '../styles/CreateFile.module.css';
+import ds from '../styles/DesignSystem.module.css'
+import { TwitterPicker as ColorPicker } from 'react-color';
 import { useRouter } from 'next/router';
 
 // Import screenshot components
@@ -14,56 +17,105 @@ import PrimaryButton from './Atomes/PrimaryButton';
 import SecondaryButton from './Atomes/SecondaryButton';
 import GhostButton from './Atomes/GhostButton';
 import BackButton from './Atomes/BackButton';
-import Help from './Atomes/Help';
 
 // Import MUI components
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import IconButton from '@mui/material/IconButton';
-import Collapse from '@mui/material/Collapse';
-import MenuList from '@mui/material/MenuList';
-import MenuItem from '@mui/material/MenuItem';
-import List from '@mui/material/List';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
 import Paper from '@mui/material/Paper';
 import ToggleButton from '@mui/material/ToggleButton';
-import ToggleButtonGroup, {
-  toggleButtonGroupClasses,
-} from '@mui/material/ToggleButtonGroup';
 import Tooltip from '@mui/material/Tooltip';
 import { Autocomplete, Slider } from '@mui/material';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 
+import FormatAlignLeftRoundedIcon from '@mui/icons-material/FormatAlignLeftRounded';
+import FormatAlignRightRoundedIcon from '@mui/icons-material/FormatAlignRightRounded';
+import FormatAlignCenterRoundedIcon from '@mui/icons-material/FormatAlignCenterRounded';
+import FormatAlignJustifyRoundedIcon from '@mui/icons-material/FormatAlignJustifyRounded';
+import VerticalAlignTopRoundedIcon from '@mui/icons-material/VerticalAlignTopRounded';
+import VerticalAlignBottomRoundedIcon from '@mui/icons-material/VerticalAlignBottomRounded';
+import VerticalAlignCenterRoundedIcon from '@mui/icons-material/VerticalAlignCenterRounded';
+import HeightRoundedIcon from '@mui/icons-material/HeightRounded';
 import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded';
-import ExpandLessRoundedIcon from '@mui/icons-material/ExpandLess';
 import FormatBoldRoundedIcon from '@mui/icons-material/FormatBoldRounded';
 import FormatItalicRoundedIcon from '@mui/icons-material/FormatItalicRounded';
 import FormatUnderlinedRoundedIcon from '@mui/icons-material/FormatUnderlinedRounded';
-import FormatAlignLeftRoundedIcon from '@mui/icons-material/FormatAlignLeftRounded';
-import FormatAlignCenterRoundedIcon from '@mui/icons-material/FormatAlignCenterRounded';
-import FormatAlignRightRoundedIcon from '@mui/icons-material/FormatAlignRightRounded';
-import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
-import CropDinRoundedIcon from '@mui/icons-material/CropDinRounded';
-import CropPortraitRoundedIcon from '@mui/icons-material/CropPortraitRounded';
-import Crop32RoundedIcon from '@mui/icons-material/Crop32Rounded';
-import VerticalAlignTopRoundedIcon from '@mui/icons-material/VerticalAlignTopRounded';
-import VerticalAlignCenterRoundedIcon from '@mui/icons-material/VerticalAlignCenterRounded';
-import VerticalAlignBottomRoundedIcon from '@mui/icons-material/VerticalAlignBottomRounded';
-import FormatLineSpacingRoundedIcon from '@mui/icons-material/FormatLineSpacingRounded';
-import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import FormatSizeRoundedIcon from '@mui/icons-material/FormatSizeRounded';
 
 export default function TextParams() {
 
   const router = useRouter(); 
 
-  const [titleFile, setTitleFile] = useState('');
-  const [fontData, setFontData] = useState([]); // State of api fetch
-  const [fontFamily, setFontFamily] = useState(''); // State of font-family
+  const token = useSelector((state) => state.user.value.token)
+  const ref = useRef(null);
+
+  const [fileName, setFileName] = useState('');
+  const [images, setImages] = useState("")
+  const [indexModif, setIndex] = useState(0);
+  const [fontData, setFontData] = useState([]); 
+  const [inputParams, setInputParams] = useState([
+      {
+          inputValue: '',
+          isBold: false,
+          isItalic: false,
+          isUnderline: false,
+          textTransform: 'none',
+          textAlign: 'left',
+          fontFamily: 'Inter',
+          fontSize: '1rem',
+          color:'#FFF'
+      },
+  ]);
+  const [canvaParams, setCanvaParams] = useState ({
+    width: '650px',
+    height: '650px',
+    justifyContent: 'flex-start',
+    padding: 12,
+  });
+
+  //{TETEY} envoie des screenshots vers le back ROUTE POST (pour le moment un seul screenshot)
+  const handleSave = () => {
+      if (ref.current) {
+          html2canvas(ref.current)
+              .then((canvas) => {
+              console.log("j'ai cliqué")
+              const imageData = canvas.toDataURL('image/png');
+              console.log(imageData)
+              setImages((prevImages) => [...prevImages, imageData]);
+              console.log(imageData)
+              })
+              .then(() => {
+                      console.log(inputParams)
+                      console.log(canvaParams)
+                      const formData = new FormData()
+                      //recupere uniquement la partie base 64 du resultat de use react screen
+                      const imageData = images.toString().split(',')[1];
+                      //transformation en blob pour moins transfert
+                      const blob = b64toBlob(imageData, 'image/png');
+                      //transformation en file avant intégration au formData
+                      const file = new File([blob], 'photo.png', { type: 'image/png' });
+                      //construction du formData avec un file et des champs de texte (A FACTORISER MAIS FLEMME TOUT DE SUITE)
+                      formData.append("photoFromFront", file);
+                      formData.append("token", token);
+                      formData.append("fileName", fileName);
+                      formData.append("documentContent", JSON.stringify(inputParams));
+                      formData.append("canvaParams", JSON.stringify(canvaParams));
+                      //utilisation de axios pour la requete en multiple formData CAR FETCH CEST NUL A *****
+                      axios.post("http://localhost:3000/documents/", formData, {
+                      headers: {
+                          'Content-Type': 'multipart/form-data'
+                      }})
+                      .then(res => {
+                      console.log("TEST THEO", res)
+                      })
+              })
+          }
+  }
+  //////////////////////////////////
 
   useEffect(() => {
     fetch('http://localhost:3000/fonts')
@@ -74,382 +126,366 @@ export default function TextParams() {
       .catch(error => {
         console.error('Error fetching fonts:', error);
       });
-  }, []); // Fetch fonts router
+  }, []);
   const nameFontOptions = fontData.map((font, index) => ({
-    label: font.name,
+    label: font.name, 
     value: font.name,
-  })); // Mapping of table of fontData
-  const importUrl = `https://fonts.googleapis.com/css2?family=${fontFamily.split(" ").join("+")}&display=swap` // Variable contain url
-  const handleFontChange = (event) => {
-    setFontFamily(event.target.textContent || '');
-  }; // Action to change the font-family
-
-
-  const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
-    [`& .${toggleButtonGroupClasses.grouped}`]: {
-      margin: theme.spacing(0.5),
-      border: 0,
-      borderRadius: theme.shape.borderRadius,
-      [`&.${toggleButtonGroupClasses.disabled}`]: {
-        border: 0,
-      },
-    },
-    [`& .${toggleButtonGroupClasses.middleButton},& .${toggleButtonGroupClasses.lastButton}`]:
-    {
-      marginLeft: -1,
-      borderLeft: '1px solid transparent',
-    },
   }));
-
-  //{TETEY} envoie des screenshots vers le back ROUTE POST (pour le moment un seul screenshot)
-  const ref = useRef(null);
-  const [images, setImages] = useState("")
-  const handleSave = () => {
-    if (ref.current) {
-      html2canvas(ref.current)
-        .then((canvas) => {
-          console.log("j'ai cliqué")
-          const imageData = canvas.toDataURL('image/png');
-          console.log(imageData)
-          setImages((prevImages) => [...prevImages, imageData]);
-          console.log(imageData)
-        })
-    }
-    //if (!images) return ;
-    //constantes de simulation en attendant l'intéractivité totale de la page 
-    const token = "v8Zt251kII7rwj5pWQv-YtpweEZJeQed"
-    const fileName = titleFile
-    const fileType = "coucou.jpg"
-    const documentContent = [{
-      zoneName: 'coucou',
-      contenu: 'coucou',
-      size: 8,
-      font: 'coucou',
-      color: 'coucou',
-      posX: 10,
-      posY: 8
-    }];
-    const formData = new FormData()
-    //recupere uniquement la partie base 64 du resultat de use react screen
-    const imageData = images.toString().split(',')[1];
-    //transformation en blob pour moins transfert
-    const blob = b64toBlob(imageData, 'image/png');
-    //transformation en file avant intégration au formData
-    const file = new File([blob], 'photo.png', { type: 'image/png' });
-    //construction du formData avec un file et des champs de texte (A FACTORISER MAIS FLEMME TOUT DE SUITE)
-    formData.append("photoFromFront", file);
-    formData.append("token", token);
-    formData.append("fileType", fileType);
-    formData.append("documentContent", JSON.stringify(documentContent));
-    formData.append("fileName", fileName);
-    //utilisation de axios pour la requete en multiple formData CAR FETCH CEST NUL A *****
-    axios.post("http://localhost:3000/documents/", formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    })
-      .then(res => {
-        console.log("TEST THEO", res)
-      })
+  const importUrl = `https://fonts.googleapis.com/css2?family=${inputParams[0].fontFamily.split(" ").join("+")}&display=swap`;
+  const handleFontChange = (e) => {
+    const selectedFont = e.target.textContent || '';
+    setInputParams(prevState => {
+        const updatedParams = [...prevState];
+        updatedParams[indexModif] = {
+            ...updatedParams[indexModif],
+            fontFamily: selectedFont,
+        };
+        return updatedParams;
+    });
+  };
+  const handleClickBold = () => {
+    setInputParams(prevState => {
+        const updatedParams = [...prevState];
+        updatedParams[indexModif] = {
+            ...updatedParams[indexModif],
+            isBold: !updatedParams[indexModif].isBold,
+        };
+        return updatedParams;
+    });
+  };
+  const handleClickItalic = () => {
+    setInputParams(prevState => {
+        const updatedParams = [...prevState];
+        updatedParams[indexModif] = {
+            ...updatedParams[indexModif],
+            isItalic: !updatedParams[indexModif].isItalic,
+        };
+        return updatedParams;
+    });
+  };
+  const handleClickUnderline = () => {
+    setInputParams(prevState => {
+        const updatedParams = [...prevState];
+        updatedParams[indexModif] = {
+            ...updatedParams[indexModif],
+            isUnderline: !updatedParams[indexModif].isUnderline,
+        };
+        return updatedParams;
+    });
+  };
+  const handleWriteValue = (index, e) => {
+    setIndex(index); // Mise à jour de l'index lors de la saisie
+    setInputParams(prevState => {
+        const updatedParams = [...prevState];
+        updatedParams[index] = {
+            ...updatedParams[index],
+            inputValue: e.target.value,
+        };
+        return updatedParams;
+    });
+  };
+  const handleColorChange = (color) => {
+    setInputParams(prevState => {
+        const updatedParams = [...prevState];
+        updatedParams[indexModif] = {
+            ...updatedParams[indexModif],
+            color: color.hex,
+        };
+        return updatedParams;
+    });
   }
-  //////////////////////////////////
-
-  const [formatWidth, setFormatWidth] = useState(640); // State of width
-  const [formatHeight, setFormatHeight] = useState(640); // State of height
-  const [justifyContent, setJustifyContent] = useState('space-between'); // State of justify-content
-  const [padding, setPadding] = useState(12);
-  const handleChangeFormat = (event, value) => {
-    const [newFormatWidth, newFormatHeight] = value;
-    setFormatWidth(newFormatWidth);
-    setFormatHeight(newFormatHeight);
-  }; // Action to change the format
-  const childrenFormat = [
-    <Tooltip title="Format square">
-      <ToggleButton value={[640, 640]} key="square">
-        Square
-      </ToggleButton>
-    </Tooltip>,
-    <Tooltip title="Format Story">
-      <ToggleButton value={[360, 640]} key="story">
-        Story
-      </ToggleButton>
-    </Tooltip>,
-    <Tooltip title="Format Cover">
-      <ToggleButton value={[640, 360]} key="landscape">
-        Slide
-      </ToggleButton>
-    </Tooltip>,
-  ];
-  const controlFormat = {
-    value: formatWidth,
-    onChange: handleChangeFormat,
-    exclusive: true,
+  const handleAlignment = (newAlignment) => {
+      setInputParams(prevState => {
+        const updatedParams = [...prevState];
+        updatedParams[indexModif] = {
+          ...updatedParams[indexModif],
+          textAlign: newAlignment,
+        };
+        return updatedParams;
+      });
   };
-  const handleChangeJustifyContent = (event, newJustifyContent) => {
-    setJustifyContent(newJustifyContent);
-  }; // Action to change justify-content
-  const childrenJustifyContent = [
-    <Tooltip title="Align Top">
-      <ToggleButton value="flex-start" key="Align Top">
-        <VerticalAlignTopRoundedIcon />
-      </ToggleButton>
-    </Tooltip>,
-    <Tooltip title="Align Center">
-      <ToggleButton value="center" key="Align Center">
-        <VerticalAlignCenterRoundedIcon />
-      </ToggleButton>
-    </Tooltip>,
-    <Tooltip title="Align Bottom">
-      <ToggleButton value="flex-end" key="Align Bottom">
-        <VerticalAlignBottomRoundedIcon />
-      </ToggleButton>
-    </Tooltip>,
-    <Tooltip title="Align Justify">
-      <ToggleButton value="space-between" key="Align Justify">
-        <FormatLineSpacingRoundedIcon />
-      </ToggleButton>
-    </Tooltip>,
-  ];
-  const controlJustifyContent = {
-    value: justifyContent,
-    onChange: handleChangeJustifyContent,
-    exclusive: true,
+  const handleFontSize = (newSize) => {
+    setInputParams(prevState => {
+        const updatedParams = [...prevState];
+        updatedParams[indexModif] = {
+            ...updatedParams[indexModif],
+            fontSize: newSize,
+        };
+        return updatedParams;
+    });
   };
-  const handleChangePadding = (event, newPadding) => {
-    setPadding(newPadding);
-  }; // Action to change the padding
-  // End of settings the format of the frame //
-
-
-  const [open, setOpen] = useState(true);
-
-  const handleClick = () => {
-    setOpen(!open);
+  const handleTextTransform = (newTextTransform) => {
+    setInputParams(prevState => {
+      const updatedParams = [...prevState];
+      updatedParams[indexModif] = {
+          ...updatedParams[indexModif],
+          textTransform: newTextTransform,
+      };
+      return updatedParams;
+  });
   };
-
-  // État pour stocker la div sélectionnée pour le popup
-  const [divSelectionneePopup, setDivSelectionneePopup] = useState(null);
-
-  // État pour stocker les styles individuels des inputs
-  const [stylesInputs, setStylesInputs] = useState([]);
-  // État pour stocker la div sélectionnée
-  const [divSelectionnee, setDivSelectionnee] = useState(null);
-
-  // Fonction pour mettre à jour la valeur d'un input spécifique
-  const handleChange = (index, value) => {
-    const nouvellesValeurs = [...valeursInputs];
-    nouvellesValeurs[index].valeur = value;
-    setValeursInputs(nouvellesValeurs);
-  };
-
-  // Fonction pour appliquer ou enlever le style gras d'un input
-  const toggleGras = (index) => {
-    const nouvellesValeurs = [...valeursInputs];
-    nouvellesValeurs[index].enGras = !nouvellesValeurs[index].enGras;
-    setValeursInputs(nouvellesValeurs);
-  };
-
-  // Fonction pour appliquer ou enlever le style italique d'un input
-  const toggleItalique = (index) => {
-    const nouvellesValeurs = [...valeursInputs];
-    nouvellesValeurs[index].enItalique = !nouvellesValeurs[index].enItalique;
-    setValeursInputs(nouvellesValeurs);
-  };
-
-  // Fonction pour changer la taille du texte d'un input
-  const changerTailleTexte = (index, taille) => {
-    const nouvellesValeurs = [...valeursInputs];
-    nouvellesValeurs[index].tailleTexte = taille;
-    setValeursInputs(nouvellesValeurs);
-  };
-
-  // Fonction pour changer l'alignement du texte d'un input
-  const changerAlignementTexte = (index, alignement) => {
-    const nouvellesValeurs = [...valeursInputs];
-    nouvellesValeurs[index].alignementTexte = alignement;
-    setValeursInputs(nouvellesValeurs);
-  };
-
-  // Fonction pour changer la transformation du texte d'un input
-  const changerTextTransform = (index, transform) => {
-    const nouvellesValeurs = [...valeursInputs];
-    nouvellesValeurs[index].textTransform = transform;
-    setValeursInputs(nouvellesValeurs);
-  };
-
-  // Fonction pour sélectionner une div
-  const selectionnerDiv = (index) => {
-    setDivSelectionnee(index);
-    setDivSelectionneePopup(index);
-  };
-
-  // Fonction pour désélectionner la div dans le popup
-  const deselectionnerDivPopup = () => {
-    setDivSelectionneePopup(null);
-  };
-
-  // État pour stocker la liste des valeurs des inputs avec paramètres
-  const [valeursInputs, setValeursInputs] = useState([
-    { valeur: '', enGras: false, enItalique: false, tailleTexte: '16px', alignementTexte: 'left', textTransform: 'none', fontFamily },
-  ]);
-  // Variable des inputs mappé avec option supprimer
-  const inputs = valeursInputs.map((input, index) => (
-    <div
-      key={index}
-      style={{
-        padding: '16px',
-        cursor: 'pointer',
-      }}
-    >
-      <Stack direction='row' justifyContent='space-between'>
-        <p>Text {index + 1}</p>
-        <IconButton size="small" onClick={() => handleDeleteInput()} aria-label="delete">
-          <DeleteForeverRoundedIcon />
-        </IconButton>
-      </Stack>
-      <TextField
-        id="outlined-basic"
-        fullWidth
-        size="small"
-        variant="outlined"
-        placeholder="Enter your text"
-        value={input.valeur}
-        onChange={(e) => handleChange(index, e.target.value)}
-        onClick={() => selectionnerDiv(index)} />
-    </div>
-  ));
-  // Fonction pour ajouter un nouvel input
-  const AddInput = () => {
-    setValeursInputs([
-      ...valeursInputs,
-      { valeur: '', enGras: false, enItalique: false, tailleTexte: 'normal' },
+  const handleClickAddInput = () => {
+    setInputParams(prevState => [
+        ...prevState,
+        {
+            inputValue: '',
+            isBold: false,
+            isItalic: false,
+            isUnderline: false,
+            textTransform: 'none',
+            textAlign: 'left',
+            fontFamily: 'Inter',
+            fontSize: '1rem',
+            color:'#fff'
+        },
     ]);
   };
-  // Fonction pour supprimer un input en fonction de l'index
-  const handleDeleteInput = (index) => {
-    const nouvellesValeurs = [...valeursInputs];
-    nouvellesValeurs.splice(index, 1);
-    setValeursInputs(nouvellesValeurs);
-  };
 
-  // Effet secondaire pour mettre à jour automatiquement les styles individuels
-  useEffect(() => {
-    const nouveauxStyles = valeursInputs.map((input) => ({
-      fontFamily: input.fontFamily,
-      fontWeight: input.enGras ? 'bold' : 'normal',
-      fontStyle: input.enItalique ? 'italic' : 'normal',
-      fontSize: input.tailleTexte || '16px',
-      textAlign: input.alignementTexte || 'left',
-      textTransform: input.textTransform || 'none',
+  // FONCTION SETTINGS CANVAS
+  const handleChangeFormat = (newWidth, newHeight) => {
+    setCanvaParams(prevParams => ({
+        ...prevParams,
+        width: `${newWidth}px`,
+        height: `${newHeight}px`
     }));
-    setStylesInputs(nouveauxStyles);
-    console.log('nouveaux:', nouveauxStyles);
-  }, [valeursInputs]);
-  // Variable de la liste des valeurs individuelles mappé
-  const valeursIndividuellesListe = valeursInputs.map((input, index) => (
-    <p
-      key={index}
-      onClick={() => selectionnerDiv(index)}
-      style={{
-        margin: 0,
-        overflowWrap: 'break-word',
-        cursor: 'pointer',
-        ...stylesInputs[index],
-        color: 'white',
-      }}
-    >
-      {input.valeur}
-    </p>
-  ));
-  // Variable du bloc Valeurs Individuelles
-  const valeursIndividuellesBloc = valeursInputs.length > 0 && (
-    <div>
-      {valeursIndividuellesListe}
-    </div>
-  );
+  }
+  const handleChangeJustifyContent = (newJustifyContent) => {
+    setCanvaParams(prevParams => ({
+        ...prevParams,
+        justifyContent: newJustifyContent
+    }));
+  };
+  const handleChangePadding = (newPadding) => {
+    setCanvaParams(prevParams => ({
+        ...prevParams,
+        padding: newPadding
+    }));
+  };
+  //////////////////////////////////
 
-  console.log(valeursInputs);
-  // Variable de la popUp
-  const popupContenu = divSelectionneePopup !== null && (
-    <Paper
-      elevation={12}
-      sx={{
-        width: '100%',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        gap: '8px',
-        padding: '12px',
-        borderRadius: '8px',
-        border: (theme) => `1px solid ${theme.palette.divider}`,
-      }}
-    >
-      <Autocomplete
-        disablePortal
-        id="combo-box-demo"
-        onChange={handleFontChange}
-        options={nameFontOptions}
-        getOptionSelected={(option, value) => option.value === value.value}
-        sx={{ width: 300 }}
-        renderInput={(params) => <TextField {...params} />}
-      />
-      <StyledToggleButtonGroup
-        size="small"
-        value={valeursInputs[divSelectionneePopup]?.alignementTexte}
-        onChange={(e) => changerAlignementTexte(divSelectionneePopup, e.target.value)}
-        exclusive
-        aria-label="text alignment"
-      >
-        <ToggleButton value="left">
+  const chooseFormat = 
+    <Stack direction='row'>
+      <Tooltip title="Format square">
+          <ToggleButton value={[640, 640]} key="square" onClick={() => handleChangeFormat(640, 640)}>
+              Square
+          </ToggleButton>
+      </Tooltip>
+      <Tooltip title="Format Story">
+          <ToggleButton value={[360, 640]} key="story" onClick={() => handleChangeFormat(360, 640)}>
+              Story
+          </ToggleButton>
+      </Tooltip>
+      <Tooltip title="Format Cover">
+          <ToggleButton value={[640, 360]} key="landscape" onClick={() => handleChangeFormat(640, 360)}>
+              Slide
+          </ToggleButton>
+      </Tooltip>
+    </Stack>
+  ;
+
+  const chooseJustififyContent = 
+    <Stack direction='row'>
+      <Tooltip title="Align Top">
+        <ToggleButton value="flex-start" key="Align Top" onClick={() => handleChangeJustifyContent('flex-start')}>
+            <VerticalAlignTopRoundedIcon />
+        </ToggleButton>
+      </Tooltip>
+      <Tooltip title="Align Center">
+        <ToggleButton value="center" key="Align Center" onClick={() => handleChangeJustifyContent('center')}>
+            <VerticalAlignCenterRoundedIcon />
+        </ToggleButton>
+      </Tooltip>
+      <Tooltip title="Align Bottom">
+        <ToggleButton value="flex-end" key="Align Bottom" onClick={() => handleChangeJustifyContent('flex-end')}>
+            <VerticalAlignBottomRoundedIcon />
+        </ToggleButton>
+      </Tooltip>
+      <Tooltip title="Align Justify">
+        <ToggleButton value="space-between" key="Align Justify" onClick={() => handleChangeJustifyContent('space-between')}>
+            <HeightRoundedIcon />
+        </ToggleButton>
+      </Tooltip>
+    </Stack>
+  ;
+
+  const chooseTextAlign =
+    <Stack direction="row" alignItems='center' justifyContent='space-between'>
+      <p className={ds.label}>Text Align</p>
+      <Stack direction="row" alignItems='center'>
+        <ToggleButton value="start" aria-label="left aligned" onClick={() => handleAlignment("left")}>
           <FormatAlignLeftRoundedIcon />
         </ToggleButton>
-        <ToggleButton value="center">
+        <ToggleButton value="center" aria-label="centered" onClick={() => handleAlignment("center")}>
           <FormatAlignCenterRoundedIcon />
         </ToggleButton>
-        <ToggleButton value="right">
-          <FormatAlignRightRoundedIcon />
+        <ToggleButton value="end" aria-label="right aligned" onClick={() => handleAlignment("right")}>
+          <FormatAlignRightRoundedIcon/>
         </ToggleButton>
-      </StyledToggleButtonGroup>
-      <Divider flexItem orientation="vertical" sx={{ mx: 0.5, my: 1 }} />
-      <StyledToggleButtonGroup
-        size="small"
-        aria-label="text formatting"
-      >
-        <ToggleButton value="bold" onClick={() => toggleGras(divSelectionneePopup)} aria-label="bold">
-          <FormatBoldRoundedIcon />
+        <ToggleButton value="justify" aria-label="justified" onClick={() => handleAlignment("justify")}>
+          <FormatAlignJustifyRoundedIcon />
         </ToggleButton>
-        <ToggleButton value="italic" onClick={() => toggleItalique(divSelectionneePopup)} aria-label="italic">
-          <FormatItalicRoundedIcon />
-        </ToggleButton>
-      </StyledToggleButtonGroup>
-      <Divider flexItem orientation="vertical" sx={{ mx: 0.5, my: 1 }} />
-      <Select
-        id="demo-simple-select"
+      </Stack>
+    </Stack>
+  ;
 
-        displayEmpty
-        value={valeursInputs[divSelectionneePopup]?.textTransform || 'none'}
-        onChange={(e) => changerTextTransform(divSelectionneePopup, e.target.value)}
-      >
-        <MenuItem value="none">None</MenuItem>
-        <MenuItem value="uppercase">Uppercase</MenuItem>
-        <MenuItem value="lowercase">Lowercase</MenuItem>
-        <MenuItem value="capitalize">Capitalize</MenuItem>
-      </Select>
+  const chooseStyleFont =
+  <Stack direction='row' alignItems='center' justifyContent='space-between'>
+    <p className={ds.label}>Text style</p>
+    <Stack direction= 'row'>
+      <Tooltip title="Bold">
+          <ToggleButton value="bold" key="Bold" onClick={handleClickBold}>
+              <FormatBoldRoundedIcon />
+          </ToggleButton>
+          <ToggleButton value="bold" key="Bold" onClick={handleClickItalic}>
+              <FormatItalicRoundedIcon />
+          </ToggleButton>
+          <ToggleButton value="bold" key="Bold" onClick={handleClickUnderline}>
+              <FormatUnderlinedRoundedIcon />
+          </ToggleButton>
+        </Tooltip>
+    </Stack>
+  </Stack>
+  ;
+
+  const chooseFontSize =
+  <Stack>
+    <p className={ds.label}>Size</p>
+      <FormControl sx={{ minWidth: 120 }} size="small">
       <Select
-        id="demo-simple-select"
-        displayEmpty
-        value={valeursInputs[divSelectionneePopup]?.tailleTexte || '16px'}
-        onChange={(e) => changerTailleTexte(divSelectionneePopup, e.target.value)}
+      id="demo-select-small"
+      value={inputParams[indexModif].fontSize}
+      onChange={(e) => handleFontSize(e.target.value)}
       >
-        <MenuItem value="12px">Small</MenuItem>
-        <MenuItem value="16px">Normal</MenuItem>
-        <MenuItem value="24px">Medium</MenuItem>
-        <MenuItem value="40px">Large</MenuItem>
-        <MenuItem value="64px">Extra large</MenuItem>
+      <MenuItem value="0.5rem">Small</MenuItem>
+      <MenuItem value="1rem">Normal</MenuItem>
+      <MenuItem value="1.5rem">Medium</MenuItem>
+      <MenuItem value="2rem">Large</MenuItem>
+      <MenuItem value="2.5rem">Extra Large</MenuItem>
+      <MenuItem value="4rem">Hudge</MenuItem>
       </Select>
-      <button onClick={deselectionnerDivPopup}>Fermer le Popup</button>
-    </Paper>
-  );
+    </FormControl>
+  </Stack>
+
+  const chooseTextTransform =
+  <Stack direction='row' alignItems='center' justifyContent='space-between'>
+    <p className={ds.label}>Text Transform</p>
+    <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+    <Select
+    id="demo-select-small"
+    value={inputParams[indexModif].textTransform}
+    onChange={(e) => handleTextTransform(e.target.value)}
+    >
+      <MenuItem value="none">None</MenuItem>
+      <MenuItem value="uppercase">Uppercase</MenuItem>
+      <MenuItem value="capitalize">Capitalize</MenuItem>
+      <MenuItem value="lowercase">Lowercase</MenuItem>
+    </Select>
+    </FormControl>
+  </Stack>
+  ;
+
+  const chooseFont =
+  <Stack sx={{width: '90%'}}>
+    <p className={ds.label}>Font</p>
+    <Autocomplete
+    disablePortal
+    value={inputParams[indexModif].fontFamily}
+    id="combo-box-demo"
+    onChange={handleFontChange}
+    options={nameFontOptions}
+    getOptionSelected={(option, value) => option.value === value.value}
+    size="small"
+    renderInput={(params) => <TextField {...params}/>}
+  />
+  </Stack>
+  ;
+
+  const inputs = inputParams.map((params, index) => (
+    <input
+    key={index}
+    onChange={(e) => handleWriteValue(index, e)}
+    onClick={() => setIndex(index)}
+    value={params.inputValue} />
+  ));
+  const texts = inputParams.map((params, index) => (
+    <p
+    key={index}
+    style={{
+      margin: 0,
+      fontWeight: params.isBold ? 'bold' : 'normal',
+      fontStyle: params.isItalic ? 'italic' : 'normal',
+      textDecoration: params.isUnderline ? 'underline' : 'none',
+      textTransform: params.textTransform,
+      textAlign: params.textAlign,
+      fontFamily: params.fontFamily,
+      fontSize: params.fontSize,
+      color: params.color,
+    }}
+    >
+        {params.inputValue}
+    </p>
+  ));
+
+  const textStyle = 
+  <Paper sx={{
+    width: '20%',
+    height: 'auto',
+    padding: '24px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '24px',
+  }}>
+    <Stack direction='row' alignItems='center' gap='12px'>
+      {chooseFont}
+      {chooseFontSize}
+    </Stack>
+    <Divider />
+    {chooseTextAlign}
+    {chooseStyleFont}
+    {chooseTextTransform}
+    <Divider />
+    <ColorPicker 
+      onChangeComplete={handleColorChange}
+      color={inputParams.color}
+      triangle='hide'
+    />
+  </Paper>
+  ;
+
+  const canvaStyle =
+  <Paper sx={{
+    width: '20%',
+    height: 'auto',
+    padding: '24px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '24px',
+  }}>
+    {chooseFormat}
+    {chooseJustififyContent}
+    <Slider
+      aria-label="Padding"
+      defaultValue={12}
+      value={canvaParams.padding}
+      onChange={(event, newValue) => handleChangePadding(newValue)}
+      valueLabelDisplay="auto"
+      shiftStep={30}
+      step={4}
+      marks
+      min={4}
+      max={40}
+      />
+    {inputs}
+    <SecondaryButton text="Add new field" onClick={handleClickAddInput}/>
+  </Paper>
+  ;
+
+    // Fonction pour supprimer un input en fonction de l'index
+    const handleDeleteInput = (index) => {
+      const nouvellesValeurs = [...valeursInputs];
+      nouvellesValeurs.splice(index, 1);
+      setValeursInputs(nouvellesValeurs);
+    };
 
   return (
     <Box className={`${styles.viewport} ${styles.polka}`}>

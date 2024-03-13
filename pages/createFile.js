@@ -4,7 +4,7 @@ import TextParams from '../components/TextParams';
 export default function createFile() {
   return (
     <>
-      <TextParams/>
+      <TextParams />
     </>
   )
 }
