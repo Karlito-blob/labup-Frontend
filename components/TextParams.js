@@ -26,10 +26,13 @@ import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
 import ToggleButton from '@mui/material/ToggleButton';
 import Tooltip from '@mui/material/Tooltip';
-import { Autocomplete, Slider } from '@mui/material';
+import { Autocomplete, Button, Modal, Slider } from '@mui/material';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import Backdrop from '@mui/material/Backdrop';
+import Fade from '@mui/material/Fade';
+import Typography from '@mui/material/Typography';
 
 import FormatAlignLeftRoundedIcon from '@mui/icons-material/FormatAlignLeftRounded';
 import FormatAlignRightRoundedIcon from '@mui/icons-material/FormatAlignRightRounded';
@@ -50,9 +53,11 @@ export default function TextParams() {
   const ref = useRef(null);
 
   const [fileName, setFileName] = useState('');
-  const [images, setImages] = useState("")
+  const [images, setImages] = useState([])
   const [indexModif, setIndex] = useState(0);
+  const [indexImage, setIndexImage] = useState(null)
   const [fontData, setFontData] = useState([]); 
+  const [patternsData, setPatternsData] = useState([]);
   const [inputParams, setInputParams] = useState([
       {
           inputValue: '',
@@ -71,45 +76,68 @@ export default function TextParams() {
     height: '650px',
     justifyContent: 'flex-start',
     padding: 12,
+    backgroundImage: "url('test1.gif')",
   });
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   //{TETEY} envoie des screenshots vers le back ROUTE POST (pour le moment un seul screenshot)
-  const handleSave = () => {
-      if (ref.current) {
-          html2canvas(ref.current)
-              .then((canvas) => {
-              console.log("j'ai cliqué")
-              const imageData = canvas.toDataURL('image/png');
-              console.log(imageData)
-              setImages((prevImages) => [...prevImages, imageData]);
-              console.log(imageData)
-              })
-              .then(() => {
-                      console.log(inputParams)
-                      console.log(canvaParams)
-                      const formData = new FormData()
-                      //recupere uniquement la partie base 64 du resultat de use react screen
-                      const imageData = images.toString().split(',')[1];
-                      //transformation en blob pour moins transfert
-                      const blob = b64toBlob(imageData, 'image/png');
-                      //transformation en file avant intégration au formData
-                      const file = new File([blob], 'photo.png', { type: 'image/png' });
-                      //construction du formData avec un file et des champs de texte (A FACTORISER MAIS FLEMME TOUT DE SUITE)
-                      formData.append("photoFromFront", file);
-                      formData.append("token", token);
-                      formData.append("fileName", fileName);
-                      formData.append("documentContent", JSON.stringify(inputParams));
-                      formData.append("canvaParams", JSON.stringify(canvaParams));
-                      //utilisation de axios pour la requete en multiple formData CAR FETCH CEST NUL A *****
-                      axios.post("http://localhost:3000/documents/", formData, {
-                      headers: {
-                          'Content-Type': 'multipart/form-data'
-                      }})
-                      .then(res => {
-                      console.log("TEST THEO", res)
-                      })
-              })
-          }
+  const handleSave = (index) => {
+    if (ref.current) {
+      html2canvas(ref.current)
+        .then((canvas) => {
+          const image = canvas.toDataURL('image/png');
+          setImages((prevImages) => [...prevImages, image]);
+          const formData = new FormData();
+          const imageData = images[index].toString().split(',')[1];
+          const blob = b64toBlob(imageData, 'image/png');
+          const file = new File([blob], 'photo.png', { type: 'image/png' });
+          formData.append("photoFromFront", file);
+          formData.append("token", token);
+          formData.append("fileName", fileName);
+          formData.append("documentContent", JSON.stringify(inputParams));
+          formData.append("canvaParams", JSON.stringify(canvaParams));
+          
+          axios.post("http://localhost:3000/documents/", formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          })
+          .then(res => {
+            console.log("TEST THEO", res);
+          });
+        });
+    }
+  }
+  //////////////////////////////////
+
+  //{TETEY} envoie des screenshots vers le back ROUTE POST (pour le moment un seul screenshot)
+  const handleExport = (index) => {
+    if (ref.current) {
+        html2canvas(ref.current)
+            .then((canvas) => {
+            console.log("j'ai cliqué")
+            const image = canvas.toDataURL('image/png');
+            setImages((prevImages) => [...prevImages, image]);
+            const formData = new FormData()
+            const imageData = images[index].toString().split(',')[1];
+            const blob = b64toBlob(imageData, 'image/png');
+            const file = new File([blob], 'photo.png', { type: 'image/png' });
+            formData.append("photoFromFront", file);
+            formData.append("token", token);
+            formData.append("ExportName", fileName);
+            formData.append("ExportType", 'coucou');
+            axios.post("http://localhost:3000/exports/", formData, {
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              }
+            })
+            .then(res => {
+                console.log("TEST THEO", res)
+            });
+        });
+    }
   }
   //////////////////////////////////
 
@@ -127,6 +155,20 @@ export default function TextParams() {
     label: font.name, 
     value: font.name,
   }));
+
+  useEffect(() => {
+    fetch(`http://localhost:3000/modifiedPatterns/${token}`)
+    .then(response => response.json())
+    .then(data => {
+      if(data.result){
+        setPatternsData(data.ModifiedPatterns);
+      }
+    })
+    .catch(error => {
+      console.error('Error fetching fonts:', error);
+    })
+  },[]);
+
   const importUrl = `https://fonts.googleapis.com/css2?family=${inputParams[0].fontFamily.split(" ").join("+")}&display=swap`;
   const handleFontChange = (e) => {
     const selectedFont = e.target.textContent || '';
@@ -257,7 +299,24 @@ export default function TextParams() {
         padding: newPadding
     }));
   };
+  const handleChangeBgImage = (newBackground, index) => {
+    setIndexImage(index)
+    setCanvaParams(prevParams => ({
+        ...prevParams,
+        backgroundImage: `url(${newBackground})`,
+    }));
+  }
   //////////////////////////////////
+
+  const imagesCarrousel = patternsData.map((image, index) => (
+    <img 
+    key={index} 
+    src={image.patternImg} 
+    alt={`Image ${index}`} 
+    style={{width: '200px', height: '150px', objectFit: 'cover'}}
+    onClick={() => handleChangeBgImage (image.patternImg, index)}
+    />
+  ));
 
   const chooseFormat = 
     <Stack direction='row'>
@@ -476,6 +535,17 @@ export default function TextParams() {
   </Paper>
   ;
 
+  const styleModal = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '80%',
+    bgcolor: 'background.paper',
+    boxShadow: 24,
+    p: 4,
+  };
+
     // Fonction pour supprimer un input en fonction de l'index
     const handleDeleteInput = (index) => {
       const nouvellesValeurs = [...valeursInputs];
@@ -520,7 +590,7 @@ export default function TextParams() {
                 </Stack>
                 <Stack direction='row' spacing={2}>
                     <GhostButton text="Export" size='medium'/>
-                    <PrimaryButton text="Save" size='medium' onClick={handleSave}/>
+                    <PrimaryButton text="Save" size='medium' onClick={() => handleSave()}/>
                     <Divider orientation="vertical" variant="middle" flexItem/>
                     <Avatar/>
                 </Stack>
@@ -543,6 +613,9 @@ export default function TextParams() {
               bgcolor: 'primary.main',
               display: 'flex',flexDirection: 'column',
               justifyContent: canvaParams.justifyContent,
+              backgroundImage: canvaParams.backgroundImage,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
               }}
               style={{ }}
               ref={ref}
@@ -550,8 +623,39 @@ export default function TextParams() {
                 <div style={{width: '100%', wordWrap: 'break-word', position: 'absolute', padding: canvaParams.padding}}>
                   {texts}
                 </div>
-                <img src='test1.gif' style={{width: '100%', height: '100%', objectFit: 'cover'}}/>
             </Box>
+            {imagesCarrousel}
+            <div>
+            <Button variant="contained" onClick={() => handleOpen()}>Open Modal</Button>
+              <Modal
+              aria-labelledby="transition-modal-title"
+              aria-describedby="transition-modal-description"
+              open={open}
+              onClose={handleClose}
+              closeAfterTransition
+              slots={{ backdrop: Backdrop }}
+              slotProps={{
+              backdrop: {
+              timeout: 500,
+              },
+              }}
+              >
+                <Fade in={open}>
+                  <Box sx={styleModal}>
+                    <Typography id="transition-modal-title" variant="h6" component="h2">
+                      Exports
+                    </Typography>
+                    <Box>
+                        <Typography id="transition-modal-description">
+                        {canvaParams.width} x {canvaParams.height}
+                        </Typography>
+                      <Button variant="contained" onClick={() => handleExport(indexImage)}>Export</Button>
+                    </Box>
+                  </Box>
+                </Fade>
+              </Modal>
+            </div>
+            <Button variant="contained" onClick={() => handleSave(indexImage)}>test</Button>
         </Box>
     )
 }
