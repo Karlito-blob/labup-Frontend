@@ -561,7 +561,7 @@ export default function TextParams() {
         <Box className={`${styles.viewport} ${styles.polka}`}>
           <style> {`@import url(${importUrl})`} </style>
             {/* HEADER SECTION  */}
-            <Box sx={{
+        {/* <Box sx={{
             width: '100%',
             display: 'flex',
             alignItems: 'center',
@@ -598,7 +598,11 @@ export default function TextParams() {
                     <Divider orientation="vertical" variant="middle" flexItem/>
                     <Avatar/>
                 </Stack>
-            </Box>
+        </Box> */}
+
+        <Header chemin={router.pathname} />
+
+
             <Box sx={{
             width: '100%',
             display: 'flex',
