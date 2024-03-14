@@ -41,7 +41,6 @@ export default function FeedCard() {
 
     const [feed, setFeed] = useState([]);
     const [expanded, setExpanded] = useState(null);
-    const likeRef = useRef(null)
 
     useEffect(() => {
         fetch(`http://localhost:3000/feed/`)
@@ -79,7 +78,7 @@ export default function FeedCard() {
             }
         })
         .then(res => {
-            updateLikeCount(fileId, res.data.updatedFile.like.length);
+            console.log(res)
         })
         .catch(error => {
             console.error("Error:", error);
