@@ -53,6 +53,8 @@ import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import CropDinRoundedIcon from '@mui/icons-material/CropDinRounded';
 import CropPortraitRoundedIcon from '@mui/icons-material/CropPortraitRounded';
 import CropLandscapeRoundedIcon from '@mui/icons-material/CropLandscapeRounded';
+import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
+import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 
 export default function TextParams() {
 
@@ -545,9 +547,9 @@ export default function TextParams() {
     </p>
   ));
 
-  const textStyle = (
+  const Styles = (
     <Box className={ds.shadow2} sx={{
-      width: '15%',
+      width: '20rem',
       height: 'auto',
       padding: '24px',
       display: 'flex',
@@ -576,13 +578,9 @@ export default function TextParams() {
     </Box>
   );
 
-  const inputContainerStyle = {
-    height: 'auto', // Hauteur automatique
-  };
-
-  const canvaStyle = (
+  const Layout = (
     <Box className={ds.shadow1} sx={{
-      width: '15%',
+      width: '20rem',
       height: 'auto',
       padding: '24px',
       display: 'flex',
@@ -614,7 +612,7 @@ export default function TextParams() {
       <Divider />
       <Stack direction='column' gap='12px'>
         <p className={ds.mediumBodySB}>Edit fields</p>
-        <Box sx={{ overflowY: 'auto', maxHeight: '300px', display: 'flex', scrollbarWidth: 'thin', scrollbarColor: '#ccc transparent'}}>
+        <Box sx={{ overflowY: 'auto', maxHeight: '200px', display: 'flex', scrollbarWidth: 'thin', scrollbarColor: '#ccc transparent' }}>
           <Stack direction='column' gap='24px'>
             {inputs}
           </Stack>
@@ -623,8 +621,6 @@ export default function TextParams() {
       <Button variant="outlined" onClick={handleClickAddInput}>Add new field</Button>
     </Box>
   );
-
-
 
   const styleModal = {
     position: 'absolute',
@@ -640,7 +636,7 @@ export default function TextParams() {
   const SampleNextArrow = ({ className, style, onClick }) => (
     <div
       className={className}
-      style={{ ...style, display: "block", background: "red" }}
+      style={{ ...style, display: "block" }}
       onClick={onClick}
     />
   );
@@ -648,7 +644,7 @@ export default function TextParams() {
   const SamplePrevArrow = ({ className, style, onClick }) => (
     <div
       className={className}
-      style={{ ...style, display: "block", background: "green" }}
+      style={{ ...style, display: "block" }}
       onClick={onClick}
     />
   );
@@ -657,7 +653,7 @@ export default function TextParams() {
     focusOnSelect: true,
     className: "center",
     centerMode: true,
-    dots: true,
+    dots: false,
     infinite: true,
     slidesToShow: 3,
     speed: 500,
@@ -665,7 +661,7 @@ export default function TextParams() {
     prevArrow: <SamplePrevArrow />,
     responsive: [
       {
-        breakpoint: 768, // Adjust this breakpoint as needed
+        breakpoint: 76, // Adjust this breakpoint as needed
         settings: {
           slidesToShow: 1,
           centerMode: false,
@@ -679,74 +675,56 @@ export default function TextParams() {
 
   return (
     <Box className={`${styles.viewport} ${styles.polka}`}>
-      <style> {`@import url(${importUrl})`} </style>
+      <style>{`@import url(${importUrl})`}</style>
       <Header chemin={router.pathname} />
-      <Box sx={{
-        width: canvaParams.width,
-        height: canvaParams.height,
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        bgcolor: 'white',
-        display: 'flex', flexDirection: 'column',
-        justifyContent: canvaParams.justifyContent,
-        backgroundImage: canvaParams.backgroundImage,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        boxShadow: '16px 8px 65px -22px #C7C7C7'
-      }}
+      <Box
+        sx={{
+          width: canvaParams.width,
+          height: canvaParams.height,
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          bgcolor: 'white',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: canvaParams.justifyContent,
+          backgroundImage: canvaParams.backgroundImage,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          boxShadow: '16px 8px 65px -22px #C7C7C7',
+        }}
         style={{}}
         ref={ref}
       >
-        <div style={{ width: '100%', wordWrap: 'break-word', position: 'absolute', padding: canvaParams.padding }}>
+        <div
+          style={{
+            width: '100%',
+            wordWrap: 'break-word',
+            position: 'absolute',
+            padding: canvaParams.padding,
+          }}
+        >
           {texts}
         </div>
       </Box>
-      <Box style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-        <div style={{ height: '80%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Box sx={{
-            width: '90%',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'flex-start',
-          }}>
-            {canvaStyle}
-            {textStyle}
+      <Box style={{ height: '85%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+        <div style={{ height: '100%', display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}>
+          <Box
+            sx={{
+              width: '95%',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'flex-start',
+            }}
+          >
+            {Layout}
+            {Styles}
           </Box>
         </div>
-        {/* <div>
-        <Button variant="contained" onClick={() => handleOpen()}>Open Modal</Button>
-        <Modal
-          aria-labelledby="transition-modal-title"
-          aria-describedby="transition-modal-description"
-          open={open}
-          onClose={handleClose}
-          closeAfterTransition
-          slots={{ backdrop: Backdrop }}
-          slotProps={{
-            backdrop: {
-              timeout: 500,
-            },
-          }}
-        >
-          <Fade in={open}>
-            <Box sx={styleModal}>
-              <Typography id="transition-modal-title" variant="h6" component="h2">
-                Exports
-              </Typography>
-              <Box>
-                <Typography id="transition-modal-description">
-                  {canvaParams.width} x {canvaParams.height}
-                </Typography>
-                <Button variant="contained" onClick={() => handleExport(indexImage)}>Export</Button>
-              </Box>
-            </Box>
-          </Fade>
-        </Modal>
-      </div>
-      <Button variant="contained" onClick={() => handleSave(indexImage)}>test</Button> */}
-        <div style={{ height: '20%', display: "flex", alignItems: "center", justifyContent: "center" }}>
+    
+      </Box>
+      <div style={{ height: '10%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           <link
             rel="stylesheet"
             type="text/css"
@@ -758,15 +736,18 @@ export default function TextParams() {
             type="text/css"
             href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
           />
-          <div className="slider-container" style={{ width: "40%" }}>
+          <div className="slider-container" style={{ width: '40%', height: '10%' }}>
             <Carrousel {...settings}>
               {patternsData.map((image, index) => (
-                <div key={index} style={{ display: "flex", alignContent: 'center', justifyContent: "center" }}>
+                <div
+                  key={index}
+                  style={{ display: 'flex', alignContent: 'center', justifyContent: 'center', marginRight: '1000px' }}
+                >
                   <img
                     key={index}
                     src={image.patternImg}
                     alt={`Image ${index}`}
-                    style={{ width: "250px", height: "120px", borderRadius: '8px' }}
+                    style={{ width: '140px', height: '80px', borderRadius: '8px' }}
                     onClick={() => handleChangeBgImage(image.patternImg, index)}
                   />
                 </div>
@@ -774,7 +755,6 @@ export default function TextParams() {
             </Carrousel>
           </div>
         </div>
-      </Box>
     </Box>
-  )
+  );
 }

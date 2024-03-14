@@ -1,6 +1,6 @@
+import OneScreen from '../components/OneScreen';
 import Dashboard from './dashboard';
-import Home from '../components/Home';
 
 export default function Index() {
-  return <Dashboard />;
+  return <OneScreen />;
 }
