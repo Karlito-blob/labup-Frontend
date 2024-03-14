@@ -28,6 +28,8 @@ export default function Pattern2(props) {
       p.draw = () => {
         p.clear();
         p.orbitControl(4, 4);
+        p.background(255);
+
 
         // Faire osciller bumpiness entre -1.5 et 1.5
         let bumpiness;

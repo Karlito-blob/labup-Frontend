@@ -5,14 +5,21 @@ import { useSelector } from 'react-redux';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import AddIcon from '@mui/icons-material/Add';
+
 import CloseIcon from '@mui/icons-material/Close';
+import {
+  FolderOpenRounded as FolderOpenRoundedIcon,
+  AddCircleRounded as AddCircleRoundedIcon,
+  AutoFixHigh as AutoFixHighIcon,
+} from '@mui/icons-material';
 
 import styles from '../styles/Dashboard.module.css';
 
-import {IosShareRounded as IosShareRoundedIcon} from '@mui/icons-material';
 
 export default function Dashboard(props) {
+
   const router = useRouter();
+
   const [folders, setFolders] = useState([]);
   const [files, setFiles] = useState([])
   const [newFolderName, setNewFolderName] = useState('');
@@ -105,21 +112,29 @@ export default function Dashboard(props) {
   const filesList = files.map((file, index) => (
     <div key={index} id={file._id} className={styles.pattern}>
       <div className={styles.imgContainer}>
+        <div style={{
+          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+          position: 'absolute', margin: '10px',
+          height: '40px', width: '40px', backgroundColor: 'white', borderRadius: '20px',
+          boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)'
+        }}>
+          <AutoFixHighIcon onClick={() => { handleNavigation(file._id) }} />
+        </div>
+
         <img src={file.image} />   
       </div>
       <h5>{file.fileName}</h5>
       {/* <p>{pattern.update}</p> */}
-      <IosShareRoundedIcon onClick={() => {handleNavigation(file._id)}}/>
     </div>
   ))
 
 
   const folderList = folders.map((folder, index) => (
-    <div key={index} className={styles.pattern}>
-      {folder.projectName}
-      <div className={styles.imgContainer}>
-        <img src="/Folder.png" alt={folder.projectName} />   
+    <div key={index} className={styles.fileCard}>
+      <div className={styles.iconFolder}>
+        <FolderOpenRoundedIcon />
       </div>
+      {folder.projectName}
     </div>
   ));
   
@@ -159,35 +174,41 @@ export default function Dashboard(props) {
 
     return (
       <div className={styles.container}>
-        <Header />
+
+        <Header chemin={router.pathname} />
+
         <div className={styles.box} style={{ marginTop: '100px' }} >
-          <h2>Dashboard</h2>
+          <h1>Dashboard</h1>
           <div className={styles.buttonsContainer}>
             <Button onClick={() => router.push('/createPatterns')}>Pattern File</Button>
-            <Button onClick={() => router.push('/createFile')}>Event File</Button>
-            <Button onClick={() => router.push('/feed')}>Feed</Button>
-
+            <Button onClick={() => router.push('/createFile')}>Event File</Button> 
           </div>
         </div>
+
         <div className={styles.patternSection}>
           <h3>My patterns</h3>
           <div className={styles.wrapScrollH}>
             <div className={styles.patternsContainer}>{filesList}</div>
           </div>
         </div>
+
         <div className={styles.folderSection}>
-          <h3>My folders</h3>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+            <h3>My folders</h3>
+            <AddCircleRoundedIcon onClick={handleOpenCreateFolderDialog} />
+          </div>
+
           <div className={styles.wrapScrollH}>
-            <div className={styles.foldersContainer}>
+            <div className={styles.folderContainer}> 
               {folderList}
-            
-            <div className={styles.pattern}>
+            </div>
+
+            {/* <div className={styles.pattern}>
             Créer un nouveau dossier
             <div className={styles.imgContainer} onClick={handleOpenCreateFolderDialog}>
-              <img src="/AddFolder.png" alt="Nouveau dossier" />   
+              <img src="/AddFolder.png" alt="Nouveau dossier" />
             </div>
-          </div>
-            </div>
+          </div> */}
     
             {/* Bouton "+" pour ouvrir la boîte de dialogue */}
             
