@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Header from './Header';
-import { Button, Dialog, DialogTitle, DialogContent, TextField, IconButton } from '@mui/material';
+import { Button, Dialog, DialogTitle, DialogContent, TextField, IconButton, Stack } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
-import AddIcon from '@mui/icons-material/Add';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import CloseIcon from '@mui/icons-material/Close';
 import {
@@ -11,11 +11,14 @@ import {
   AddCircleRounded as AddCircleRoundedIcon,
   CloseRounded as CloseRoundedIcon,
   AutoFixHigh as AutoFixHighIcon,
+  AddBoxRounded as AddBoxRoundedIcon,
   PublicRounded as PublicRoundedIcon,
   Diversity1TwoTone,
 } from '@mui/icons-material';
 
 import styles from '../styles/Dashboard.module.css';
+import ds from '../styles/DesignSystem.module.css'
+
 
 export default function Dashboard(props) {
 
@@ -367,63 +370,58 @@ export default function Dashboard(props) {
   // };
 
 
+
   return (
-    <div className={styles.container}>
+    <ThemeProvider theme={theme}>
+      <div className={styles.container}>
 
-      <Header chemin={router.pathname} />
-      <Header chemin={router.pathname} />
+        <Header chemin={router.pathname} />
+        <Header chemin={router.pathname} />
 
-      <div className={styles.box} style={{ marginTop: '100px' }} >
-        <h1>Dashboard</h1>
-        <div className={styles.buttonsContainer}>
-          <Button onClick={() => router.push('/createPatterns')}>Pattern File</Button>
-          <Button onClick={() => router.push('/createFile')}>Event File</Button>
+        <div className={styles.box} style={{ marginTop: '100px' }} >
+          <h1 className={ds.xLargeHeading}>Dashboard</h1>
+          <Stack direction='row' alignItems='center' spacing={2}>
+            <Button color="secondary" size="large" variant="contained" startIcon={<AddBoxRoundedIcon />} sx={{ borderRadius: '12px' }} onClick={() => router.push('/createPatterns')}>Create Pattern</Button>
+            <Button color="secondary" size="large" variant="contained" startIcon={<AddBoxRoundedIcon />} sx={{ borderRadius: '12px' }} onClick={() => router.push('/createFile')}>Edit File</Button>
+          </Stack>
         </div>
-      </div>
-      <div className={styles.box} style={{ marginTop: '100px' }} >
-        <h1>Dashboard</h1>
-        <div className={styles.buttonsContainer}>
-          <Button onClick={() => router.push('/createPatterns')}>Pattern File</Button>
-          <Button onClick={() => router.push('/createFile')}>Event File</Button>
-        </div>
-      </div>
 
-      <div className={styles.patternSection}>
-        <h3>My patterns</h3>
-        <div className={styles.wrapScrollH}>
-          <div className={styles.patternsContainer}>
-            {patternsList}
+        <div className={styles.patternSection}>
+          <h3>My patterns</h3>
+          <div className={styles.wrapScrollH}>
+            <div className={styles.patternsContainer}>
+              {patternsList}
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className={styles.patternSection}>
-        <h3>My Documents</h3>
-        {/* <AddCircleRoundedIcon onClick={handleOpenCreateFolderDialog} /> */}
-        <div className={styles.wrapScrollH}>
-          <div className={styles.patternsContainer}>
-            {documentsList}
+        <div className={styles.patternSection}>
+          <h3>My Documents</h3>
+          {/* <AddCircleRoundedIcon onClick={handleOpenCreateFolderDialog} /> */}
+          <div className={styles.wrapScrollH}>
+            <div className={styles.patternsContainer}>
+              {documentsList}
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* <div className={styles.wrapScrollH}> */}
-      {/* <div className={styles.folderContainer}> 
+        {/* <div className={styles.wrapScrollH}> */}
+        {/* <div className={styles.folderContainer}> 
               {folderList}
             </div> */}
 
-      {/* <div className={styles.pattern}>
+        {/* <div className={styles.pattern}>
             Créer un nouveau dossier
             <div className={styles.imgContainer} onClick={handleOpenCreateFolderDialog}>
               <img src="/AddFolder.png" alt="Nouveau dossier" />
             </div>
           </div> */}
 
-      {/* Bouton "+" pour ouvrir la boîte de dialogue */}
+        {/* Bouton "+" pour ouvrir la boîte de dialogue */}
 
 
-      {/* Boîte de dialogue pour créer un nouveau dossier */}
-      {/* <Dialog open={isCreatingFolder} onClose={handleCloseCreateFolderDialog}>
+        {/* Boîte de dialogue pour créer un nouveau dossier */}
+        {/* <Dialog open={isCreatingFolder} onClose={handleCloseCreateFolderDialog}>
             <DialogTitle>
               <span>Créer un nouveau dossier</span>
               <IconButton aria-label="close" onClick={handleCloseCreateFolderDialog}>
@@ -442,15 +440,15 @@ export default function Dashboard(props) {
           </Dialog>
         </div> */}
 
-      <div className={styles.patternSection}>
-        <h3>My Exports</h3>
-        <div className={styles.wrapScrollH}>
-          <div className={styles.patternsContainer}>
-            {exportsList}
+        <div className={styles.patternSection}>
+          <h3>My Exports</h3>
+          <div className={styles.wrapScrollH}>
+            <div className={styles.patternsContainer}>
+              {exportsList}
+            </div>
           </div>
         </div>
       </div>
-
-    </div>
+    </ThemeProvider>
   );
 }    

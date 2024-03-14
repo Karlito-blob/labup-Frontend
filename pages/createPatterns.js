@@ -4,8 +4,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useRouter } from 'next/router';
 
 // Style 
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import styles from '../styles/CreatePattern.module.css';
 import styles2 from '../styles/CreateFile.module.css';
+import ds from '../styles/DesignSystem.module.css';
 
 // Import des modules 
 import { takeScreenshot } from '../modules/screenshotUtils';
@@ -46,6 +48,8 @@ import axios from 'axios';
 // Imports des composants
 import Header from '../components/Header';
 import VisualizationPattern from '../components/VisualizationPattern'
+import { Divider, IconButton, Stack } from '@mui/material';
+
 
 ///////////////////////////////////////////////////////////////////////
 
@@ -454,10 +458,10 @@ export default function createPatterns() {
                     <Slider
                       key={i}
                       aria-label="Default"
-                    step={params.step || 0.1}
+                      step={params.step || 0.1}
                       min={params.valeurMinMax[0]}
                       max={params.valeurMinMax[1]}
-                    value={modifiedParams ? modifiedParams[params.paramName] || params.valeurInitiale : params.valeurInitiale}
+                      value={modifiedParams ? modifiedParams[params.paramName] || params.valeurInitiale : params.valeurInitiale}
                       valueLabelDisplay="auto"
                       defaultValue={0} // Changez la valeur par défaut
                       onChange={(event, newValue) => handleSimpleSlider(event, newValue, params.paramName)}
@@ -509,11 +513,11 @@ export default function createPatterns() {
 
                   {showSlider[params.paramName] &&
                     <Slider
-                    key={i}
-                    getAriaLabel={() => 'Minimum distance shift'}
-                    value={modifiedParams ? modifiedParams[params.paramName] || params.valeurInitiale : params.valeurInitiale}
-                    onChange={(event, newValue, activeThumb) => handleDoubleSlider(event, newValue, activeThumb, params.paramName)}
-                    valueLabelDisplay="auto"
+                      key={i}
+                      getAriaLabel={() => 'Minimum distance shift'}
+                      value={modifiedParams ? modifiedParams[params.paramName] || params.valeurInitiale : params.valeurInitiale}
+                      onChange={(event, newValue, activeThumb) => handleDoubleSlider(event, newValue, activeThumb, params.paramName)}
+                      valueLabelDisplay="auto"
                       getAriaValueText={() => ''}
                       disableSwap
                       step={0.1}
@@ -547,7 +551,7 @@ export default function createPatterns() {
                   {showSlider[params.paramName] &&
                     <ColorPicker
                       key={i}
-                    color={modifiedParams ? modifiedParams[params.paramName] || params.valeurInitiale : params.valeurInitiale}
+                      color={modifiedParams ? modifiedParams[params.paramName] || params.valeurInitiale : params.valeurInitiale}
                       onChangeComplete={(color) => handleColor(color, params.paramName)}
                       style={{ alignSelf: 'center' }}
                     />}
@@ -560,7 +564,7 @@ export default function createPatterns() {
               const handleSwitch = (event, paramName) => {
                 setModifiedParams((prevParams) => {
                   const updatedParams = { ...prevParams };
-                  updatedParams[paramName] = event.target.checked; 
+                  updatedParams[paramName] = event.target.checked;
                   return updatedParams;
                 });
               };
@@ -598,60 +602,78 @@ export default function createPatterns() {
       });
   }, [modifiedParams, showSlider, images, zoom]);
 
+  const theme = createTheme({
+    palette: {
+      primary: {
+        light: '#5f37f4',
+        main: '#3805F2',
+        dark: '#2703a9',
+        contrastText: '#fff',
+      },
+      secondary: {
+        light: '#f13ff4',
+        main: '#EE0FF2',
+        dark: '#a60aa9',
+        contrastText: '#fff',
+      },
+    },
+  });
+
   // Rendu JSX /////////////////////////////////////////////////////
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around' }} className={styles2.viewport}>
+    <ThemeProvider theme={theme}>
+      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around' }} className={styles2.viewport}>
 
-      <Header chemin={router.pathname} setTitle={handleSetTitle} />
+        <Header chemin={router.pathname} setTitle={handleSetTitle} />
 
-      <div className={styles.container} style={{ marginTop: '100px' }}>
+        <div className={styles.container} style={{ marginTop: '100px' }}>
 
-        <div className={styles.leftPanel}>
+          <div className={styles.leftPanel}>
 
-          {/* Zone de screenshot */}
-          <div className={styles.screenshotPanel}>
-            <div className={styles.screenshotTitle}>
-              <h1 style={{ marginLeft: '24px' }}>
-                ScreenShots
-              </h1>
-              {patternName && <div style={{ display: 'flex', gap: '8px', marginRight: '16px' }}>
-                {screenshot ?
-                  <div onClick={() => setScreenshot('')} className={styles.rightIcons} >
-                    <CloseRoundedIcon />
-                  </div>
-                  :
-                  <>
-                    <div onClick={() => handleTakeScreenshot()} className={styles.rightIcons} >
-                      <CameraRoundedIcon />
+            {/* Zone de screenshot */}
+            <div className={styles.screenshotPanel}>
+              <div className={styles.screenshotTitle}>
+                <p className={ds.smallHeading}>
+                  ScreenShots
+                </p>
+                {patternName && <div style={{ display: 'flex', gap: '8px', marginRight: '16px' }}>
+                  {screenshot ?
+                    <div onClick={() => setScreenshot('')} className={styles.rightIcons} >
+                      <CloseRoundedIcon />
                     </div>
-                    <div className={styles.rightIcons} onClick={() => handleCreateGif()}>
-                      <GifIcon />
-                    </div>
-                  </>
+                    :
+                    <Stack direction='row' alignItems='center'>
+                      <IconButton aria-label="fingerprint" onClick={() => handleTakeScreenshot()}>
+                        <CameraRoundedIcon />
+                      </IconButton>
+                      <IconButton aria-label="fingerprint" onClick={() => handleCreateGif()}>
+                        <GifIcon />
+                      </IconButton>
+                    </Stack>
 
-                }
+                  }
 
-              </div>}
+                </div>}
 
+              </div>
+
+
+              <div className={styles.screenCardList}>
+                {screenshots}
+              </div>
             </div>
 
-
-            <div className={styles.screenCardList}>
-              {screenshots}
+            {/* Zone de choix du pattern */}
+            <div className={styles.patternPanel}>
+              <p className={ds.smallHeading}>
+                Pattern
+              </p>
+              <div className={styles.patternCardList}>
+                {patternsData}
+              </div>
             </div>
+
           </div>
-
-          {/* Zone de choix du pattern */}
-          <div className={styles.patternPanel}>
-            <h1 style={{ marginLeft: '24px' }}>
-              Pattern
-            </h1>
-            <div className={styles.patternCardList}>
-              {patternsData}
-            </div>
-          </div>
-
-        </div> 
 
         {/* Zone de visualisation */}
         <div className={styles.visualisationPanel}>
@@ -667,38 +689,39 @@ export default function createPatterns() {
         {patternName && <div className={styles.paramPanel}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingLeft: '20px', paddingRight: '12px' }}>
 
-            <h1> Settings </h1>
+              <p className={ds.smallHeading}>Settings</p>
 
-            <div>
-              <div className={styles.rightIconsContainer}>
-                <div onClick={() => setZoom((prevZoom) => zoom <= 0.20 ? 1 : prevZoom - 0.10)} className={styles.rightIcons} >
-                  <RemoveRoundedIcon />
-                </div>
-                <div onClick={() => setZoom((prevZoom) => zoom >= 1 ? 1 : prevZoom + 0.10)} className={styles.rightIcons} >
-                  <AddRoundedIcon />
-                </div>
-                <div onClick={() => expandAllParams()} className={styles.rightIcons}>
-                  <UnfoldMoreRoundedIcon />
-                </div>
-                <div onClick={() => handleRandomParams()} className={styles.rightIcons}>
-                  <ShuffleRoundedIcon />
+              <div>
+                <div className={styles.rightIconsContainer}>
+                  <div onClick={() => setZoom((prevZoom) => zoom <= 0.20 ? 1 : prevZoom - 0.10)} className={styles.rightIcons} >
+                    <RemoveRoundedIcon />
+                  </div>
+                  <div onClick={() => setZoom((prevZoom) => zoom >= 1 ? 1 : prevZoom + 0.10)} className={styles.rightIcons} >
+                    <AddRoundedIcon />
+                  </div>
+                  <div onClick={() => expandAllParams()} className={styles.rightIcons}>
+                    <UnfoldMoreRoundedIcon />
+                  </div>
+                  <div onClick={() => handleRandomParams()} className={styles.rightIcons}>
+                    <ShuffleRoundedIcon />
+                  </div>
                 </div>
               </div>
+
             </div>
 
-          </div>
+
+            <div className={styles.params}>
+              <Divider />
+              {params}
+            </div>
+          </div>}
 
 
-          <div className={styles.params}>
-            {params}
-          </div>
-        </div>}
-
+        </div>
 
       </div>
-
-    </div>
-
+    </ThemeProvider>
 
 
   );

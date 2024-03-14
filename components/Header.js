@@ -117,7 +117,7 @@ export default function Header({ chemin, setTitle }) {
             <TextField
               size="small"
               variant="standard"
-              placeholder="Untitled"
+              placeholder=" Untitled"
               InputProps={{
                 disableUnderline: true,
               }}
