@@ -64,6 +64,8 @@ export default function TextParams() {
 
   const token = useSelector((state) => state.user.value.token)
   const ref = useRef(null);
+  const imageContainerRef = useRef(null); // Référence pour la div qui contiendra l'image
+
 
   const [fileName, setFileName] = useState('');
   const [images, setImages] = useState()
@@ -98,33 +100,69 @@ export default function TextParams() {
   const handleClose = () => setOpen(false);
 
   //{TETEY} envoie des screenshots vers le back ROUTE POST (pour le moment un seul screenshot)
-  const handleSave = (index) => {
-    if (ref.current) {
-      html2canvas(ref.current)
-        .then((canvas) => {
-          const image = canvas.toDataURL('image/png');
-          setImages(image);
-          const formData = new FormData();
-          const imageData = images.toString().split(',')[1];
-          const blob = b64toBlob(imageData, 'image/png');
-          const file = new File([blob], 'photo.png', { type: 'image/png' });
-          formData.append("photoFromFront", file);
-          formData.append("token", token);
-          formData.append("fileName", title);
-          formData.append("documentContent", JSON.stringify(inputParams));
-          formData.append("canvaParams", JSON.stringify(canvaParams));
+  // const handleSave = () => {
+  //   if (ref.current) {
+  //     html2canvas(ref.current)
+  //       .then((canvas) => {
+  //         const image = canvas.toDataURL('image/png');
+  //       })
+  //       .then(() => {
+  //         const formData = new FormData();
+  //         const imageData = image.toString().split(',')[1];
+  //         const blob = b64toBlob(imageData, 'image/png');
+  //         const file = new File([blob], 'photo.png', { type: 'image/png' });
 
-          axios.post("http://localhost:3000/documents/", formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            }
-          })
-            .then(res => {
-              console.log("TEST THEO", res);
-            });
+
+  //         formData.append("photoFromFront", file);
+  //         formData.append("token", token);
+  //         formData.append("fileName", title);
+  //         formData.append("documentContent", JSON.stringify(inputParams));
+  //         formData.append("canvaParams", JSON.stringify(canvaParams));
+
+  //         axios.post("http://localhost:3000/documents/", formData, {
+  //           headers: {
+  //             'Content-Type': 'multipart/form-data'
+  //           }
+  //         })
+  //           .then(res => {
+  //             console.log("TEST THEO", res);
+  //           });
+  //     })
+  //   }
+  // }
+
+  const handleSave = async () => {
+    if (ref.current) {
+      try {
+        const canvas = await html2canvas(ref.current);
+        const image = canvas.toDataURL('image/png');
+        const imageData = image.toString().split(',')[1];
+        const blob = b64toBlob(imageData, 'image/png');
+        const file = new File([blob], 'photo.png', { type: 'image/png' });
+
+        console.log("image", canvas, image, imageData, blob, file)
+
+
+        const formData = new FormData();
+        formData.append("photoFromFront", file);
+        formData.append("token", token);
+        formData.append("fileName", title);
+        formData.append("documentContent", JSON.stringify(inputParams));
+        formData.append("canvaParams", JSON.stringify(canvaParams));
+
+        const response = await axios.post("http://localhost:3000/documents/", formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
         });
+
+        console.log("TEST THEO", response);
+      } catch (error) {
+        console.error("Erreur lors de l'enregistrement de l'image", error);
+      }
     }
-  }
+  };
+
   //////////////////////////////////
 
   //{TETEY} envoie des screenshots vers le back ROUTE POST (pour le moment un seul screenshot)
@@ -134,9 +172,8 @@ export default function TextParams() {
         .then((canvas) => {
           console.log("j'ai cliqué")
           const image = canvas.toDataURL('image/png');
-          setImages(image);
           const formData = new FormData()
-          const imageData = images.toString().split(',')[1];
+          const imageData = image.toString().split(',')[1];
           const blob = b64toBlob(imageData, 'image/png');
           const file = new File([blob], 'photo.png', { type: 'image/png' });
           formData.append("photoFromFront", file);
@@ -345,7 +382,6 @@ export default function TextParams() {
       },
     ]);
   };
-
   const handleDeleteInput = (index) => {
     setInputParams(prevState => {
       const newInputParams = [...prevState];
@@ -377,7 +413,23 @@ export default function TextParams() {
     }));
   };
   const handleChangeBgImage = (newBackground, index) => {
-    setIndexImage(index)
+    // setIndexImage(newBackground)
+
+    // Créer l'élément img et charger l'image
+    const img = new Image();
+    img.src = newBackground; // Remplacez par l'URL de votre image
+    img.onload = () => {
+      // Une fois l'image chargée, l'ajouter à la div cible
+      if (imageContainerRef.current) {
+        imageContainerRef.current.appendChild(img);
+        setIndexImage(img)
+
+      }
+    }
+    console.log('img=>', img)
+
+
+
     console.log('index=>', indexImage)
     setCanvaParams(prevParams => ({
       ...prevParams,
@@ -762,10 +814,10 @@ export default function TextParams() {
       <Box className={`${styles.viewport} ${styles.polka}`}>
         <style>{`@import url(${importUrl})`}</style>
         <Header chemin={router.pathname} setTitle={handleSetTitle} />
-        <Box
+
+        <Box 
+          ref={ref}
           sx={{
-            width: canvaParams.width,
-            height: canvaParams.height,
             position: 'absolute',
             top: '50%',
             left: '50%',
@@ -774,25 +826,40 @@ export default function TextParams() {
             display: 'flex',
             flexDirection: 'column',
             justifyContent: canvaParams.justifyContent,
-            backgroundImage: canvaParams.backgroundImage,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
             boxShadow: '16px 8px 65px -22px #C7C7C7',
+            width: canvaParams.width,
+            height: canvaParams.height,
+            overflow: 'hidden', // Assurez-vous que l'image ne dépasse pas de la boîte
+            backgroundImage: canvaParams.backgroundImage
           }}
-          style={{}}
-          ref={ref}
         >
-          <div
-            style={{
+
+          {/* Image de fond */}
+          {/* <img src={indexImage} alt="Background" style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover', // Cette ligne assure que l'image couvre la boîte sans perdre ses proportions
+              zIndex: -1, // Cela place l'image derrière tous les autres enfants de Box
+            }} /> */}
+
+          {/* Contenu de la boîte ici */}
+          <div style={{
               width: '100%',
               wordWrap: 'break-word',
-              position: 'absolute',
+            position: 'relative', // Important pour que le contenu apparaisse au-dessus de l'image de fond
               padding: canvaParams.padding,
-            }}
-          >
+          }}>
             {texts}
           </div>
+
+
         </Box>
+
+
+
         <Box style={{ height: '85%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
           <div style={{ height: '100%', display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}>
             <Box
