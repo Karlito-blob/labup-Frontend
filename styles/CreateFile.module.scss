@@ -20,3 +20,23 @@ $polka-bg-color: rgb(255, 255, 255);
     background-size: $polka-bg-size;
     background-color: $polka-bg-color;
 }
+
+.container {
+    max-width: 124rem;
+    padding: 4rem 1rem;
+    margin: 0 auto;
+}
+
+.swiperContainer {
+    height: 52rem;
+    padding: 2rem 0;
+    position: relative;
+}
+
+.sliderControler {
+    position: relative;
+    bottom: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

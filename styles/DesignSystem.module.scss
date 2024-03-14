@@ -3,6 +3,7 @@
 // Display //
 // Display //
 .largeDisplay {
+    margin: 0;
     font-size: 72px;
     font-weight: 600;
     line-height: 1.2;
@@ -11,6 +12,7 @@
 }
 
 .mediumDisplay {
+    margin: 0;
     font-size: 60px;
     font-weight: 600;
     line-height: 1.2;
@@ -19,6 +21,7 @@
 }
 
 .smallDisplay {
+    margin: 0;
     font-size: 48px;
     font-weight: 600;
     line-height: 1.2;
@@ -28,6 +31,7 @@
 
 // Heading //
 .xLargeHeading {
+    margin: 0;
     font-size: 32px;
     font-weight: 600;
     line-height: 1.3;
@@ -36,6 +40,7 @@
 }
 
 .largeHeading {
+    margin: 0;
     font-size: 28px;
     font-weight: 600;
     line-height: 1.3;
@@ -44,6 +49,7 @@
 }
 
 .mediumHeading {
+    margin: 0;
     font-size: 24px;
     font-weight: 600;
     line-height: 1.3;
@@ -52,6 +58,7 @@
 }
 
 .smallHeading {
+    margin: 0;
     font-size: 20px;
     font-weight: 600;
     line-height: 1.3;
@@ -61,6 +68,7 @@
 
 // Body //
 .largeBody {
+    margin: 0;
     font-size: 18px;
     font-weight: 400;
     line-height: 1.5;
@@ -68,6 +76,7 @@
 }
 
 .largeBodySB {
+    margin: 0;
     font-size: 18px;
     font-weight: 600;
     line-height: 1.5;
@@ -75,6 +84,7 @@
 }
 
 .mediumBody {
+    margin: 0;
     font-size: 16px;
     font-weight: 400;
     line-height: 1.5;
@@ -82,6 +92,7 @@
 }
 
 .mediumBodySB {
+    margin: 0;
     font-size: 16px;
     font-weight: 600;
     line-height: 1.5;
@@ -89,6 +100,7 @@
 }
 
 .smallBody {
+    margin: 0;
     font-size: 14px;
     font-weight: 400;
     line-height: 1.5;
@@ -96,6 +108,7 @@
 }
 
 .smallBodySB {
+    margin: 0;
     font-size: 14px;
     font-weight: 600;
     line-height: 1.5;
@@ -104,6 +117,7 @@
 
 // Label //
 .label {
+    margin: 0;
     font-size: 12px;
     font-weight: 500;
     line-height: 1.5;
@@ -154,3 +168,11 @@ $N600: #2e3036;
 $N700: #1c1e25;
 $N800: #0d0f16;
 $N900: #00020a;
+
+.shadow1 {
+    box-shadow: 16px 8px 65px -22px #C6F227;
+}
+
+.shadow2 {
+    box-shadow: 16px 8px 65px -22px #F199F2;
+}

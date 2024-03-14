@@ -1,5 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
 .largeDisplay {
+  margin: 0;
   font-size: 72px;
   font-weight: 600;
   line-height: 1.2;
@@ -8,6 +9,7 @@
 }
 
 .mediumDisplay {
+  margin: 0;
   font-size: 60px;
   font-weight: 600;
   line-height: 1.2;
@@ -16,6 +18,7 @@
 }
 
 .smallDisplay {
+  margin: 0;
   font-size: 48px;
   font-weight: 600;
   line-height: 1.2;
@@ -24,6 +27,7 @@
 }
 
 .xLargeHeading {
+  margin: 0;
   font-size: 32px;
   font-weight: 600;
   line-height: 1.3;
@@ -32,6 +36,7 @@
 }
 
 .largeHeading {
+  margin: 0;
   font-size: 28px;
   font-weight: 600;
   line-height: 1.3;
@@ -40,6 +45,7 @@
 }
 
 .mediumHeading {
+  margin: 0;
   font-size: 24px;
   font-weight: 600;
   line-height: 1.3;
@@ -48,6 +54,7 @@
 }
 
 .smallHeading {
+  margin: 0;
   font-size: 20px;
   font-weight: 600;
   line-height: 1.3;
@@ -56,6 +63,7 @@
 }
 
 .largeBody {
+  margin: 0;
   font-size: 18px;
   font-weight: 400;
   line-height: 1.5;
@@ -63,6 +71,7 @@
 }
 
 .largeBodySB {
+  margin: 0;
   font-size: 18px;
   font-weight: 600;
   line-height: 1.5;
@@ -70,6 +79,7 @@
 }
 
 .mediumBody {
+  margin: 0;
   font-size: 16px;
   font-weight: 400;
   line-height: 1.5;
@@ -77,6 +87,7 @@
 }
 
 .mediumBodySB {
+  margin: 0;
   font-size: 16px;
   font-weight: 600;
   line-height: 1.5;
@@ -84,6 +95,7 @@
 }
 
 .smallBody {
+  margin: 0;
   font-size: 14px;
   font-weight: 400;
   line-height: 1.5;
@@ -91,6 +103,7 @@
 }
 
 .smallBodySB {
+  margin: 0;
   font-size: 14px;
   font-weight: 600;
   line-height: 1.5;
@@ -98,9 +111,18 @@
 }
 
 .label {
+  margin: 0;
   font-size: 12px;
   font-weight: 500;
   line-height: 1.5;
   letter-spacing: 0.02em;
   font-family: "Inter", sans-serif;
+}
+
+.shadow1 {
+  box-shadow: 16px 8px 65px -22px #C6F227;
+}
+
+.shadow2 {
+  box-shadow: 16px 8px 65px -22px #F199F2;
 }/*# sourceMappingURL=DesignSystem.module.css.map */

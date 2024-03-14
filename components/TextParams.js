@@ -4,6 +4,7 @@ import styles from '../styles/CreateFile.module.css';
 import ds from '../styles/DesignSystem.module.css'
 import { TwitterPicker as ColorPicker } from 'react-color';
 import { useRouter } from 'next/router';
+import Carrousel from "react-slick";
 
 // Import screenshot components
 import html2canvas from 'html2canvas';
@@ -44,10 +45,10 @@ import VerticalAlignTopRoundedIcon from '@mui/icons-material/VerticalAlignTopRou
 import VerticalAlignBottomRoundedIcon from '@mui/icons-material/VerticalAlignBottomRounded';
 import VerticalAlignCenterRoundedIcon from '@mui/icons-material/VerticalAlignCenterRounded';
 import HeightRoundedIcon from '@mui/icons-material/HeightRounded';
-import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded';
 import FormatBoldRoundedIcon from '@mui/icons-material/FormatBoldRounded';
 import FormatItalicRoundedIcon from '@mui/icons-material/FormatItalicRounded';
 import FormatUnderlinedRoundedIcon from '@mui/icons-material/FormatUnderlinedRounded';
+import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 
 export default function TextParams() {
 
@@ -283,6 +284,16 @@ export default function TextParams() {
     ]);
   };
 
+  const handleDeleteInput = (index) => {
+    setInputParams(prevState => {
+      const newInputParams = [...prevState];
+      newInputParams.splice(index, 1);
+      return newInputParams;
+    });
+    if (indexModif >= index) {
+      setIndex (indexModif - 1);
+  }
+  };
   // FONCTION SETTINGS CANVAS
   const handleChangeFormat = (newWidth, newHeight) => {
     setCanvaParams(prevParams => ({
@@ -323,7 +334,7 @@ export default function TextParams() {
   ));
 
   const chooseFormat = 
-    <Stack direction='row'>
+    <Stack direction='row' justifyContent='space-between'>
       <Tooltip title="Format square">
           <ToggleButton value={[640, 640]} key="square" onClick={() => handleChangeFormat(640, 640)}>
               Square
@@ -343,7 +354,7 @@ export default function TextParams() {
   ;
 
   const chooseJustififyContent = 
-    <Stack direction='row'>
+    <Stack direction='row' justifyContent='space-between'>
       <Tooltip title="Align Top">
         <ToggleButton value="flex-start" key="Align Top" onClick={() => handleChangeJustifyContent('flex-start')}>
             <VerticalAlignTopRoundedIcon />
@@ -407,65 +418,81 @@ export default function TextParams() {
   ;
 
   const chooseFontSize =
-  <Stack>
-    <p className={ds.label}>Size</p>
-      <FormControl sx={{ minWidth: 120 }} size="small">
-      <Select
-      id="demo-select-small"
-      value={inputParams[indexModif].fontSize}
-      onChange={(e) => handleFontSize(e.target.value)}
-      >
-      <MenuItem value="0.5rem">Small</MenuItem>
-      <MenuItem value="1rem">Normal</MenuItem>
-      <MenuItem value="1.5rem">Medium</MenuItem>
-      <MenuItem value="2rem">Large</MenuItem>
-      <MenuItem value="2.5rem">Extra Large</MenuItem>
-      <MenuItem value="4rem">Hudge</MenuItem>
-      </Select>
-    </FormControl>
-  </Stack>
+    <Stack>
+      <p className={ds.label}>Size</p>
+        <FormControl sx={{ minWidth: 120 }} size="small">
+        <Select
+        id="demo-select-small"
+        value={inputParams[indexModif].fontSize}
+        onChange={(e) => handleFontSize(e.target.value)}
+        >
+        <MenuItem value="0.5rem">Small</MenuItem>
+        <MenuItem value="1rem">Normal</MenuItem>
+        <MenuItem value="1.5rem">Medium</MenuItem>
+        <MenuItem value="2rem">Large</MenuItem>
+        <MenuItem value="2.5rem">Extra Large</MenuItem>
+        <MenuItem value="4rem">Hudge</MenuItem>
+        </Select>
+      </FormControl>
+    </Stack>
+  ;
 
   const chooseTextTransform =
-  <Stack direction='row' alignItems='center' justifyContent='space-between'>
-    <p className={ds.label}>Text Transform</p>
-    <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-    <Select
-    id="demo-select-small"
-    value={inputParams[indexModif].textTransform}
-    onChange={(e) => handleTextTransform(e.target.value)}
-    >
-      <MenuItem value="none">None</MenuItem>
-      <MenuItem value="uppercase">Uppercase</MenuItem>
-      <MenuItem value="capitalize">Capitalize</MenuItem>
-      <MenuItem value="lowercase">Lowercase</MenuItem>
-    </Select>
-    </FormControl>
-  </Stack>
+    <Stack direction='row' alignItems='center' justifyContent='space-between'>
+      <p className={ds.label}>Text Transform</p>
+      <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+      <Select
+      id="demo-select-small"
+      value={inputParams[indexModif].textTransform}
+      onChange={(e) => handleTextTransform(e.target.value)}
+      >
+        <MenuItem value="none">None</MenuItem>
+        <MenuItem value="uppercase">Uppercase</MenuItem>
+        <MenuItem value="capitalize">Capitalize</MenuItem>
+        <MenuItem value="lowercase">Lowercase</MenuItem>
+      </Select>
+      </FormControl>
+    </Stack>
   ;
 
   const chooseFont =
-  <Stack sx={{width: '90%'}}>
-    <p className={ds.label}>Font</p>
-    <Autocomplete
-    disablePortal
-    value={inputParams[indexModif].fontFamily}
-    id="combo-box-demo"
-    onChange={handleFontChange}
-    options={nameFontOptions}
-    getOptionSelected={(option, value) => option.value === value.value}
-    size="small"
-    renderInput={(params) => <TextField {...params}/>}
-  />
-  </Stack>
+    <Stack sx={{width: '90%'}}>
+      <p className={ds.label}>Font</p>
+      <Autocomplete
+      disablePortal
+      value={inputParams[indexModif].fontFamily}
+      id="combo-box-demo"
+      onChange={handleFontChange}
+      options={nameFontOptions}
+      getOptionSelected={(option, value) => option.value === value.value}
+      size="small"
+      renderInput={(params) => <TextField {...params}/>}
+    />
+    </Stack>
   ;
 
   const inputs = inputParams.map((params, index) => (
-    <input
-    key={index}
-    onChange={(e) => handleWriteValue(index, e)}
-    onClick={() => setIndex(index)}
-    value={params.inputValue} />
+      <Stack direction='row' alignItems='center' justifyContent='space-between' spacing={1}>
+      <TextField
+      id="outlined-multiline-flexible"
+      multiline
+      maxRows={3}
+      key={index}
+      size="small"
+      style={{
+        width: '100%'
+      }}
+      onChange={(e) => handleWriteValue(index, e)}
+      onClick={() => setIndex(index)}
+      value={params.inputValue} />
+      {index !== 0 && (
+        <IconButton onClick={() => handleDeleteInput(index)}>
+            <DeleteRoundedIcon />
+        </IconButton>
+      )}
+    </Stack>
   ));
+
   const texts = inputParams.map((params, index) => (
     <p
     key={index}
@@ -486,43 +513,55 @@ export default function TextParams() {
   ));
 
   const textStyle = 
-  <Paper sx={{
-    width: '20%',
+  <Box className={ds.shadow2} sx={{
+    width: '15%',
     height: 'auto',
     padding: '24px',
     display: 'flex',
     flexDirection: 'column',
     gap: '24px',
+    backgroundColor: '#fff',
+    borderRadius: '16px',
   }}>
+    <p className={ds.smallHeading}>Styles</p>
+    <Divider />
     <Stack direction='row' alignItems='center' gap='12px'>
       {chooseFont}
       {chooseFontSize}
     </Stack>
     <Divider />
-    {chooseTextAlign}
-    {chooseStyleFont}
-    {chooseTextTransform}
+      {chooseTextAlign}
+      {chooseStyleFont}
+      {chooseTextTransform}
     <Divider />
     <ColorPicker 
       onChangeComplete={handleColorChange}
       color={inputParams.color}
       triangle='hide'
+      width='100%'
     />
-  </Paper>
+  </Box>
   ;
 
   const canvaStyle =
-  <Paper sx={{
-    width: '20%',
+  <Box className={ds.shadow1} sx={{
+    width: '15%',
     height: 'auto',
     padding: '24px',
     display: 'flex',
     flexDirection: 'column',
     gap: '24px',
+    backgroundColor: '#fff',
+    borderRadius: '16px',
   }}>
+    <p className={ds.smallHeading}>Layout</p>
+    <Divider />
     {chooseFormat}
+    <Divider />
     {chooseJustififyContent}
-    <Slider
+    <Stack direction='row' alignItems='center' justifyContent='space-between' spacing={6}>
+      <p className={ds.label}>Marge</p>
+      <Slider
       aria-label="Padding"
       defaultValue={12}
       value={canvaParams.padding}
@@ -530,13 +569,17 @@ export default function TextParams() {
       valueLabelDisplay="auto"
       shiftStep={30}
       step={4}
-      marks
       min={4}
       max={40}
       />
-    {inputs}
-    <SecondaryButton text="Add new field" onClick={handleClickAddInput}/>
-  </Paper>
+    </Stack>
+    <Divider />
+    <Stack direction='column' gap='12px'>
+      <p className={ds.mediumBodySB}>Edit fields</p>
+      {inputs}
+    </Stack>
+    <Button variant="outlined" onClick={handleClickAddInput }>Add new field</Button>
+  </Box>
   ;
 
   const styleModal = {
@@ -550,67 +593,56 @@ export default function TextParams() {
     p: 4,
   };
 
-    // Fonction pour supprimer un input en fonction de l'index
-    const handleDeleteInput = (index) => {
-      const nouvellesValeurs = [...valeursInputs];
-      nouvellesValeurs.splice(index, 1);
-      setValeursInputs(nouvellesValeurs);
-    };
+const SampleNextArrow = ({ className, style, onClick }) => (
+  <div
+    className={className}
+    style={{ ...style, display: "block", background: "red" }}
+    onClick={onClick}
+  />
+);
+
+const SamplePrevArrow = ({ className, style, onClick }) => (
+  <div
+    className={className}
+    style={{ ...style, display: "block", background: "green" }}
+    onClick={onClick}
+  />
+);
+
+const settings = {
+  focusOnSelect: true,
+  className: "center",
+  centerMode: true,
+  dots: true,
+  infinite: true,
+  slidesToShow: 3,
+  speed: 500,
+  nextArrow: <SampleNextArrow />,
+  prevArrow: <SamplePrevArrow />,
+  responsive: [
+    {
+      breakpoint: 768, // Adjust this breakpoint as needed
+      settings: {
+        slidesToShow: 1,
+        centerMode: false,
+      },
+    },
+  ],
+};
+
+const test = [
+  "https://via.placeholder.com/150",
+  "https://via.placeholder.com/150",
+  "https://via.placeholder.com/150",
+  "https://via.placeholder.com/150",
+  "https://via.placeholder.com/150",
+  "https://via.placeholder.com/150"
+];
 
     return (
         <Box className={`${styles.viewport} ${styles.polka}`}>
-          <style> {`@import url(${importUrl})`} </style>
-            {/* HEADER SECTION  */}
-        {/* <Box sx={{
-            width: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            borderBottom: '1px solid',
-            borderColor: 'divider',
-            borderRadius: 1,
-            bgcolor: 'background.paper',
-            color: 'text.secondary',
-            '& svg': {
-                m: 1,
-            },
-            '& hr': {
-                mx: 0.5,
-            },
-            }}>
-                <BackButton/>
-                <Stack direction='row' alignItems='center' spacing={2}>
-                    <p>Folder /</p>
-                    <TextField
-                        size="small"
-                        variant="standard"
-                        placeholder="Untitled"
-                        InputProps={{
-                        disableUnderline: true,
-                        }}
-                        InputLabelProps={{ shrink: false }}
-                        onChange={(e)   => setFileName(e.target.value)} value={fileName}
-                    />
-                </Stack>
-                <Stack direction='row' spacing={2}>
-                    <GhostButton text="Export" size='medium'/>
-                    <PrimaryButton text="Save" size='medium' onClick={() => handleSave()}/>
-                    <Divider orientation="vertical" variant="middle" flexItem/>
-                    <Avatar/>
-                </Stack>
-        </Box> */}
-
+        <style> {`@import url(${importUrl})`} </style>
         <Header chemin={router.pathname} />
-
-
-            <Box sx={{
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'space-between',
-            }}>
-            {canvaStyle}
-            {textStyle}
-            </Box>
             <Box sx={{
               width: canvaParams.width,
               height: canvaParams.height,
@@ -632,7 +664,17 @@ export default function TextParams() {
                   {texts}
                 </div>
             </Box>
-            {imagesCarrousel}
+            <div style={{width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent:'center'}}>
+              <Box sx={{
+              width: '90%',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'flex-start',
+              }}>
+              {canvaStyle}
+              {textStyle}
+              </Box>
+            </div>
             <div>
             <Button variant="contained" onClick={() => handleOpen()}>Open Modal</Button>
               <Modal
@@ -664,6 +706,34 @@ export default function TextParams() {
               </Modal>
             </div>
             <Button variant="contained" onClick={() => handleSave(indexImage)}>test</Button>
+            <div style={{ width: "100vw", height: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <link
+              rel="stylesheet"
+              type="text/css"
+              charset="UTF-8"
+              href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"
+              />
+              <link
+              rel="stylesheet"
+              type="text/css"
+              href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
+              />
+              <div className="slider-container" style={{ width: "70%" }}>
+                <Carrousel {...settings}>
+                {patternsData.map((image, index) => (
+                    <div key={index} style={{ width: "100%", height: "100%", display: "flex", justifyContent: "center" }}>
+                      <img 
+          key={index}
+          src={image.patternImg} 
+          alt={`Image ${index}`} 
+          style={{width: '200px', height: '150px', objectFit: 'cover'}}
+          onClick={() => handleChangeBgImage(image.patternImg, index)}
+        />
+                    </div>
+                  ))}
+                </Carrousel>
+              </div>
+            </div>
         </Box>
     )
 }
