@@ -23,6 +23,7 @@ import {
   KeyboardArrowRight as KeyboardArrowRightIcon,
   KeyboardArrowLeft as KeyboardArrowLeftIcon,
   KeyboardArrowDown as KeyboardArrowDownIcon,
+  KeyboardArrowUp as KeyboardArrowUpIcon,
   AddPhotoAlternate as AddPhotoAlternateIcon,
   ViewHeadlineRounded as ViewHeadlineRoundedIcon,
   PatternRounded as PatternRoundedIcon,
@@ -33,6 +34,7 @@ import {
   CloseRounded as CloseRoundedIcon,
   UnfoldMoreRounded as UnfoldMoreRoundedIcon,
   IosShareRounded as IosShareRoundedIcon,
+  TryRounded,
 
 } from '@mui/icons-material';
 import GifIcon from '@mui/icons-material/Gif';
@@ -72,7 +74,6 @@ export default function createPatterns() {
   // Navigation 
   const [navigation, setNavigation] = useState('Pattern')
   const [showNavigation, setShowNavigation] = useState(true)
-  const [activeTitle, setActiveTitle] = useState('Pattern');
 
   // Récupération des paramètres initiaux du Pattern
   const [params, setParams] = useState([]);
@@ -85,12 +86,25 @@ export default function createPatterns() {
   // Track visibility state for each slider individually
   const [showSlider, setShowSlider] = useState({});
 
+  // Gestion du titre du document
+  const [title, setTitle] = useState('Untitled')
+
+  // Fonction pour gérer la mise à jour du titre
+  const handleSetTitle = (newTitle) => {
+    if (newTitle) {
+      setTitle(newTitle);
+    } else {
+      setTitle('Untitled');
+    }
+  };
+
   // Fonctions ////////////////////////////////////////////////////////////////////
   // Screenshot 
   const handleTakeScreenshot = async () => {
     try {
       const screenshot = await takeScreenshot(ref); // Assurez-vous que cette fonction retourne l'image en base64 ou une URL de l'image
-      const fileName = `screenshot_${patternName}`; // Nom de fichier généré pour l'image
+      const fileName = `${title}-${patternName}`; // Nom de fichier généré pour l'image
+
 
       // Mettre à jour le state images avec les nouvelles données
       setImages(prevImages => [
@@ -116,7 +130,8 @@ export default function createPatterns() {
     // Initialisation de la progression
     setProgress(0);
 
-    const fileName = `gif_${patternName}`; // Nom de fichier généré pour l'image
+    const fileName = `${title}_${patternName}`; // Nom de fichier généré pour l'image
+    console.log(fileName)
 
     const totalFrames = 25;
     const frameInterval = 40; // Temps en millisecondes
@@ -134,8 +149,8 @@ export default function createPatterns() {
 
     const options = {
       images: frames,
-      gifWidth: 500,
-      gifHeight: 500,
+      gifWidth: 800,
+      gifHeight: 800,
       numWorkers: 5,
       frameDuration: 0.01,
       sampleInterval: 40,
@@ -228,9 +243,10 @@ export default function createPatterns() {
 
     // console.log('patternID =>' ,pattern._id)
     return (
-      <div key={index} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <img src={`${pattern.patternName}.png`} className={styles.patternCard} onClick={() => { handlePatternData(pattern._id, pattern.patternName) }} />
+      <div key={index} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingBottom: '8px' }}>
         {pattern.patternLabel}
+
+        <img src={`${pattern.patternName}.png`} className={styles.patternCard} onClick={() => { handlePatternData(pattern._id, pattern.patternName) }} />
       </div>
     );
   });
@@ -239,9 +255,9 @@ export default function createPatterns() {
   const screenshots = images.map((img, index) => {
     return (
       <div key={index} style={{}}>
-        <div style={{ display: 'flex', flexDirection: 'column', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', paddingBottom: '8px' }}>
+        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingBottom: '8px' }}>
           <img key={index} src={img.screenshot} alt={`screenshot-${index}`} className={styles.screenshotCard} onClick={() => setScreenshot(images[index].screenshot)} />
-          {`screenshot-${index + 1}`}
+          {`${title}-${index + 1}`}
           <div style={{ display: 'flex', flexDirection: 'row', gap: '16px' }}>
 
             <div
@@ -389,7 +405,6 @@ export default function createPatterns() {
             setModifiedParams(initialParamsData);
             setPatternName(ModifiedPattern.patternName);
 
-            console.log(initialParamsData);
           }
         })
         .catch(error => console.log(error));
@@ -431,7 +446,7 @@ export default function createPatterns() {
                   <div onClick={() => setShowSlider(prevState => ({ ...prevState, [params.paramName]: !prevState[params.paramName] }))} style={{ cursor: 'pointer' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                       {params.displayName}
-                      {showSlider[params.paramName] ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
+                      {showSlider[params.paramName] ? <KeyboardArrowDownIcon /> : <KeyboardArrowUpIcon />}
                     </div>
                   </div>
 
@@ -488,7 +503,7 @@ export default function createPatterns() {
                   <div onClick={() => setShowSlider(prevState => ({ ...prevState, [params.paramName]: !prevState[params.paramName] }))} style={{ cursor: 'pointer' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                       {params.displayName}
-                      {showSlider[params.paramName] ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
+                      {showSlider[params.paramName] ? <KeyboardArrowDownIcon /> : <KeyboardArrowUpIcon />}
                     </div>
                   </div>
 
@@ -525,7 +540,7 @@ export default function createPatterns() {
                   <div onClick={() => setShowSlider(prevState => ({ ...prevState, [params.paramName]: !prevState[params.paramName] }))} style={{ cursor: 'pointer' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                       {params.displayName}
-                      {showSlider[params.paramName] ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
+                      {showSlider[params.paramName] ? <KeyboardArrowDownIcon /> : <KeyboardArrowUpIcon />}
                     </div>
                   </div>
 
@@ -545,21 +560,20 @@ export default function createPatterns() {
               const handleSwitch = (event, paramName) => {
                 setModifiedParams((prevParams) => {
                   const updatedParams = { ...prevParams };
-                  updatedParams[paramName] = event.target.checked;
+                  updatedParams[paramName] = event.target.checked; 
                   return updatedParams;
                 });
               };
 
-              console.log(modifiedParams)
+              console.log('initial=>', initialParams, 'modified=>', modifiedParams)
+
 
               return (
-                <div key={params.paramName + i} className={styles.paramCard}>
-                  <div className={styles.line}></div>
+                <div key={params.paramName + i} className={styles.toggleCard}>
 
                   <div onClick={() => setShowSlider(prevState => ({ ...prevState, [params.paramName]: !prevState[params.paramName] }))} style={{ cursor: 'pointer' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex' }}>
                       {params.displayName}
-                      {showSlider[params.paramName] ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
                     </div>
                   </div>
 
@@ -588,49 +602,56 @@ export default function createPatterns() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around' }} className={styles2.viewport}>
 
-      <Header chemin={router.pathname} />
+      <Header chemin={router.pathname} setTitle={handleSetTitle} />
 
       <div className={styles.container} style={{ marginTop: '100px' }}>
 
-        {/* Zone de choix du pattern */}
-        <div className={styles.patternPanel}>
-          <div style={{ display: 'flex' }}>
-            <h1
-              style={{
-                cursor: 'pointer',
-                boxShadow: activeTitle === 'Pattern' ? '0px 4px 8px rgba(0, 0, 0, 0.2)' : 'none',
-                transition: 'box-shadow 0.3s ease',
-                borderRadius: activeTitle === 'Pattern' ? '10px' : '0',
-                padding: '5px 10px', // Ajouté pour un peu d'espace autour du texte
-                marginRight: '20px', // Pour espacer les titres
-              }}
-              onClick={() => setActiveTitle('Pattern')}
-            >
+        <div className={styles.leftPanel}>
+
+          {/* Zone de screenshot */}
+          <div className={styles.screenshotPanel}>
+            <div className={styles.screenshotTitle}>
+              <h1 style={{ marginLeft: '24px' }}>
+                ScreenShots
+              </h1>
+              {patternName && <div style={{ display: 'flex', gap: '8px', marginRight: '16px' }}>
+                {screenshot ?
+                  <div onClick={() => setScreenshot('')} className={styles.rightIcons} >
+                    <CloseRoundedIcon />
+                  </div>
+                  :
+                  <>
+                    <div onClick={() => handleTakeScreenshot()} className={styles.rightIcons} >
+                      <CameraRoundedIcon />
+                    </div>
+                    <div className={styles.rightIcons} onClick={() => handleCreateGif()}>
+                      <GifIcon />
+                    </div>
+                  </>
+
+                }
+
+              </div>}
+
+            </div>
+
+
+            <div className={styles.screenCardList}>
+              {screenshots}
+            </div>
+          </div>
+
+          {/* Zone de choix du pattern */}
+          <div className={styles.patternPanel}>
+            <h1 style={{ marginLeft: '24px' }}>
               Pattern
             </h1>
-            <h1
-              style={{
-                cursor: 'pointer',
-                transition: 'box-shadow 0.3s ease',
-                boxShadow: activeTitle === 'ScreenShots' ? '0px 4px 8px rgba(0, 0, 0, 0.2)' : 'none',
-                borderRadius: activeTitle === 'ScreenShots' ? '10px' : '0',
-                padding: '5px 10px', // Ajouté pour un peu d'espace autour du texte
-              }}
-              onClick={() => setActiveTitle('ScreenShots')}
-            >
-              ScreenShots
-            </h1>
+            <div className={styles.patternCardList}>
+              {patternsData}
+            </div>
           </div>
-          <div className={styles.patternCardList}>
-            {activeTitle === 'Pattern' && patternsData}
-            {activeTitle === 'ScreenShots' && patternName && (
-              <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                {screenshots}
-              </div>
-            )}
-          </div>
-        </div>
 
+        </div> 
 
         {/* Zone de visualisation */}
         <div className={styles.visualisationPanel}>
@@ -648,32 +669,27 @@ export default function createPatterns() {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingLeft: '20px', paddingRight: '12px' }}>
 
             <h1> Settings </h1>
-            <div >
-              <UnfoldMoreRoundedIcon onClick={() => expandAllParams()} style={{ fontSize: '36px', cursor: 'pointer' }} />
-              <ShuffleRoundedIcon onClick={() => handleRandomParams()} style={{ fontSize: '36px', cursor: 'pointer' }} />
+
+            <div>
+              <div className={styles.rightIconsContainer}>
+                <div onClick={() => setZoom((prevZoom) => zoom <= 0.20 ? 1 : prevZoom - 0.10)} className={styles.rightIcons} >
+                  <RemoveRoundedIcon />
+                </div>
+                <div onClick={() => setZoom((prevZoom) => zoom >= 1 ? 1 : prevZoom + 0.10)} className={styles.rightIcons} >
+                  <AddRoundedIcon />
+                </div>
+                <div onClick={() => expandAllParams()} className={styles.rightIcons}>
+                  <UnfoldMoreRoundedIcon />
+                </div>
+                <div onClick={() => handleRandomParams()} className={styles.rightIcons}>
+                  <ShuffleRoundedIcon />
+                </div>
+              </div>
             </div>
+
           </div>
 
-          <div className={styles.rightIconsContainer}>
-            <div onClick={() => setZoom((prevZoom) => zoom <= 0.20 ? 1 : prevZoom - 0.10)} className={styles.rightIcons} >
-              <RemoveRoundedIcon />
-            </div>
-            <div onClick={() => setZoom((prevZoom) => zoom >= 1 ? 1 : prevZoom + 0.10)} className={styles.rightIcons} >
-              <AddRoundedIcon />
-            </div>
-            {screenshot ?
-              <div onClick={() => setScreenshot('')} className={styles.rightIcons} >
-                <CloseRoundedIcon />
-              </div>
-              :
-              <div onClick={() => handleTakeScreenshot()} className={styles.rightIcons} >
-                <CameraRoundedIcon />
-              </div>
-            }
-            <div className={styles.rightIcons} onClick={() => handleCreateGif()}>
-              <GifIcon /> 
-            </div>
-          </div>
+
           <div className={styles.params}>
             {params}
           </div>

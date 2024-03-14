@@ -20,6 +20,9 @@ export default function SignUp() {
 	const [signUpPassword, setSignUpPassword] = useState('');
   const [isDisabled, setIsDisabled] = useState(true);
 
+  const [erreur, setErreur] = useState({ statut: false, message: '' })
+
+
   // Register by get the data of inputs
   const handleRegister = () => {
       fetch('http://localhost:3000/users/signup', {
@@ -35,8 +38,13 @@ export default function SignUp() {
             setSignUpEmail('');
             setSignUpPassword('');
             setIsDisabled(true);
+            setErreur({ statut: false, message: '' });
+
             router.push("/dashboard")
+          } else {
+            setErreur({ statut: true, message: 'Username already exists' })
           }
+
         });
 	};
 
@@ -66,7 +74,9 @@ export default function SignUp() {
         <div className={styles.inputsContainer}>
           <TextField id="outlined-basic" label="Username" variant="outlined" onChange={handleInputUsernameChange} value={signUpUserName}/>
           <TextField id="outlined-basic" label="Email address" variant="outlined" onChange={handleEmailChange} value={signupEmail}/>
-          <TextField id="outlined-basic" label="Password" type="password" variant="outlined" onChange={handlePasswordChange} value={signUpPassword}/>
+          <TextField id="outlined-basic" label="Password" type="password" variant="outlined" onChange={handlePasswordChange} value={signUpPassword} />
+          {erreur.statut && <div style={{ color: 'red' }}> {erreur.message}</div>}
+
         </div>
         <Button variant="contained" disabled={isDisabled} onClick={handleRegister}> Create an account </Button> 
         <div className={styles.swtich}>
