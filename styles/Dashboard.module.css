@@ -142,8 +142,7 @@
 }
 
 .patternSection {
-  padding: 40px 80px;
-  color: #ffffff;
+  padding: 0px 80px;
 }
 
 .wrapScrollH {
@@ -174,3 +173,53 @@
   -o-object-fit: fill;
      object-fit: fill;
 }/*# sourceMappingURL=Dashboard.module.css.map */
+
+.folderSection {
+  padding: 0px 80px;
+}
+
+.foldersContainer {
+  display: flex;
+  gap: 24px;
+}
+
+.newFolder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-self: flex-start;
+  width: 208px;
+  height: 208px;
+  border-radius: 20px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  margin-top: 20px;
+}
+.folderContainer {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 8px;
+  gap: 24px;
+}
+
+.fileCard {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-inline: 24px;
+  font-size: 20px;
+  gap: 24px;
+  height: 100px;
+  width: auto;
+  border-radius: 20px;
+  box-shadow: 0px 4px 8px rgba(120, 200, 25, 0.2);
+}
+
+.iconFolder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 255, 0.2);
+  height: 60px;
+  width: 60px;
+}

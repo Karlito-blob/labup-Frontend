@@ -675,20 +675,19 @@ export default function createPatterns() {
 
           </div>
 
-          {/* Zone de visualisation */}
-          <div className={styles.visualisationPanel}>
-            <div className={styles.visualisationCanva} style={{ scale: `${zoom}` }} ref={ref}  >
-              {screenshot ?
-                <img src={screenshot} style={{ width: '800px', height: '800px' }} />
-                : <VisualizationPattern initialParams={initialParams} modifiedParams={modifiedParams} pattern={patternName} />
-              }
-            </div>
-
+        {/* Zone de visualisation */}
+        <div className={styles.visualisationPanel}>
+          <div className={styles.visualisationCanva} style={{ scale: `${zoom}` }} ref={ref}  >
+            {screenshot ?
+              <img src={screenshot} style={{ width: '800px', height: '800px' }} />
+              : <VisualizationPattern initialParams={initialParams} modifiedParams={modifiedParams} pattern={patternName} />
+            }
           </div>
-
-          {/* Zone de paramètres */}
-          {patternName && <div className={styles.paramPanel}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingLeft: '20px', paddingRight: '12px' }}>
+        </div>
+  
+        {/* Zone de paramètres */}
+        {patternName && <div className={styles.paramPanel}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingLeft: '20px', paddingRight: '12px' }}>
 
               <p className={ds.smallHeading}>Settings</p>
 
