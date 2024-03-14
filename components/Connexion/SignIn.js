@@ -36,7 +36,7 @@ export default function SignIn() {
 
 					router.push("/dashboard")
 				} else {
-					setErreur({ statut: true, message: 'Wrong Email or Password' })
+					setErreur({ statut: true, message: data.error })
 				}
 			});
 	};

@@ -661,7 +661,6 @@ export default function createPatterns() {
               : <VisualizationPattern initialParams={initialParams} modifiedParams={modifiedParams} pattern={patternName} />
             }
           </div>
-
         </div>
   
         {/* Zone de paramètres */}
