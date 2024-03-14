@@ -1,11 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap");
 .largeDisplay {
   margin: 0;
   font-size: 72px;
   font-weight: 600;
   line-height: 1.2;
   letter-spacing: -0.025em;
-  font-family: "Inter", sans-serif;
+  font-family: "Space Grotesk", sans-serif;
 }
 
 .mediumDisplay {
@@ -119,10 +120,18 @@
   font-family: "Inter", sans-serif;
 }
 
+.primaryButton {
+  color: #F199F2;
+}
+
+.secondaryButton {
+  color: #0C2FF2;
+}
+
 .shadow1 {
-  box-shadow: 16px 8px 65px -22px #0C2FF2;
+  box-shadow: 15px 13px 76px -37px #F20587;
 }
 
 .shadow2 {
-  box-shadow: 16px 8px 65px -22px #F199F2;
+  box-shadow: 15px 13px 76px -37px #F20587;
 }/*# sourceMappingURL=DesignSystem.module.css.map */

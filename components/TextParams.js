@@ -5,6 +5,7 @@ import ds from '../styles/DesignSystem.module.css'
 import { TwitterPicker as ColorPicker } from 'react-color';
 import { useRouter } from 'next/router';
 import Carrousel from "react-slick";
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 // Import screenshot components
 import html2canvas from 'html2canvas';
@@ -598,6 +599,9 @@ export default function TextParams() {
       <Stack direction='row' alignItems='center' justifyContent='space-between' spacing={6}>
         <p className={ds.label}>Marge</p>
         <Slider
+          sx={{
+            width: 300,
+          }}
           aria-label="Padding"
           defaultValue={12}
           value={canvaParams.padding}
@@ -618,7 +622,7 @@ export default function TextParams() {
           </Stack>
         </Box>
       </Stack>
-      <Button variant="outlined" onClick={handleClickAddInput}>Add new field</Button>
+      <Button color="secondary" variant='contained' sx={{borderRadius: '10px'}} onClick={handleClickAddInput}>Add new field</Button>
     </Box>
   );
 
@@ -670,61 +674,81 @@ export default function TextParams() {
     ],
   };
 
+
   console.log(inputParams)
   console.log(canvaParams)
 
+  // Theme s§tyle
+  const theme = createTheme({
+    palette: {
+      primary: {
+        light: '#5f37f4',
+        main: '#3805F2',
+        dark: '#2703a9',
+        contrastText: '#fff',
+      },
+      secondary: {
+        light: '#f13ff4',
+        main: '#EE0FF2',
+        dark: '#a60aa9',
+        contrastText: '#fff',
+      },
+    },
+  });
+
   return (
-    <Box className={`${styles.viewport} ${styles.polka}`}>
-      <style>{`@import url(${importUrl})`}</style>
-      <Header chemin={router.pathname} />
-      <Box
-        sx={{
-          width: canvaParams.width,
-          height: canvaParams.height,
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          bgcolor: 'white',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: canvaParams.justifyContent,
-          backgroundImage: canvaParams.backgroundImage,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          boxShadow: '16px 8px 65px -22px #C7C7C7',
-        }}
-        style={{}}
-        ref={ref}
-      >
-        <div
-          style={{
-            width: '100%',
-            wordWrap: 'break-word',
+    <ThemeProvider theme={theme}>
+      <Box className={`${styles.viewport} ${styles.polka}`}>
+        <style>{`@import url(${importUrl})`}</style>
+        <Header chemin={router.pathname} />
+        <Box
+          sx={{
+            width: canvaParams.width,
+            height: canvaParams.height,
             position: 'absolute',
-            padding: canvaParams.padding,
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            bgcolor: 'white',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: canvaParams.justifyContent,
+            backgroundImage: canvaParams.backgroundImage,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            boxShadow: '16px 8px 65px -22px #C7C7C7',
           }}
+          style={{}}
+          ref={ref}
         >
-          {texts}
-        </div>
-      </Box>
-      <Box style={{ height: '85%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-        <div style={{ height: '100%', display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}>
-          <Box
-            sx={{
-              width: '95%',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'flex-start',
+          <div
+            style={{
+              width: '100%',
+              wordWrap: 'break-word',
+              position: 'absolute',
+              padding: canvaParams.padding,
             }}
           >
-            {Layout}
-            {Styles}
-          </Box>
-        </div>
-    
-      </Box>
-      <div style={{ height: '10%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            {texts}
+          </div>
+        </Box>
+        <Box style={{ height: '85%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+          <div style={{ height: '100%', display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}>
+            <Box
+              sx={{
+                width: '95%',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'flex-start',
+              }}
+            >
+              {Layout}
+              {Styles}
+            </Box>
+          </div>
+
+        </Box>
+        <div style={{ height: '10%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           <link
             rel="stylesheet"
             type="text/css"
@@ -755,6 +779,7 @@ export default function TextParams() {
             </Carrousel>
           </div>
         </div>
-    </Box>
+      </Box>
+    </ThemeProvider>
   );
 }
