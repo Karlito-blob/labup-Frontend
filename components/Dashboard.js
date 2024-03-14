@@ -369,8 +369,6 @@ export default function Dashboard(props) {
 
   return (
     <div className={styles.container}>
-  return (
-    <div className={styles.container}>
 
       <Header chemin={router.pathname} />
       <Header chemin={router.pathname} />
