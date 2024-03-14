@@ -23,6 +23,8 @@ import ds from '../styles/DesignSystem.module.css'
 export default function Dashboard(props) {
 
   const router = useRouter();
+  const token = useSelector((state) => state.user.value.token)
+
 
   // const [folders, setFolders] = useState([]);
   const [updated, setUpdated] = useState(false)
@@ -134,7 +136,7 @@ export default function Dashboard(props) {
   //   }
   // };
 
-  const handleNavigationPattern = (path, fileID) => {
+  const handleNavigation = (path, fileID) => {
     router.push(`/${path}?id=${fileID}`);
   }
 
@@ -185,15 +187,11 @@ export default function Dashboard(props) {
   }
 
 
-  const handleNavigationDocument = (path, fileID) => {
-    router.push(`/${path}?id=${fileID}`);
-  }
 
 
   const patternsList = patterns.map((file, index) => (
     <div key={index} id={file._id} className={styles.pattern}>
       <div className={styles.imgContainer}>
-
 
         <img src={file.patternImg} />
       </div>
@@ -205,7 +203,7 @@ export default function Dashboard(props) {
           height: '40px', width: '40px', backgroundColor: 'white', borderRadius: '20px',
           boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)'
         }}>
-          <AutoFixHighIcon onClick={() => { handleNavigationPattern('createPatterns', file._id) }} />
+          <AutoFixHighIcon onClick={() => { handleNavigation('createPatterns', file._id) }} />
 
         </div>
 
@@ -251,7 +249,7 @@ export default function Dashboard(props) {
           height: '40px', width: '40px', backgroundColor: 'white', borderRadius: '20px',
           boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)'
         }}>
-          <AutoFixHighIcon onClick={() => { handleNavigationPattern('document', file._id) }} />
+          <AutoFixHighIcon onClick={() => { handleNavigation('createFile', file._id) }} />
 
         </div>
 
@@ -281,28 +279,20 @@ export default function Dashboard(props) {
   const exportsList = exports.map((file, index) => (
     <div key={index} id={file._id} className={styles.pattern}>
       <div className={styles.imgContainer}>
-        <div style={{
-          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-          position: 'absolute', margin: '10px',
-          height: '40px', width: '40px', backgroundColor: 'white', borderRadius: '20px',
-          boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)'
-        }}>
-          <AutoFixHighIcon onClick={() => { handleNavigation(file._id) }} />
-        </div>
-
         <img src={file.exportImg} />
       </div>
+
       <h5>{file.fileName}</h5>
 
       <div style={{ display: 'flex' }}>
-        <div style={{
+        {/* <div style={{
           cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '10px',
           height: '40px', width: '40px', backgroundColor: 'white', borderRadius: '20px',
           boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)'
         }}>
           <AutoFixHighIcon onClick={() => { handleNavigationPattern('export', file._id) }} />
 
-        </div>
+        </div> */}
 
         <div style={{
           cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '10px',
@@ -369,7 +359,23 @@ export default function Dashboard(props) {
   //   setIsCreatingFolder(true);
   // };
 
-
+  // Theme s§tyle
+  const theme = createTheme({
+    palette: {
+      primary: {
+        light: '#5f37f4',
+        main: '#3805F2',
+        dark: '#2703a9',
+        contrastText: '#fff',
+      },
+      secondary: {
+        light: '#f13ff4',
+        main: '#EE0FF2',
+        dark: '#a60aa9',
+        contrastText: '#fff',
+      },
+    },
+  });
 
   return (
     <ThemeProvider theme={theme}>
@@ -386,24 +392,40 @@ export default function Dashboard(props) {
           </Stack>
         </div>
 
-        <div className={styles.patternSection}>
-          <h3>My patterns</h3>
-          <div className={styles.wrapScrollH}>
-            <div className={styles.patternsContainer}>
-              {patternsList}
+        <div style={{ overflowX: 'auto' }}>
+          {/* Patterns */}
+          <div className={styles.patternSection}>
+            <h3>My patterns</h3>
+            <div className={styles.wrapScrollH}>
+              <div className={styles.patternsContainer}>
+                {patternsList}
+              </div>
+            </div>
+          </div>
+
+          {/* Documents  */}
+          <div className={styles.patternSection}>
+            <h3>My Documents</h3>
+            {/* <AddCircleRoundedIcon onClick={handleOpenCreateFolderDialog} /> */}
+            <div className={styles.wrapScrollH}>
+              <div className={styles.patternsContainer}>
+                {documentsList}
+              </div>
+            </div>
+          </div>
+
+          {/* Exports */}
+          <div className={styles.patternSection}>
+            <h3>My Exports</h3>
+            <div className={styles.wrapScrollH}>
+              <div className={styles.patternsContainer}>
+                {exportsList}
+              </div>
             </div>
           </div>
         </div>
 
-        <div className={styles.patternSection}>
-          <h3>My Documents</h3>
-          {/* <AddCircleRoundedIcon onClick={handleOpenCreateFolderDialog} /> */}
-          <div className={styles.wrapScrollH}>
-            <div className={styles.patternsContainer}>
-              {documentsList}
-            </div>
-          </div>
-        </div>
+
 
         {/* <div className={styles.wrapScrollH}> */}
         {/* <div className={styles.folderContainer}> 
@@ -440,14 +462,8 @@ export default function Dashboard(props) {
           </Dialog>
         </div> */}
 
-        <div className={styles.patternSection}>
-          <h3>My Exports</h3>
-          <div className={styles.wrapScrollH}>
-            <div className={styles.patternsContainer}>
-              {exportsList}
-            </div>
-          </div>
-        </div>
+
+
       </div>
     </ThemeProvider>
   );

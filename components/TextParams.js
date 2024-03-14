@@ -60,6 +60,7 @@ import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 export default function TextParams() {
 
   const router = useRouter();
+  const { id } = router.query; // `id` est le nom du paramètre dynamique dans l'URL
 
   const token = useSelector((state) => state.user.value.token)
   const ref = useRef(null);
@@ -83,6 +84,7 @@ export default function TextParams() {
       color: '#000'
     },
   ]);
+
   const [canvaParams, setCanvaParams] = useState({
     width: '640px',
     height: '640px',
@@ -90,6 +92,7 @@ export default function TextParams() {
     padding: 12,
     backgroundImage: "",
   });
+
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -153,6 +156,43 @@ export default function TextParams() {
   }
   //////////////////////////////////
 
+
+  // Récupération d'un document 
+  if (id) {
+    fetch(`http://localhost:3000/documents/${token}/${id}`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.result) {
+
+          // Supposons que data.Document contienne les informations que vous voulez
+          const { canvaParams, documentContent } = data.Document;
+
+          // Mise à jour de canvaParams
+          setCanvaParams({
+            width: canvaParams.width,
+            height: canvaParams.height,
+            justifyContent: canvaParams.justifyContent,
+            padding: canvaParams.padding,
+            backgroundImage: canvaParams.backgroundImage || "", // Ajoutez une vérification au cas où backgroundImage n'est pas défini
+          });
+
+          // Mise à jour de inputParams
+          setInputParams(documentContent.map(dc => ({
+            inputValue: dc.inputValue,
+            isBold: dc.isBold,
+            isItalic: dc.isItalic,
+            isUnderline: dc.isUnderline,
+            textTransform: dc.textTransform,
+            textAlign: dc.textAlign,
+            fontFamily: dc.fontFamily,
+            fontSize: dc.fontSize,
+            color: dc.color,
+          })));
+
+        }
+      });
+  }
+
   useEffect(() => {
     fetch('http://localhost:3000/fonts')
       .then(response => response.json())
@@ -163,6 +203,7 @@ export default function TextParams() {
         console.error('Error fetching fonts:', error);
       });
   }, []);
+
   const nameFontOptions = fontData.map((font, index) => ({
     label: font.name,
     value: font.name,
@@ -527,7 +568,6 @@ export default function TextParams() {
       )}
     </Stack>
   ));
-
 
   const texts = inputParams.map((params, index) => (
     <p
