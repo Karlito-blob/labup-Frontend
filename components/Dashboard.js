@@ -1,19 +1,20 @@
 import React from 'react';
 import Header from './Header';
-import { Button, Dialog, DialogTitle, DialogContent, TextField, IconButton } from '@mui/material';
+import { Button, Dialog, DialogTitle, DialogContent, TextField, IconButton, Stack } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import AddIcon from '@mui/icons-material/Add';
 
 import CloseIcon from '@mui/icons-material/Close';
 import {
   FolderOpenRounded as FolderOpenRoundedIcon,
   AddCircleRounded as AddCircleRoundedIcon,
   AutoFixHigh as AutoFixHighIcon,
+  AddBoxRounded as AddBoxRoundedIcon,
 } from '@mui/icons-material';
 
 import styles from '../styles/Dashboard.module.css';
+import ds from '../styles/DesignSystem.module.css'
 
 
 export default function Dashboard(props) {
@@ -178,11 +179,11 @@ export default function Dashboard(props) {
       <Header chemin={router.pathname} />
 
       <div className={styles.box} style={{ marginTop: '100px' }} >
-        <h1>Dashboard</h1>
-        <div className={styles.buttonsContainer}>
-          <Button onClick={() => router.push('/createPatterns')}>Pattern File</Button>
-          <Button onClick={() => router.push('/createFile')}>Event File</Button>
-        </div>
+        <h1 className={ds.xLargeHeading}>Dashboard</h1>
+        <Stack direction='row' alignItems='center' spacing={2}>
+          <Button size="large" variant="contained" startIcon={<AddBoxRoundedIcon />} onClick={() => router.push('/createPatterns')}>Pattern File</Button>
+          <Button size="large" variant="contained" startIcon={<AddBoxRoundedIcon />} onClick={() => router.push('/createFile')}>Event File</Button>
+        </Stack>
       </div>
 
       <div className={styles.patternSection}>

@@ -36,6 +36,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Backdrop from '@mui/material/Backdrop';
 import Fade from '@mui/material/Fade';
 import Typography from '@mui/material/Typography';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
 import FormatAlignLeftRoundedIcon from '@mui/icons-material/FormatAlignLeftRounded';
 import FormatAlignRightRoundedIcon from '@mui/icons-material/FormatAlignRightRounded';
@@ -49,6 +50,9 @@ import FormatBoldRoundedIcon from '@mui/icons-material/FormatBoldRounded';
 import FormatItalicRoundedIcon from '@mui/icons-material/FormatItalicRounded';
 import FormatUnderlinedRoundedIcon from '@mui/icons-material/FormatUnderlinedRounded';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
+import CropDinRoundedIcon from '@mui/icons-material/CropDinRounded';
+import CropPortraitRoundedIcon from '@mui/icons-material/CropPortraitRounded';
+import CropLandscapeRoundedIcon from '@mui/icons-material/CropLandscapeRounded';
 
 export default function TextParams() {
 
@@ -77,8 +81,8 @@ export default function TextParams() {
     },
   ]);
   const [canvaParams, setCanvaParams] = useState({
-    width: '650px',
-    height: '650px',
+    width: '640px',
+    height: '640px',
     justifyContent: 'flex-start',
     padding: 12,
     backgroundImage: "",
@@ -279,7 +283,7 @@ export default function TextParams() {
         textAlign: 'left',
         fontFamily: 'Inter',
         fontSize: '1rem',
-        color: '#fff'
+        color: '#000'
       },
     ]);
   };
@@ -323,101 +327,130 @@ export default function TextParams() {
   }
   //////////////////////////////////
 
-  const imagesCarrousel = patternsData.map((image, index) => (
-    <img
-      key={index}
-      src={image.patternImg}
-      alt={`Image ${index}`}
-      style={{ width: '200px', height: '150px', objectFit: 'cover' }}
-      onClick={() => handleChangeBgImage(image.patternImg, index)}
-    />
-  ));
+  const formatOptions = [
+    { icon: <CropDinRoundedIcon />, label: "Square", width: 640, height: 640 },
+    { icon: <CropPortraitRoundedIcon />, label: "Story", width: 360, height: 640 },
+    { icon: <CropLandscapeRoundedIcon />, label: "16:9", width: 640, height: 360 }
+  ];
 
-  const chooseFormat =
-    <Stack direction='row' justifyContent='space-between'>
-      <Tooltip title="Format square">
-        <ToggleButton value={[640, 640]} key="square" onClick={() => handleChangeFormat(640, 640)}>
-          Square
-        </ToggleButton>
-      </Tooltip>
-      <Tooltip title="Format Story">
-        <ToggleButton value={[360, 640]} key="story" onClick={() => handleChangeFormat(360, 640)}>
-          Story
-        </ToggleButton>
-      </Tooltip>
-      <Tooltip title="Format Cover">
-        <ToggleButton value={[640, 360]} key="landscape" onClick={() => handleChangeFormat(640, 360)}>
-          Slide
-        </ToggleButton>
-      </Tooltip>
-    </Stack>
-    ;
+  const findSelectedFormat = (width, height) => {
+    for (const option of formatOptions) {
+      if (option.width === width && option.height === height) {
+        return `${option.width}x${option.height}`;
+      }
+    }
+    return `${canvaParams.width}x${canvaParams.height}`;
+  }
 
-  const chooseJustififyContent =
-    <Stack direction='row' justifyContent='space-between'>
+  const chooseFormat = (
+    <ToggleButtonGroup
+      color="primary"
+      value={findSelectedFormat(parseInt(canvaParams.width), parseInt(canvaParams.height))}
+      exclusive
+      onChange={(event, selectedValue) => {
+        if (selectedValue) {
+          const [newWidth, newHeight] = selectedValue.split("x").map(Number);
+          handleChangeFormat(newWidth, newHeight);
+        }
+      }}
+      aria-label="text alignment"
+    >
+      {formatOptions.map((option, index) => (
+        <Tooltip title={`Format ${option.label}`} key={index}>
+          <ToggleButton value={`${option.width}x${option.height}`} key={index}>
+            {option.icon}
+          </ToggleButton>
+        </Tooltip>
+      ))}
+    </ToggleButtonGroup>
+  );
+
+  const chooseJustififyContent = (
+    <ToggleButtonGroup
+      color="primary"
+      value={canvaParams.justifyContent}
+      exclusive
+      onChange={(event, newJustifyContent) => {
+        if (newJustifyContent) {
+          handleChangeJustifyContent(newJustifyContent);
+        }
+      }}
+      aria-label="justify content"
+    >
       <Tooltip title="Align Top">
-        <ToggleButton value="flex-start" key="Align Top" onClick={() => handleChangeJustifyContent('flex-start')}>
+        <ToggleButton value="flex-start" key="Align Top">
           <VerticalAlignTopRoundedIcon />
         </ToggleButton>
       </Tooltip>
       <Tooltip title="Align Center">
-        <ToggleButton value="center" key="Align Center" onClick={() => handleChangeJustifyContent('center')}>
+        <ToggleButton value="center" key="Align Center">
           <VerticalAlignCenterRoundedIcon />
         </ToggleButton>
       </Tooltip>
       <Tooltip title="Align Bottom">
-        <ToggleButton value="flex-end" key="Align Bottom" onClick={() => handleChangeJustifyContent('flex-end')}>
+        <ToggleButton value="flex-end" key="Align Bottom">
           <VerticalAlignBottomRoundedIcon />
         </ToggleButton>
       </Tooltip>
       <Tooltip title="Align Justify">
-        <ToggleButton value="space-between" key="Align Justify" onClick={() => handleChangeJustifyContent('space-between')}>
+        <ToggleButton value="space-between" key="Align Justify">
           <HeightRoundedIcon />
         </ToggleButton>
       </Tooltip>
-    </Stack>
-    ;
+    </ToggleButtonGroup>
+  );
 
-  const chooseTextAlign =
+  const chooseTextAlign = (
     <Stack direction="row" alignItems='center' justifyContent='space-between'>
       <p className={ds.label}>Text Align</p>
-      <Stack direction="row" alignItems='center'>
-        <ToggleButton value="start" aria-label="left aligned" onClick={() => handleAlignment("left")}>
+      <ToggleButtonGroup
+        color="primary"
+        value={inputParams[indexModif].textAlign}
+        exclusive
+        onChange={(event, newAlignment) => {
+          if (newAlignment) {
+            handleAlignment(newAlignment)
+          }
+        }}
+        aria-label="text alignment"
+      >
+        <ToggleButton value="start" aria-label="left aligned">
           <FormatAlignLeftRoundedIcon />
         </ToggleButton>
-        <ToggleButton value="center" aria-label="centered" onClick={() => handleAlignment("center")}>
+        <ToggleButton value="center" aria-label="centered">
           <FormatAlignCenterRoundedIcon />
         </ToggleButton>
-        <ToggleButton value="end" aria-label="right aligned" onClick={() => handleAlignment("right")}>
+        <ToggleButton value="end" aria-label="right aligned">
           <FormatAlignRightRoundedIcon />
         </ToggleButton>
-        <ToggleButton value="justify" aria-label="justified" onClick={() => handleAlignment("justify")}>
+        <ToggleButton value="justify" aria-label="justified">
           <FormatAlignJustifyRoundedIcon />
         </ToggleButton>
-      </Stack>
+      </ToggleButtonGroup>
     </Stack>
-    ;
+  );
 
-  const chooseStyleFont =
+  const chooseStyleFont = (
     <Stack direction='row' alignItems='center' justifyContent='space-between'>
       <p className={ds.label}>Text style</p>
-      <Stack direction='row'>
-        <Tooltip title="Bold">
-          <ToggleButton value="bold" key="Bold" onClick={handleClickBold}>
-            <FormatBoldRoundedIcon />
-          </ToggleButton>
-          <ToggleButton value="bold" key="Bold" onClick={handleClickItalic}>
-            <FormatItalicRoundedIcon />
-          </ToggleButton>
-          <ToggleButton value="bold" key="Bold" onClick={handleClickUnderline}>
-            <FormatUnderlinedRoundedIcon />
-          </ToggleButton>
-        </Tooltip>
-      </Stack>
+      <ToggleButtonGroup
+        color="primary"
+        aria-label="text formatting"
+      >
+        <ToggleButton value="bold" key="Bold" onClick={handleClickBold} selected={inputParams[indexModif].isBold}>
+          <FormatBoldRoundedIcon />
+        </ToggleButton>
+        <ToggleButton value="italic" key="Bold" onClick={handleClickItalic} selected={inputParams[indexModif].isItalic}>
+          <FormatItalicRoundedIcon />
+        </ToggleButton>
+        <ToggleButton value="underline" key="Bold" onClick={handleClickUnderline} selected={inputParams[indexModif].isUnderline}>
+          <FormatUnderlinedRoundedIcon />
+        </ToggleButton>
+      </ToggleButtonGroup>
     </Stack>
-    ;
+  );
 
-  const chooseFontSize =
+  const chooseFontSize = (
     <Stack>
       <p className={ds.label}>Size</p>
       <FormControl sx={{ minWidth: 120 }} size="small">
@@ -435,9 +468,9 @@ export default function TextParams() {
         </Select>
       </FormControl>
     </Stack>
-    ;
+  );
 
-  const chooseTextTransform =
+  const chooseTextTransform = (
     <Stack direction='row' alignItems='center' justifyContent='space-between'>
       <p className={ds.label}>Text Transform</p>
       <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
@@ -453,9 +486,9 @@ export default function TextParams() {
         </Select>
       </FormControl>
     </Stack>
-    ;
+  );
 
-  const chooseFont =
+  const chooseFont = (
     <Stack sx={{ width: '90%' }}>
       <p className={ds.label}>Font</p>
       <Autocomplete
@@ -469,15 +502,14 @@ export default function TextParams() {
         renderInput={(params) => <TextField {...params} />}
       />
     </Stack>
-    ;
+  );
 
   const inputs = inputParams.map((params, index) => (
-    <Stack direction='row' alignItems='center' justifyContent='space-between' spacing={1}>
+    <Stack direction='row' alignItems='center' justifyContent='space-between' spacing={1} key={index}>
       <TextField
         id="outlined-multiline-flexible"
         multiline
         maxRows={3}
-        key={index}
         size="small"
         style={{
           width: '100%'
@@ -492,6 +524,7 @@ export default function TextParams() {
       )}
     </Stack>
   ));
+
 
   const texts = inputParams.map((params, index) => (
     <p
@@ -512,7 +545,7 @@ export default function TextParams() {
     </p>
   ));
 
-  const textStyle =
+  const textStyle = (
     <Box className={ds.shadow2} sx={{
       width: '15%',
       height: 'auto',
@@ -541,9 +574,13 @@ export default function TextParams() {
         width='100%'
       />
     </Box>
-    ;
+  );
 
-  const canvaStyle =
+  const inputContainerStyle = {
+    height: 'auto', // Hauteur automatique
+  };
+
+  const canvaStyle = (
     <Box className={ds.shadow1} sx={{
       width: '15%',
       height: 'auto',
@@ -554,9 +591,10 @@ export default function TextParams() {
       backgroundColor: '#fff',
       borderRadius: '16px',
     }}>
-      <p className={ds.smallHeading}>Layout</p>
-      <Divider />
-      {chooseFormat}
+      <Stack direction='row' alignItems='center' justifyContent='space-between'>
+        <p className={ds.smallHeading}>Layout</p>
+        {chooseFormat}
+      </Stack>
       <Divider />
       {chooseJustififyContent}
       <Stack direction='row' alignItems='center' justifyContent='space-between' spacing={6}>
@@ -576,11 +614,17 @@ export default function TextParams() {
       <Divider />
       <Stack direction='column' gap='12px'>
         <p className={ds.mediumBodySB}>Edit fields</p>
-        {inputs}
+        <Box sx={{ overflowY: 'auto', maxHeight: '300px', display: 'flex', scrollbarWidth: 'thin', scrollbarColor: '#ccc transparent'}}>
+          <Stack direction='column' gap='24px'>
+            {inputs}
+          </Stack>
+        </Box>
       </Stack>
       <Button variant="outlined" onClick={handleClickAddInput}>Add new field</Button>
     </Box>
-    ;
+  );
+
+
 
   const styleModal = {
     position: 'absolute',
@@ -630,6 +674,9 @@ export default function TextParams() {
     ],
   };
 
+  console.log(inputParams)
+  console.log(canvaParams)
+
   return (
     <Box className={`${styles.viewport} ${styles.polka}`}>
       <style> {`@import url(${importUrl})`} </style>
@@ -647,6 +694,7 @@ export default function TextParams() {
         backgroundImage: canvaParams.backgroundImage,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
+        boxShadow: '16px 8px 65px -22px #C7C7C7'
       }}
         style={{}}
         ref={ref}
@@ -713,12 +761,12 @@ export default function TextParams() {
           <div className="slider-container" style={{ width: "40%" }}>
             <Carrousel {...settings}>
               {patternsData.map((image, index) => (
-                <div key={index} style={{ display: "flex", alignContent:'center', justifyContent: "center" }}>
+                <div key={index} style={{ display: "flex", alignContent: 'center', justifyContent: "center" }}>
                   <img
                     key={index}
                     src={image.patternImg}
                     alt={`Image ${index}`}
-                    style={{ width: "250px", height: "120px", borderRadius: '8px'}}
+                    style={{ width: "250px", height: "120px", borderRadius: '8px' }}
                     onClick={() => handleChangeBgImage(image.patternImg, index)}
                   />
                 </div>
