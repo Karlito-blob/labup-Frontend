@@ -1,9 +1,10 @@
 import * as React from 'react';
 import Header from '../components/Header';
+import axios from 'axios';
 
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry"
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { styled } from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
@@ -20,6 +21,8 @@ import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { format } from 'date-fns'; // Pour formater les dates
+import { useSelector } from 'react-redux';
+
 
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -33,8 +36,12 @@ const ExpandMore = styled((props) => {
 }));
 
 export default function FeedCard() {
+
+    const token = useSelector((state) => state.user.value.token)
+
     const [feed, setFeed] = useState([]);
     const [expanded, setExpanded] = useState(null);
+    const likeRef = useRef(null)
 
     useEffect(() => {
         fetch(`http://localhost:3000/feed/`)
@@ -51,6 +58,34 @@ export default function FeedCard() {
             });
     }, []);
 
+    const updateLikeCount = (fileId, newLikeCount) => {
+        setFeed(prevFeed => prevFeed.map(item => {
+            if (item._id === fileId) {
+                return {
+                    ...item,
+                    like: newLikeCount
+                };
+            }
+            return item;
+        }));
+    };
+
+    const handleLike = (fileId, type) => {
+        console.log(fileId, type)
+        axios.put(`http://localhost:3000/feed/updateLike/${type}/${fileId}/${token}`,
+        {
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        .then(res => {
+            updateLikeCount(fileId, res.data.updatedFile.like.length);
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        })
+    }
+
     const handleExpandClick = (index) => {
         // Expand ou collapse la carte cliquée en fonction de son état actuel
         setExpanded(expanded === index ? null : index);
@@ -58,7 +93,7 @@ export default function FeedCard() {
 
     const feedCards = feed.map((item, index) => (
         <div key={index} style={{ marginTop: '100px' }}>
-            <Card sx={{ width: 320, maxWidth: 700, m: 2, borderRadius: '20px' }} key={item._id}>
+            <Card sx={{ width: 320, maxWidth: 700, m: 2, borderRadius: '20px' }} key={item._id} type={item.type}>
 
                 <CardMedia
                     component="img"
@@ -89,8 +124,9 @@ export default function FeedCard() {
                 </CardContent>
 
                 <CardActions disableSpacing>
-                    <IconButton aria-label="add to favorites">
+                    <IconButton ref={likeRef} onClick={() => handleLike(item._id, item.type)} aria-label="add to favorites">
                         <FavoriteIcon />
+                        <div >{item.like.length}</div>
                     </IconButton>
                     <IconButton aria-label="share">
                         <ShareIcon />
