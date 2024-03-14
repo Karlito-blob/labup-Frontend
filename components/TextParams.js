@@ -66,7 +66,7 @@ export default function TextParams() {
   const ref = useRef(null);
 
   const [fileName, setFileName] = useState('');
-  const [images, setImages] = useState([])
+  const [images, setImages] = useState()
   const [indexModif, setIndex] = useState(0);
   const [indexImage, setIndexImage] = useState(null)
   const [fontData, setFontData] = useState([]);
@@ -103,14 +103,14 @@ export default function TextParams() {
       html2canvas(ref.current)
         .then((canvas) => {
           const image = canvas.toDataURL('image/png');
-          setImages((prevImages) => [...prevImages, image]);
+          setImages(image);
           const formData = new FormData();
-          const imageData = images[index].toString().split(',')[1];
+          const imageData = images.toString().split(',')[1];
           const blob = b64toBlob(imageData, 'image/png');
           const file = new File([blob], 'photo.png', { type: 'image/png' });
           formData.append("photoFromFront", file);
           formData.append("token", token);
-          formData.append("fileName", fileName);
+          formData.append("fileName", title);
           formData.append("documentContent", JSON.stringify(inputParams));
           formData.append("canvaParams", JSON.stringify(canvaParams));
 
@@ -128,21 +128,22 @@ export default function TextParams() {
   //////////////////////////////////
 
   //{TETEY} envoie des screenshots vers le back ROUTE POST (pour le moment un seul screenshot)
-  const handleExport = (index) => {
+  const handleExport = () => {
     if (ref.current) {
       html2canvas(ref.current)
         .then((canvas) => {
           console.log("j'ai cliqué")
           const image = canvas.toDataURL('image/png');
-          setImages((prevImages) => [...prevImages, image]);
+          setImages(image);
           const formData = new FormData()
-          const imageData = images[index].toString().split(',')[1];
+          const imageData = images.toString().split(',')[1];
           const blob = b64toBlob(imageData, 'image/png');
           const file = new File([blob], 'photo.png', { type: 'image/png' });
           formData.append("photoFromFront", file);
           formData.append("token", token);
-          formData.append("ExportName", fileName);
+          formData.append("ExportName", title);
           formData.append("ExportType", 'coucou');
+
           axios.post("http://localhost:3000/exports/", formData, {
             headers: {
               'Content-Type': 'multipart/form-data'
@@ -156,6 +157,19 @@ export default function TextParams() {
   }
   //////////////////////////////////
 
+
+  // Mise a jour du Title 
+  // Gestion du titre du document
+  const [title, setTitle] = useState('Untitled')
+
+  // Fonction pour gérer la mise à jour du titre
+  const handleSetTitle = (newTitle) => {
+    if (newTitle) {
+      setTitle(newTitle);
+    } else {
+      setTitle('Untitled');
+    }
+  };
 
   // Récupération d'un document 
   if (id) {
@@ -364,6 +378,7 @@ export default function TextParams() {
   };
   const handleChangeBgImage = (newBackground, index) => {
     setIndexImage(index)
+    console.log('index=>', indexImage)
     setCanvaParams(prevParams => ({
       ...prevParams,
       backgroundImage: `url(${newBackground})`,
@@ -634,6 +649,7 @@ export default function TextParams() {
         <p className={ds.smallHeading}>Layout</p>
         {chooseFormat}
       </Stack>
+
       <Divider />
       {chooseJustififyContent}
       <Stack direction='row' alignItems='center' justifyContent='space-between' spacing={6}>
@@ -662,7 +678,12 @@ export default function TextParams() {
           </Stack>
         </Box>
       </Stack>
-      <Button color="secondary" variant='contained' sx={{borderRadius: '10px'}} onClick={handleClickAddInput}>Add new field</Button>
+      <Button color="secondary" variant='contained' sx={{ borderRadius: '10px' }} onClick={handleClickAddInput}>Add new field</Button>
+
+
+      <Button color="secondary" variant='contained' sx={{ borderRadius: '10px' }} onClick={() => handleSave()}>Save</Button>
+      <Button color="secondary" variant='contained' sx={{ borderRadius: '10px' }} onClick={() => handleExport()}>Export</Button>
+
     </Box>
   );
 
@@ -740,7 +761,7 @@ export default function TextParams() {
     <ThemeProvider theme={theme}>
       <Box className={`${styles.viewport} ${styles.polka}`}>
         <style>{`@import url(${importUrl})`}</style>
-        <Header chemin={router.pathname} />
+        <Header chemin={router.pathname} setTitle={handleSetTitle} />
         <Box
           sx={{
             width: canvaParams.width,

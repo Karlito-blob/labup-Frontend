@@ -126,7 +126,7 @@ export default function Header({ chemin, setTitle }) {
             />
 
             <Button onClick={handleSaveTitle}>Save</Button>
-            {chemin === '/createFile' ? <Button>Export</Button> : <></>}
+            {/* {chemin === '/createFile' ? <Button>Export</Button> : <></>} */}
 
           </div>
 
