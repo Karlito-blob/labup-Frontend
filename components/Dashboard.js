@@ -1,31 +1,23 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from './Header';
 import { Button, Dialog, DialogTitle, DialogContent, TextField, IconButton } from '@mui/material';
 import { useSelector } from 'react-redux';
-import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import AddIcon from '@mui/icons-material/Add';
-
-import CloseIcon from '@mui/icons-material/Close';
-import {
-  FolderOpenRounded as FolderOpenRoundedIcon,
-  AddCircleRounded as AddCircleRoundedIcon,
-  AutoFixHigh as AutoFixHighIcon,
-} from '@mui/icons-material';
-
+import { FolderOpenRounded as FolderOpenRoundedIcon, AddCircleRounded as AddCircleRoundedIcon, Close as CloseIcon } from '@mui/icons-material';
 import styles from '../styles/Dashboard.module.css';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 
-
-export default function Dashboard(props) {
-
+export default function Dashboard() {
   const router = useRouter();
-
   const [folders, setFolders] = useState([]);
-  const [files, setFiles] = useState([])
+  const [files, setFiles] = useState([]);
   const [newFolderName, setNewFolderName] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
-  const token = useSelector((state) => state.user.value.token);
   const [isCreatingFolder, setIsCreatingFolder] = useState(false);
+  const [selectedFolder, setSelectedFolder] = useState(null);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+
+  const token = useSelector((state) => state.user.value.token);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -49,7 +41,7 @@ export default function Dashboard(props) {
     };
 
     fetchData();
-  }, []);
+  }, [token]);
 
   useEffect(() => {
     const fetchDataFile = async () => {
@@ -73,7 +65,7 @@ export default function Dashboard(props) {
     }
 
     fetchDataFile();
-  }, []);
+  }, [token]);
 
   const handleCreateFolder = async () => {
     try {
@@ -96,7 +88,7 @@ export default function Dashboard(props) {
 
       if (data.result) {
         setFolders([...folders, data.newDoc]);
-        handleCloseDialog();
+        handleCloseCreateFolderDialog();
       } else {
         console.error("Erreur lors de la création du dossier :", data.message);
       }
@@ -105,9 +97,53 @@ export default function Dashboard(props) {
     }
   };
 
+  // const handleDeleteDialogOpen = (folder) => {
+  //   setSelectedFolder(folder);
+  //   setOpenDeleteDialog(true);
+  // };
+
+  // const handleDeleteDialogClose = () => {
+  //   setOpenDeleteDialog(false);
+  // };
+
+  // const handleDeleteFolder = async (deleteId) => {
+  //   try {
+  //     const response = await fetch(`http://localhost:3000/folders/${deleteId}`, {
+  //       method: 'DELETE',
+  //     });
+  //     console.log('result=>' , response)
+
+  //     if (!response.ok) {
+  //       throw new Error(`Erreur réseau: ${response.status}`);
+  //     }
+
+  //     const data = await response.json();
+
+  //     if (data.result) {
+  //       const updatedFolders = folders.filter(folder => folder._id !== deleteId);
+  //       setFolders(updatedFolders);
+  //       setOpenDeleteDialog(false);
+  //     } else {
+  //       console.error("Erreur lors de la suppression du dossier :", data.error);
+  //     }
+  //   } catch (error) {
+  //     console.error("Erreur réseau :", error.message);
+  //   }
+  // };
+
   const handleNavigation = (fileID) => {
     router.push(`/createPatterns?id=${fileID}`);
-  }
+  };
+
+  const handleOpenCreateFolderDialog = () => {
+    setIsCreatingFolder(true);
+  };
+
+  const handleCloseCreateFolderDialog = () => {
+    setIsCreatingFolder(false);
+    setNewFolderName('');
+  };
+
 
   const filesList = files.map((file, index) => (
     <div key={index} id={file._id} className={styles.pattern}>
@@ -134,105 +170,89 @@ export default function Dashboard(props) {
       <div className={styles.iconFolder}>
         <FolderOpenRoundedIcon />
       </div>
-      {folder.projectName}
+      <div className={styles.folderName}>
+        {folder.projectName}
+      </div>
+      {/* <div className={styles.iconClose}>
+      <CloseRoundedIcon onClick={() => handleDeleteFolder(folder._id)}/>
+      </div> */}
     </div>
   ));
-  
-  // Ouvrir la boîte de dialogue
-  const handleOpenCreateFolderDialog = () => {
-    setIsCreatingFolder(true);
-  };
 
-    // Fonction pour fermer la boîte de dialogue
-  const handleCloseCreateFolderDialog = () => {
-    setIsCreatingFolder(false);
-    setNewFolderName('');
-  };
-  
-    
-  
-    const DialogBox = () => (
-      <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>
-          <span>Créer un nouveau dossier</span>
-          <IconButton aria-label="close" onClick={handleCloseDialog}>
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent>
-          <TextField
-            label="Nom du dossier"
-            value={newFolderName}
-            onChange={(e) => setNewFolderName(e.target.value)}
-            fullWidth
-          />
-        </DialogContent>
-        <Button onClick={handleCreateFolder}>Créer</Button>
-      </Dialog>
-    );
-  
 
-    return (
-      <div className={styles.container}>
+  return (
+    <div className={styles.container}>
 
-        <Header chemin={router.pathname} />
+      <Header chemin={router.pathname} />
 
-        <div className={styles.box} style={{ marginTop: '100px' }} >
-          <h1>Dashboard</h1>
-          <div className={styles.buttonsContainer}>
-            <Button onClick={() => router.push('/createPatterns')}>Pattern File</Button>
-            <Button onClick={() => router.push('/createFile')}>Event File</Button> 
-          </div>
+      <div className={styles.box} style={{ marginTop: '100px' }} >
+        <h1>Dashboard</h1>
+        <div className={styles.buttonsContainer}>
+          <Button onClick={() => router.push('/createPatterns')}>Pattern File</Button>
+          <Button onClick={() => router.push('/createFile')}>Event File</Button>
+        </div>
+      </div>
+
+      <div className={styles.patternSection}>
+        <h3>My patterns</h3>
+        <div className={styles.wrapScrollH}>
+          <div className={styles.patternsContainer}>{filesList}</div>
+        </div>
+      </div>
+
+      <div className={styles.folderSection}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+          <h3>My folders</h3>
+          <AddCircleRoundedIcon onClick={handleOpenCreateFolderDialog} />
         </div>
 
-        <div className={styles.patternSection}>
-          <h3>My patterns</h3>
-          <div className={styles.wrapScrollH}>
-            <div className={styles.patternsContainer}>{filesList}</div>
-          </div>
-        </div>
-
-        <div className={styles.folderSection}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
-            <h3>My folders</h3>
-            <AddCircleRoundedIcon onClick={handleOpenCreateFolderDialog} />
+        <div className={styles.wrapScrollH}>
+          <div className={styles.folderContainer}>
+            {folderList}
           </div>
 
-          <div className={styles.wrapScrollH}>
-            <div className={styles.folderContainer}> 
-              {folderList}
-            </div>
-
-            {/* <div className={styles.pattern}>
+          {/* <div className={styles.pattern}>
             Créer un nouveau dossier
             <div className={styles.imgContainer} onClick={handleOpenCreateFolderDialog}>
               <img src="/AddFolder.png" alt="Nouveau dossier" />
             </div>
           </div> */}
-    
-            {/* Bouton "+" pour ouvrir la boîte de dialogue */}
-            
-    
-            {/* Boîte de dialogue pour créer un nouveau dossier */}
-            <Dialog open={isCreatingFolder} onClose={handleCloseCreateFolderDialog}>
-              <DialogTitle>
-                <span>Créer un nouveau dossier</span>
-                <IconButton aria-label="close" onClick={handleCloseCreateFolderDialog}>
-                  <CloseIcon />
-                </IconButton>
-              </DialogTitle>
-              <DialogContent>
-                <TextField
-                  label="Nom du dossier"
-                  value={newFolderName}
-                  onChange={(e) => setNewFolderName(e.target.value)}
-                  fullWidth
-                />
-              </DialogContent>
-              <Button onClick={handleCreateFolder}>Créer</Button>
-            </Dialog>
-          </div>
+
+        
+          {/* Boîte de dialogue pour créer un nouveau dossier */}
+          <Dialog open={isCreatingFolder} onClose={handleCloseCreateFolderDialog}>
+            <DialogTitle>
+              <span>Créer un nouveau dossier</span>
+              <IconButton aria-label="close" onClick={handleCloseCreateFolderDialog}>
+                <CloseIcon />
+              </IconButton>
+            </DialogTitle>
+            <DialogContent>
+              <TextField
+                label="Nom du dossier"
+                value={newFolderName}
+                onChange={(e) => setNewFolderName(e.target.value)}
+                fullWidth
+              />
+            </DialogContent>
+            <Button onClick={handleCreateFolder}>Créer</Button>
+          </Dialog>
+
+
+          {/* Boîte de dialogue de suppression
+          <Dialog open={openDeleteDialog} onClose={handleDeleteDialogClose}>
+            <DialogTitle>Confirmation de suppression</DialogTitle>
+            <DialogContent>
+              {selectedFolder && (
+                <div>
+                  `Êtes-vous sur de vouloir supprimer le dossier ${selectedFolder.idFolder} ?` 
+                </div>
+              )}
+            </DialogContent>
+          </Dialog> */}
+
         </div>
       </div>
-    );
-}    
+    </div>
+  );
+} 
