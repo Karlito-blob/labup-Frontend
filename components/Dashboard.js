@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from './Header';
 import { Button, Dialog, DialogTitle, DialogContent, TextField, IconButton } from '@mui/material';
 import { useSelector } from 'react-redux';
-import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import AddIcon from '@mui/icons-material/Add';
 
@@ -31,7 +30,6 @@ export default function Dashboard(props) {
 
   const [newFolderName, setNewFolderName] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
-  const token = useSelector((state) => state.user.value.token);
   const [isCreatingFolder, setIsCreatingFolder] = useState(false);
 
 
@@ -371,9 +369,19 @@ export default function Dashboard(props) {
 
   return (
     <div className={styles.container}>
+  return (
+    <div className={styles.container}>
 
       <Header chemin={router.pathname} />
+      <Header chemin={router.pathname} />
 
+      <div className={styles.box} style={{ marginTop: '100px' }} >
+        <h1>Dashboard</h1>
+        <div className={styles.buttonsContainer}>
+          <Button onClick={() => router.push('/createPatterns')}>Pattern File</Button>
+          <Button onClick={() => router.push('/createFile')}>Event File</Button>
+        </div>
+      </div>
       <div className={styles.box} style={{ marginTop: '100px' }} >
         <h1>Dashboard</h1>
         <div className={styles.buttonsContainer}>
