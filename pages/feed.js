@@ -127,7 +127,7 @@ export default function FeedCard() {
                 </CardContent>
 
                 <CardActions disableSpacing>
-                    <IconButton ref={likeRef} onClick={() => handleLike(item._id, item.type)} aria-label="add to favorites">
+                    <IconButton  onClick={() => handleLike(item._id, item.type)} aria-label="add to favorites">
                         <FavoriteIcon />
                         <div >{item.like.length}</div>
                     </IconButton>
