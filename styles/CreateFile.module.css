@@ -141,24 +141,4 @@
   background-position: 8px 8px;
   background-size: 16px 16px;
   background-color: rgb(255, 255, 255);
-}
-
-.container {
-  max-width: 124rem;
-  padding: 4rem 1rem;
-  margin: 0 auto;
-}
-
-.swiperContainer {
-  height: 52rem;
-  padding: 2rem 0;
-  position: relative;
-}
-
-.sliderControler {
-  position: relative;
-  bottom: 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }/*# sourceMappingURL=CreateFile.module.css.map */

@@ -73,7 +73,7 @@ export default function TextParams() {
       textAlign: 'left',
       fontFamily: 'Inter',
       fontSize: '1rem',
-      color: '#FFF'
+      color: '#000'
     },
   ]);
   const [canvaParams, setCanvaParams] = useState({
@@ -81,7 +81,7 @@ export default function TextParams() {
     height: '650px',
     justifyContent: 'flex-start',
     padding: 12,
-    backgroundImage: "url('test1.gif')",
+    backgroundImage: "",
   });
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -641,7 +641,7 @@ export default function TextParams() {
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
-        bgcolor: 'primary.main',
+        bgcolor: 'white',
         display: 'flex', flexDirection: 'column',
         justifyContent: canvaParams.justifyContent,
         backgroundImage: canvaParams.backgroundImage,
@@ -655,18 +655,19 @@ export default function TextParams() {
           {texts}
         </div>
       </Box>
-      <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <Box sx={{
-          width: '90%',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'flex-start',
-        }}>
-          {canvaStyle}
-          {textStyle}
-        </Box>
-      </div>
-      <div>
+      <Box style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+        <div style={{ height: '80%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Box sx={{
+            width: '90%',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'flex-start',
+          }}>
+            {canvaStyle}
+            {textStyle}
+          </Box>
+        </div>
+        {/* <div>
         <Button variant="contained" onClick={() => handleOpen()}>Open Modal</Button>
         <Modal
           aria-labelledby="transition-modal-title"
@@ -696,35 +697,36 @@ export default function TextParams() {
           </Fade>
         </Modal>
       </div>
-      <Button variant="contained" onClick={() => handleSave(indexImage)}>test</Button>
-      <div style={{ width: "100vw", height: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <link
-          rel="stylesheet"
-          type="text/css"
-          charset="UTF-8"
-          href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"
-        />
-        <link
-          rel="stylesheet"
-          type="text/css"
-          href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
-        />
-        <div className="slider-container" style={{ width: "70%" }}>
-          <Carrousel {...settings}>
-            {patternsData.map((image, index) => (
-              <div key={index} style={{ width: "100%", height: "100%", display: "flex", justifyContent: "center" }}>
-                <img
-                  key={index}
-                  src={image.patternImg}
-                  alt={`Image ${index}`}
-                  style={{ width: '200px', height: '150px', objectFit: 'cover' }}
-                  onClick={() => handleChangeBgImage(image.patternImg, index)}
-                />
-              </div>
-            ))}
-          </Carrousel>
+      <Button variant="contained" onClick={() => handleSave(indexImage)}>test</Button> */}
+        <div style={{ height: '20%', display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <link
+            rel="stylesheet"
+            type="text/css"
+            charset="UTF-8"
+            href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"
+          />
+          <link
+            rel="stylesheet"
+            type="text/css"
+            href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
+          />
+          <div className="slider-container" style={{ width: "40%" }}>
+            <Carrousel {...settings}>
+              {patternsData.map((image, index) => (
+                <div key={index} style={{ display: "flex", alignContent:'center', justifyContent: "center" }}>
+                  <img
+                    key={index}
+                    src={image.patternImg}
+                    alt={`Image ${index}`}
+                    style={{ width: "250px", height: "120px", borderRadius: '8px'}}
+                    onClick={() => handleChangeBgImage(image.patternImg, index)}
+                  />
+                </div>
+              ))}
+            </Carrousel>
+          </div>
         </div>
-      </div>
+      </Box>
     </Box>
   )
 }

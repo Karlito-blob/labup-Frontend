@@ -121,7 +121,7 @@ export default function Dashboard(props) {
           <AutoFixHighIcon onClick={() => { handleNavigation(file._id) }} />
         </div>
 
-        <img src={file.image} />   
+        <img src={file.image} />
       </div>
       <h5>{file.fileName}</h5>
       {/* <p>{pattern.update}</p> */}
@@ -137,102 +137,102 @@ export default function Dashboard(props) {
       {folder.projectName}
     </div>
   ));
-  
+
   // Ouvrir la boîte de dialogue
   const handleOpenCreateFolderDialog = () => {
     setIsCreatingFolder(true);
   };
 
-    // Fonction pour fermer la boîte de dialogue
+  // Fonction pour fermer la boîte de dialogue
   const handleCloseCreateFolderDialog = () => {
     setIsCreatingFolder(false);
     setNewFolderName('');
   };
-  
-    
-  
-    const DialogBox = () => (
-      <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>
-          <span>Créer un nouveau dossier</span>
-          <IconButton aria-label="close" onClick={handleCloseDialog}>
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent>
-          <TextField
-            label="Nom du dossier"
-            value={newFolderName}
-            onChange={(e) => setNewFolderName(e.target.value)}
-            fullWidth
-          />
-        </DialogContent>
-        <Button onClick={handleCreateFolder}>Créer</Button>
-      </Dialog>
-    );
-  
 
-    return (
-      <div className={styles.container}>
 
-        <Header chemin={router.pathname} />
 
-        <div className={styles.box} style={{ marginTop: '100px' }} >
-          <h1>Dashboard</h1>
-          <div className={styles.buttonsContainer}>
-            <Button onClick={() => router.push('/createPatterns')}>Pattern File</Button>
-            <Button onClick={() => router.push('/createFile')}>Event File</Button> 
-          </div>
+  const DialogBox = () => (
+    <Dialog open={openDialog} onClose={handleCloseDialog}>
+      <DialogTitle>
+        <span>Créer un nouveau dossier</span>
+        <IconButton aria-label="close" onClick={handleCloseDialog}>
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
+      <DialogContent>
+        <TextField
+          label="Nom du dossier"
+          value={newFolderName}
+          onChange={(e) => setNewFolderName(e.target.value)}
+          fullWidth
+        />
+      </DialogContent>
+      <Button onClick={handleCreateFolder}>Créer</Button>
+    </Dialog>
+  );
+
+
+  return (
+    <div className={styles.container}>
+
+      <Header chemin={router.pathname} />
+
+      <div className={styles.box} style={{ marginTop: '100px' }} >
+        <h1>Dashboard</h1>
+        <div className={styles.buttonsContainer}>
+          <Button onClick={() => router.push('/createPatterns')}>Pattern File</Button>
+          <Button onClick={() => router.push('/createFile')}>Event File</Button>
+        </div>
+      </div>
+
+      <div className={styles.patternSection}>
+        <h3>My patterns</h3>
+        <div className={styles.wrapScrollH}>
+          <div className={styles.patternsContainer}>{filesList}</div>
+        </div>
+      </div>
+
+      <div className={styles.folderSection}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+          <h3>My folders</h3>
+          <AddCircleRoundedIcon onClick={handleOpenCreateFolderDialog} />
         </div>
 
-        <div className={styles.patternSection}>
-          <h3>My patterns</h3>
-          <div className={styles.wrapScrollH}>
-            <div className={styles.patternsContainer}>{filesList}</div>
-          </div>
-        </div>
-
-        <div className={styles.folderSection}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
-            <h3>My folders</h3>
-            <AddCircleRoundedIcon onClick={handleOpenCreateFolderDialog} />
+        <div className={styles.wrapScrollH}>
+          <div className={styles.folderContainer}>
+            {folderList}
           </div>
 
-          <div className={styles.wrapScrollH}>
-            <div className={styles.folderContainer}> 
-              {folderList}
-            </div>
-
-            {/* <div className={styles.pattern}>
+          {/* <div className={styles.pattern}>
             Créer un nouveau dossier
             <div className={styles.imgContainer} onClick={handleOpenCreateFolderDialog}>
               <img src="/AddFolder.png" alt="Nouveau dossier" />
             </div>
           </div> */}
-    
-            {/* Bouton "+" pour ouvrir la boîte de dialogue */}
-            
-    
-            {/* Boîte de dialogue pour créer un nouveau dossier */}
-            <Dialog open={isCreatingFolder} onClose={handleCloseCreateFolderDialog}>
-              <DialogTitle>
-                <span>Créer un nouveau dossier</span>
-                <IconButton aria-label="close" onClick={handleCloseCreateFolderDialog}>
-                  <CloseIcon />
-                </IconButton>
-              </DialogTitle>
-              <DialogContent>
-                <TextField
-                  label="Nom du dossier"
-                  value={newFolderName}
-                  onChange={(e) => setNewFolderName(e.target.value)}
-                  fullWidth
-                />
-              </DialogContent>
-              <Button onClick={handleCreateFolder}>Créer</Button>
-            </Dialog>
-          </div>
+
+          {/* Bouton "+" pour ouvrir la boîte de dialogue */}
+
+
+          {/* Boîte de dialogue pour créer un nouveau dossier */}
+          <Dialog open={isCreatingFolder} onClose={handleCloseCreateFolderDialog}>
+            <DialogTitle>
+              <span>Créer un nouveau dossier</span>
+              <IconButton aria-label="close" onClick={handleCloseCreateFolderDialog}>
+                <CloseIcon />
+              </IconButton>
+            </DialogTitle>
+            <DialogContent>
+              <TextField
+                label="Nom du dossier"
+                value={newFolderName}
+                onChange={(e) => setNewFolderName(e.target.value)}
+                fullWidth
+              />
+            </DialogContent>
+            <Button onClick={handleCreateFolder}>Créer</Button>
+          </Dialog>
         </div>
       </div>
-    );
+    </div>
+  );
 }    
