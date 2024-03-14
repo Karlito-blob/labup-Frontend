@@ -17,6 +17,8 @@ export default function SignIn() {
 	const [signInPassword, setSignInPassword] = useState('');
 	const [isDisabled, setIsDisabled] = useState(true);
 
+	const [erreur, setErreur] = useState({ statut: false, message: '' })
+
 	// Coonection by get the data of inputs
 	const handleConnection = () => {
 		fetch('http://localhost:3000/users/signin', {
@@ -30,11 +32,17 @@ export default function SignIn() {
 					setSignInUserName('');
 					setSignInPassword('');
 					setIsDisabled(true);
+					setErreur({ statut: false, message: '' });
+
 					router.push("/dashboard")
+				} else {
+					setErreur({ statut: true, message: 'Wrong Email or Password' })
 				}
 			});
 	};
+
 	console.log(signInPassword)
+
 	// Get the button Enable
 	useEffect(() => {
 		setIsDisabled(!(signInUserName && signInPassword));
@@ -55,15 +63,19 @@ export default function SignIn() {
 		</div>
 		<div className={styles.box}>
 			<h1>Sign in to LabUp</h1>
-			<div className={styles.inputsContainer}>
-				<TextField id="outlined-basic" label="Username or email" variant="outlined" onChange={handleInputUsernameChange} value={signInUserName}/>
+			  <div className={styles.inputsContainer}>
+				  <TextField error={erreur.statut} id="outlined-basic" label="Username or email" variant="outlined" onChange={handleInputUsernameChange} value={signInUserName} />
 				<TextField id="outlined-basic" label="Password" type="password" variant="outlined" onChange={handlePasswordChange} value={signInPassword}/>
-			</div>
+				  {erreur.statut && <div style={{ color: 'red' }}> {erreur.message}</div>}
+
+			  </div>
 			<Button variant="contained" disabled={isDisabled} onClick={handleConnection}> Se connecter </Button>
 			<div className={styles.swtich}>
 				<p>Don't have an account?</p>
-				<Button onClick={() => router.push('/signUp')}>Sign up</Button>
-			</div>
+				  <Button onClick={() => router.push('/signUp')}>Sign up</Button>
+			  </div>
+
+
 		</div>
 	</div>
   )

@@ -48,7 +48,7 @@ export default function VisualizationPattern({ initialParams, modifiedParams, pa
     return (
       <main >
         <Pattern4
-          oscillation={modifiedParams?.PlayPause || initialParams.PlayPause}
+          oscillation={modifiedParams?.PlayPause ?? false}
           bumpiness={modifiedParams?.Bumpiness || initialParams.Bumpiness}
           theta={modifiedParams?.Theta || initialParams.Theta}
           phy={modifiedParams?.Phy || initialParams.Phy}
