@@ -230,7 +230,7 @@ export default function Dashboard(props) {
           <PublicRoundedIcon onClick={() => { handlePublish('modifiedPatterns', file._id, !file.public) }} />
         </div>
         <div className={styles.icones}>
-          <FileDownloadRoundedIcon />
+          <FileDownloadRoundedIcon onClick={() => { handleDownload(file.image) }} />
         </div>
         <div className={styles.icones}>
           <CloseRoundedIcon onClick={() => { handleDelete('modifiedPatterns', file._id) }} />
@@ -264,7 +264,7 @@ export default function Dashboard(props) {
         </div>
 
         <div className={styles.icones}>
-          <FileDownloadRoundedIcon />
+          <FileDownloadRoundedIcon onClick={() => { handleDownload(file.image) }} />
         </div>
 
         <div className={styles.icones}>
@@ -290,7 +290,7 @@ export default function Dashboard(props) {
         </div>
 
         <div className={styles.icones}>
-          <FileDownloadRoundedIcon />
+          <FileDownloadRoundedIcon onClick={() => { handleDownload(file.image) }} />
         </div>
 
         <div className={styles.icones}>
