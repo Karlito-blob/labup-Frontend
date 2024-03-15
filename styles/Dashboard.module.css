@@ -129,8 +129,8 @@
 
 .container {
   width: 100vw;
-  height: 100vh;
-  background-color: #0d0f16;
+  /* height: 100vh; */
+  background-color: #fff;
   overflow: hidden;
 }
 
@@ -138,7 +138,7 @@
   padding: 40px 80px;
   display: flex;
   justify-content: space-between;
-  color: #ffffff;
+  color: #000000;
 }
 
 .patternSection {
@@ -158,7 +158,7 @@
 .pattern {
   width: 208px;
   height: 350px;
-  color: #ffffff;
+  color: #000000;
 }
 .pattern .imgContainer {
   width: 208px;
@@ -222,4 +222,17 @@
   box-shadow: 0px 4px 8px rgba(0, 0, 255, 0.2);
   height: 60px;
   width: 60px;
+}
+
+.icones {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px;
+  height: 30px;
+  width: 30px;
+  background-color: white;
+  border-radius: 20px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }

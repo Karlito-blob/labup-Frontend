@@ -71,7 +71,8 @@ export default function createPatterns() {
   const ref = useRef(null)
   const [images, setImages] = useState([])
   const [screenshot, setScreenshot] = useState('')
-  const [progress, setProgress] = useState(0);
+  const [success, setSuccess] = useState(false);
+
 
   const user = useSelector((state) => state.value)
 
@@ -122,6 +123,7 @@ export default function createPatterns() {
           fileName
         }
       ]);
+
       setActiveTitle('ScreenShots')
 
     } catch (error) {
@@ -130,10 +132,8 @@ export default function createPatterns() {
   };
 
   // Generate a gif 
-  const handleCreateGif = async (setProgress) => {
+  const handleCreateGif = async () => {
     // Initialisation de la progression
-    setProgress(0);
-
     const fileName = `${title}_${patternName}`; // Nom de fichier généré pour l'image
     console.log(fileName)
 
@@ -148,7 +148,6 @@ export default function createPatterns() {
       await new Promise(resolve => setTimeout(resolve, frameInterval));
       const frame = await takeScreenshot(ref);
       frames.push(frame);
-      setProgress((prevProgress) => prevProgress + progressPerFrame); // Mise à jour de la progression
     }
 
     const options = {
@@ -173,7 +172,6 @@ export default function createPatterns() {
             fileName
           }
         ]);
-        setProgress(100); // Assurez-vous que la progression est complète
       }
     });
 
@@ -209,10 +207,16 @@ export default function createPatterns() {
         'Content-Type': 'multipart/form-data'
       }
     })
-      .then(res => {
-        console.log("Scrennshot envoyé :", res)
+      .then(() => {
+        setSuccess(true)
         setImages(images.filter((el) => el !== img))
+
       })
+      .then(() => { 
+        setSuccess(false)
+
+      })
+
       .catch(error => console.log(error))
   }
 
@@ -624,7 +628,7 @@ export default function createPatterns() {
     <ThemeProvider theme={theme}>
       <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around' }} className={styles2.viewport}>
 
-        <Header chemin={router.pathname} setTitle={handleSetTitle} />
+        <Header chemin={router.pathname} setTitle={handleSetTitle} changeSave={success} />
 
         <div className={styles.container} style={{ marginTop: '100px' }}>
 

@@ -13,6 +13,7 @@ import {
   AutoFixHigh as AutoFixHighIcon,
   AddBoxRounded as AddBoxRoundedIcon,
   PublicRounded as PublicRoundedIcon,
+  FileDownloadRounded as FileDownloadRoundedIcon,
   Diversity1TwoTone,
 } from '@mui/icons-material';
 
@@ -23,6 +24,8 @@ import ds from '../styles/DesignSystem.module.css'
 export default function Dashboard(props) {
 
   const router = useRouter();
+  const token = useSelector((state) => state.user.value.token)
+
 
   // const [folders, setFolders] = useState([]);
   const [updated, setUpdated] = useState(false)
@@ -156,7 +159,7 @@ export default function Dashboard(props) {
   //   }
   // };
 
-  const handleNavigationPattern = (path, fileID) => {
+  const handleNavigation = (path, fileID) => {
     router.push(`/${path}?id=${fileID}`);
   }
 
@@ -207,46 +210,30 @@ export default function Dashboard(props) {
   }
 
 
-  const handleNavigationDocument = (path, fileID) => {
-    router.push(`/${path}?id=${fileID}`);
-  }
 
 
   const patternsList = patterns.map((file, index) => (
     <div key={index} id={file._id} className={styles.pattern}>
       <div className={styles.imgContainer}>
 
-
         <img src={file.patternImg} />
       </div>
       <h5>{file.fileName}</h5>
 
-      <div style={{ display: 'flex' }}>
-        <div style={{
-          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '10px',
-          height: '40px', width: '40px', backgroundColor: 'white', borderRadius: '20px',
-          boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)'
-        }}>
-          <AutoFixHighIcon onClick={() => { handleNavigationPattern('createPatterns', file._id) }} />
-
+      <div style={{
+        display: 'flex',
+      }}>
+        <div className={styles.icones}>
+          <AutoFixHighIcon onClick={() => { handleNavigation('createPatterns', file._id) }}  />
         </div>
-
-        <div style={{
-          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '10px',
-          height: '40px', width: '40px', backgroundColor: file.public ? 'lightblue' : 'white', borderRadius: '20px',
-          boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)'
-        }}>
+        <div className={styles.icones} style={{ backgroundColor: file.public ? 'lightblue' : 'white' }}>
           <PublicRoundedIcon onClick={() => { handlePublish('modifiedPatterns', file._id, !file.public) }} />
-
         </div>
-
-        <div style={{
-          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '10px',
-          height: '40px', width: '40px', backgroundColor: 'white', borderRadius: '20px',
-          boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)'
-        }}>
+        <div className={styles.icones}>
+          <FileDownloadRoundedIcon />
+        </div>
+        <div className={styles.icones}>
           <CloseRoundedIcon onClick={() => { handleDelete('modifiedPatterns', file._id) }} />
-
         </div>
 
       </div>
@@ -268,31 +255,20 @@ export default function Dashboard(props) {
       <h5>{file.fileName}</h5>
 
       <div style={{ display: 'flex' }}>
-        <div style={{
-          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '10px',
-          height: '40px', width: '40px', backgroundColor: 'white', borderRadius: '20px',
-          boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)'
-        }}>
-          <AutoFixHighIcon onClick={() => { handleNavigationPattern('document', file._id) }} />
-
+        <div className={styles.icones}>
+          <AutoFixHighIcon onClick={() => { handleNavigation('createFile', file._id) }} />
         </div>
 
-        <div style={{
-          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '10px',
-          height: '40px', width: '40px', backgroundColor: file.public ? 'lightblue' : 'white', borderRadius: '20px',
-          boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)'
-        }}>
+        <div className={styles.icones} style={{ backgroundColor: file.public ? 'lightblue' : 'white' }}>
           <PublicRoundedIcon onClick={() => { handlePublish('document', file._id, !file.public) }} />
-
         </div>
 
-        <div style={{
-          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '10px',
-          height: '40px', width: '40px', backgroundColor: 'white', borderRadius: '20px',
-          boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)'
-        }}>
-          <CloseRoundedIcon onClick={() => { handleDelete('document', file._id) }} />
+        <div className={styles.icones}>
+          <FileDownloadRoundedIcon />
+        </div>
 
+        <div className={styles.icones}>
+          <CloseRoundedIcon onClick={() => { handleDelete('documents', file._id) }} />
         </div>
 
       </div>
@@ -303,46 +279,22 @@ export default function Dashboard(props) {
   const exportsList = exports.map((file, index) => (
     <div key={index} id={file._id} className={styles.pattern}>
       <div className={styles.imgContainer}>
-        <div style={{
-          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-          position: 'absolute', margin: '10px',
-          height: '40px', width: '40px', backgroundColor: 'white', borderRadius: '20px',
-          boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)'
-        }}>
-          <AutoFixHighIcon onClick={() => { handleNavigation(file._id) }} />
-          <button onClick={() => handleDownload(file.image)}>DOWNLOAD</button>
-        </div>
-
         <img src={file.exportImg} />
       </div>
+
       <h5>{file.fileName}</h5>
 
       <div style={{ display: 'flex' }}>
-        <div style={{
-          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '10px',
-          height: '40px', width: '40px', backgroundColor: 'white', borderRadius: '20px',
-          boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)'
-        }}>
-          <AutoFixHighIcon onClick={() => { handleNavigationPattern('export', file._id) }} />
-
-        </div>
-
-        <div style={{
-          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '10px',
-          height: '40px', width: '40px', backgroundColor: file.public ? 'lightblue' : 'white', borderRadius: '20px',
-          boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)'
-        }}>
+        <div className={styles.icones} style={{ backgroundColor: file.public ? 'lightblue' : 'white' }}>
           <PublicRoundedIcon onClick={() => { handlePublish('export', file._id, !file.public) }} />
-
         </div>
 
-        <div style={{
-          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '10px',
-          height: '40px', width: '40px', backgroundColor: 'white', borderRadius: '20px',
-          boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)'
-        }}>
-          <CloseRoundedIcon onClick={() => { handleDelete('export', file._id) }} />
+        <div className={styles.icones}>
+          <FileDownloadRoundedIcon />
+        </div>
 
+        <div className={styles.icones}>
+          <CloseRoundedIcon onClick={() => { handleDelete('export', file._id) }} />
         </div>
 
       </div>
@@ -392,6 +344,7 @@ export default function Dashboard(props) {
   //   setIsCreatingFolder(true);
   // };
 
+  // Theme s§tyle
   const theme = createTheme({
     palette: {
       primary: {
@@ -414,7 +367,6 @@ export default function Dashboard(props) {
       <div className={styles.container}>
 
         <Header chemin={router.pathname} />
-        <Header chemin={router.pathname} />
 
         <div className={styles.box} style={{ marginTop: '100px' }} >
           <h1 className={ds.xLargeHeading}>Dashboard</h1>
@@ -424,24 +376,40 @@ export default function Dashboard(props) {
           </Stack>
         </div>
 
-        <div className={styles.patternSection}>
-          <h3>My patterns</h3>
-          <div className={styles.wrapScrollH}>
-            <div className={styles.patternsContainer}>
-              {patternsList}
+        <div style={{ overflowX: 'auto' }}>
+          {/* Patterns */}
+          <div className={styles.patternSection}>
+            <h3>My patterns</h3>
+            <div className={styles.wrapScrollH}>
+              <div className={styles.patternsContainer}>
+                {patternsList}
+              </div>
+            </div>
+          </div>
+
+          {/* Documents  */}
+          <div className={styles.patternSection}>
+            <h3>My Documents</h3>
+            {/* <AddCircleRoundedIcon onClick={handleOpenCreateFolderDialog} /> */}
+            <div className={styles.wrapScrollH}>
+              <div className={styles.patternsContainer}>
+                {documentsList}
+              </div>
+            </div>
+          </div>
+
+          {/* Exports */}
+          <div className={styles.patternSection}>
+            <h3>My Exports</h3>
+            <div className={styles.wrapScrollH}>
+              <div className={styles.patternsContainer}>
+                {exportsList}
+              </div>
             </div>
           </div>
         </div>
 
-        <div className={styles.patternSection}>
-          <h3>My Documents</h3>
-          {/* <AddCircleRoundedIcon onClick={handleOpenCreateFolderDialog} /> */}
-          <div className={styles.wrapScrollH}>
-            <div className={styles.patternsContainer}>
-              {documentsList}
-            </div>
-          </div>
-        </div>
+
 
         {/* <div className={styles.wrapScrollH}> */}
         {/* <div className={styles.folderContainer}> 
@@ -478,14 +446,8 @@ export default function Dashboard(props) {
           </Dialog>
         </div> */}
 
-        <div className={styles.patternSection}>
-          <h3>My Exports</h3>
-          <div className={styles.wrapScrollH}>
-            <div className={styles.patternsContainer}>
-              {exportsList}
-            </div>
-          </div>
-        </div>
+
+
       </div>
     </ThemeProvider>
   );

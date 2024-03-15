@@ -60,14 +60,20 @@ import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 export default function TextParams() {
 
   const router = useRouter();
+  const { id } = router.query; // `id` est le nom du paramètre dynamique dans l'URL
 
   const token = useSelector((state) => state.user.value.token)
   const ref = useRef(null);
 
   const [fileName, setFileName] = useState('');
-  const [images, setImages] = useState([])
+  const [images, setImages] = useState()
   const [indexModif, setIndex] = useState(0);
   const [indexImage, setIndexImage] = useState(null)
+  const [success, setSuccess] = useState(false);
+
+
+  const [image64, setImage64] = useState(null)
+
   const [fontData, setFontData] = useState([]);
   const [patternsData, setPatternsData] = useState([]);
   const [inputParams, setInputParams] = useState([
@@ -83,6 +89,7 @@ export default function TextParams() {
       color: '#000'
     },
   ]);
+
   const [canvaParams, setCanvaParams] = useState({
     width: '640px',
     height: '640px',
@@ -90,24 +97,27 @@ export default function TextParams() {
     padding: 12,
     backgroundImage: "",
   });
+
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   //{TETEY} envoie des screenshots vers le back ROUTE POST (pour le moment un seul screenshot)
-  const handleSave = (index) => {
+  const handleSave = () => {
     if (ref.current) {
-      html2canvas(ref.current)
+      html2canvas(ref.current) // Ajustez le scale au besoin
         .then((canvas) => {
           const image = canvas.toDataURL('image/png');
-          setImages((prevImages) => [...prevImages, image]);
           const formData = new FormData();
-          const imageData = images[index].toString().split(',')[1];
+          const imageData = image.toString().split(',')[1];
           const blob = b64toBlob(imageData, 'image/png');
           const file = new File([blob], 'photo.png', { type: 'image/png' });
+
+          console.log('image=', image, formData, imageData, blob, file)
+
           formData.append("photoFromFront", file);
           formData.append("token", token);
-          formData.append("fileName", fileName);
+          formData.append("fileName", title);
           formData.append("documentContent", JSON.stringify(inputParams));
           formData.append("canvaParams", JSON.stringify(canvaParams));
 
@@ -117,41 +127,115 @@ export default function TextParams() {
             }
           })
             .then(res => {
+              setSuccess(true)
               console.log("TEST THEO", res);
-            });
+            })
+            .then(
+              setSuccess(false)
+            );
         });
     }
   }
   //////////////////////////////////
 
   //{TETEY} envoie des screenshots vers le back ROUTE POST (pour le moment un seul screenshot)
-  const handleExport = (index) => {
+  const handleExport = () => {
     if (ref.current) {
       html2canvas(ref.current)
         .then((canvas) => {
           console.log("j'ai cliqué")
           const image = canvas.toDataURL('image/png');
-          setImages((prevImages) => [...prevImages, image]);
           const formData = new FormData()
-          const imageData = images[index].toString().split(',')[1];
+          const imageData = image.toString().split(',')[1];
           const blob = b64toBlob(imageData, 'image/png');
           const file = new File([blob], 'photo.png', { type: 'image/png' });
           formData.append("photoFromFront", file);
           formData.append("token", token);
-          formData.append("ExportName", fileName);
+          formData.append("ExportName", title);
           formData.append("ExportType", 'coucou');
+
           axios.post("http://localhost:3000/exports/", formData, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }
           })
             .then(res => {
+              setSuccess(true)
               console.log("TEST THEO", res)
-            });
+            })
+            .then(
+              setSuccess(false)
+            );;
         });
     }
   }
   //////////////////////////////////
+
+
+  // Mise a jour du Title 
+  // Gestion du titre du document
+  const [title, setTitle] = useState('Untitled')
+
+  // Fonction pour gérer la mise à jour du titre
+  const handleSetTitle = (newTitle) => {
+    if (newTitle) {
+      setTitle(newTitle);
+    } else {
+      setTitle('Untitled');
+    }
+  };
+
+  // Récupération d'un document 
+  useEffect(() => {
+    if (id) {
+      fetch(`http://localhost:3000/documents/${token}/${id}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.result) {
+
+            // Supposons que data.Document contienne les informations que vous voulez
+            const { canvaParams, documentContent } = data.Document;
+
+            // Mise à jour de canvaParams
+            setCanvaParams({
+              width: canvaParams.width,
+              height: canvaParams.height,
+              justifyContent: canvaParams.justifyContent,
+              padding: canvaParams.padding,
+              backgroundImage: canvaParams.documentImg, // Ajoutez une vérification au cas où backgroundImage n'est pas défini
+            });
+
+            // Mise à jour de inputParams
+            setInputParams(documentContent.map(dc => ({
+              inputValue: dc.inputValue,
+              isBold: dc.isBold,
+              isItalic: dc.isItalic,
+              isUnderline: dc.isUnderline,
+              textTransform: dc.textTransform,
+              textAlign: dc.textAlign,
+              fontFamily: dc.fontFamily,
+              fontSize: dc.fontSize,
+              color: dc.color,
+            })));
+
+            fetch(data.Document.documentImg)
+              .then(response => response.blob())
+              .then(blob => {
+                const reader = new FileReader();
+                reader.readAsDataURL(blob);
+                reader.onloadend = function () {
+                  setImage64(reader.result);
+                  console.log(image64); // Utilisez cette chaîne Base64 comme source d'une image
+                }
+              });
+
+          }
+        }) 
+
+    }
+
+
+  }, []);
 
   useEffect(() => {
     fetch('http://localhost:3000/fonts')
@@ -163,6 +247,7 @@ export default function TextParams() {
         console.error('Error fetching fonts:', error);
       });
   }, []);
+
   const nameFontOptions = fontData.map((font, index) => ({
     label: font.name,
     value: font.name,
@@ -224,7 +309,9 @@ export default function TextParams() {
     });
   };
   const handleWriteValue = (index, e) => {
+
     setIndex(index); // Mise à jour de l'index lors de la saisie
+
     setInputParams(prevState => {
       const updatedParams = [...prevState];
       updatedParams[index] = {
@@ -290,7 +377,6 @@ export default function TextParams() {
       },
     ]);
   };
-
   const handleDeleteInput = (index) => {
     setInputParams(prevState => {
       const newInputParams = [...prevState];
@@ -323,6 +409,19 @@ export default function TextParams() {
   };
   const handleChangeBgImage = (newBackground, index) => {
     setIndexImage(index)
+
+
+    fetch(newBackground)
+      .then(response => response.blob())
+      .then(blob => {
+        const reader = new FileReader();
+        reader.readAsDataURL(blob);
+        reader.onloadend = function () {
+          setImage64(reader.result);
+          console.log(image64); // Utilisez cette chaîne Base64 comme source d'une image
+        }
+      });
+
     setCanvaParams(prevParams => ({
       ...prevParams,
       backgroundImage: `url(${newBackground})`,
@@ -528,7 +627,6 @@ export default function TextParams() {
     </Stack>
   ));
 
-
   const texts = inputParams.map((params, index) => (
     <p
       key={index}
@@ -594,6 +692,7 @@ export default function TextParams() {
         <p className={ds.smallHeading}>Layout</p>
         {chooseFormat}
       </Stack>
+
       <Divider />
       {chooseJustififyContent}
       <Stack direction='row' alignItems='center' justifyContent='space-between' spacing={6}>
@@ -622,7 +721,13 @@ export default function TextParams() {
           </Stack>
         </Box>
       </Stack>
-      <Button color="secondary" variant='contained' sx={{borderRadius: '10px'}} onClick={handleClickAddInput}>Add new field</Button>
+      <Button color="secondary" variant='contained' sx={{ borderRadius: '10px' }} onClick={handleClickAddInput}>Add new field</Button>
+
+      <div style={{ display: 'flex', alignItems: 'center', jutifyContent: 'center', gap: '12px' }}>
+        <Button color="secondary" variant='contained' sx={{ borderRadius: '10px', width: '100px' }} onClick={() => handleSave()}>Save</Button>
+        <Button color="secondary" variant='contained' sx={{ borderRadius: '10px', width: '100px' }} onClick={() => handleExport()}>Export</Button>
+      </div>
+
     </Box>
   );
 
@@ -700,11 +805,11 @@ export default function TextParams() {
     <ThemeProvider theme={theme}>
       <Box className={`${styles.viewport} ${styles.polka}`}>
         <style>{`@import url(${importUrl})`}</style>
-        <Header chemin={router.pathname} />
-        <Box
+
+        <Header chemin={router.pathname} setTitle={handleSetTitle} changeSave={success} />
+
+        <Box 
           sx={{
-            width: canvaParams.width,
-            height: canvaParams.height,
             position: 'absolute',
             top: '50%',
             left: '50%',
@@ -713,25 +818,41 @@ export default function TextParams() {
             display: 'flex',
             flexDirection: 'column',
             justifyContent: canvaParams.justifyContent,
-            backgroundImage: canvaParams.backgroundImage,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             boxShadow: '16px 8px 65px -22px #C7C7C7',
+            width: canvaParams.width,
+            height: canvaParams.height,
+            overflow: 'hidden', // Empêche le contenu de déborder
           }}
-          style={{}}
-          ref={ref}
         >
-          <div
-            style={{
-              width: '100%',
-              wordWrap: 'break-word',
+
+          <div ref={ref} style={{
+            width: canvaParams.width,
+            height: canvaParams.height,
+          }}>
+            <img src={image64} alt="Background" style={{
               position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              zIndex: -1,
+            }} />
+
+            {/* Conteneur pour le texte ou contenu supplémentaire */}
+            <div style={{
               padding: canvaParams.padding,
-            }}
-          >
-            {texts}
+              zIndex: 1, // S'assure que le contenu est par-dessus l'image
+            }}>
+              {texts}
+            </div>
           </div>
+
         </Box>
+
+
         <Box style={{ height: '85%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
           <div style={{ height: '100%', display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}>
             <Box
