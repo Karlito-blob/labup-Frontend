@@ -14,6 +14,7 @@ import {
 } from '@mui/icons-material';
 
 import styles from '../styles/Dashboard.module.css';
+import axios from 'axios';
 
 
 export default function Dashboard(props) {
@@ -26,6 +27,28 @@ export default function Dashboard(props) {
   const [openDialog, setOpenDialog] = useState(false);
   const token = useSelector((state) => state.user.value.token);
   const [isCreatingFolder, setIsCreatingFolder] = useState(false);
+
+  const handleDownload = async (imageUrl) => {
+    try {
+        // Effectuer une requête AJAX pour récupérer les données de l'image
+        const response = await fetch(imageUrl);
+        const blob = await response.blob();
+
+        // Créer un lien temporaire pour télécharger le fichier
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.setAttribute('download', 'image.png');
+
+        // Ajouter le lien à la page et déclencher le téléchargement
+        document.body.appendChild(link);
+        link.click();
+
+        // Nettoyer après le téléchargement
+        document.body.removeChild(link);
+    } catch (error) {
+        console.error("Erreur lors du téléchargement de l'image :", error);
+    }
+};
 
   useEffect(() => {
     const fetchData = async () => {
@@ -119,6 +142,7 @@ export default function Dashboard(props) {
           boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)'
         }}>
           <AutoFixHighIcon onClick={() => { handleNavigation(file._id) }} />
+          <button onClick={() => handleDownload(file.image)}>DOWNLOAD</button>
         </div>
 
         <img src={file.image} />   
