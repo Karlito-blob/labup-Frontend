@@ -392,7 +392,22 @@ export default function Dashboard(props) {
   //   setIsCreatingFolder(true);
   // };
 
-
+  const theme = createTheme({
+    palette: {
+      primary: {
+        light: '#5f37f4',
+        main: '#3805F2',
+        dark: '#2703a9',
+        contrastText: '#fff',
+      },
+      secondary: {
+        light: '#f13ff4',
+        main: '#EE0FF2',
+        dark: '#a60aa9',
+        contrastText: '#fff',
+      },
+    },
+  });
 
   return (
     <ThemeProvider theme={theme}>
