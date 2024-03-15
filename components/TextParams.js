@@ -146,15 +146,17 @@ export default function TextParams() {
       html2canvas(ref.current)
         .then((canvas) => {
           console.log("j'ai cliqué")
+
           const image = canvas.toDataURL('image/png');
           const formData = new FormData()
           const imageData = image.toString().split(',')[1];
           const blob = b64toBlob(imageData, 'image/png');
           const file = new File([blob], 'photo.png', { type: 'image/png' });
+
           formData.append("photoFromFront", file);
           formData.append("token", token);
-          formData.append("ExportName", title);
-          formData.append("ExportType", 'coucou');
+          formData.append("exportName", title);
+          formData.append("format", 'coucou');
 
           axios.post("http://localhost:3000/exports/", formData, {
             headers: {
