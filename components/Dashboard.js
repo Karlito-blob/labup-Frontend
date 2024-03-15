@@ -38,6 +38,28 @@ export default function Dashboard(props) {
   const [openDialog, setOpenDialog] = useState(false);
   const [isCreatingFolder, setIsCreatingFolder] = useState(false);
 
+  const handleDownload = async (imageUrl) => {
+    try {
+        // Effectuer une requête AJAX pour récupérer les données de l'image
+        const response = await fetch(imageUrl);
+        const blob = await response.blob();
+
+        // Créer un lien temporaire pour télécharger le fichier
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.setAttribute('download', 'image.png');
+
+        // Ajouter le lien à la page et déclencher le téléchargement
+        document.body.appendChild(link);
+        link.click();
+
+        // Nettoyer après le téléchargement
+        document.body.removeChild(link);
+    } catch (error) {
+        console.error("Erreur lors du téléchargement de l'image :", error);
+    }
+};
+
 
   // Fonction générique pour effectuer les requêtes fetch
   const fetchModifiedPatterns = async () => {
