@@ -280,8 +280,7 @@ export default function TextParams() {
               });
           }
 
-
-          // setBgImage(data.ModifiedPatterns[0].patternImg)
+          setBgImage(data.ModifiedPatterns[0].patternImg)
         }
       })
       .catch(error => {

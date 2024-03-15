@@ -380,7 +380,7 @@ export default function Dashboard(props) {
         <div style={{ overflowX: 'auto' }}>
           {/* Patterns */}
           <div className={styles.patternSection}>
-            <h3>My patterns</h3>
+            <h3>My Patterns</h3>
             <div className={styles.wrapScrollH}>
               <div className={styles.patternsContainer}>
                 {patternsList}

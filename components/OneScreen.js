@@ -1,11 +1,14 @@
 import React from 'react';
 
 import Header from './Header';
-
 import ds from '../styles/DesignSystem.module.css';
 import bg from '../styles/CreateFile.module.css';
+import { Button } from '@mui/material';
+import { useRouter } from 'next/router';
 
 export default function OneScreen() {
+
+  const router = useRouter();
 
   const Capa_1 = () => (
     <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="80px" height="80px" viewBox="0 0 80 80" style={{ enableBackground: 'new 0 0 80 80' }} xmlSpace="preserve">
@@ -18,9 +21,9 @@ export default function OneScreen() {
 
   return (
     <div className={`${bg.viewport} ${bg.polka}`}>
-      <Header />
       <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
         <h1 className={`${ds.largeDisplay} ${ds.centerText}`} style={{ width: '60%', textAlign: 'center' }}>One model, your creativity, infinite possibilities!</h1>
+        <Button color="secondary" size="large" variant="contained" sx={{ marginTop: '40px', borderRadius: '12px' }} onClick={() => router.push('/signUp')}>Get Started</Button>
       </div>
     </div>
   )
