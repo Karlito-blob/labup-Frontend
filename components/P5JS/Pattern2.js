@@ -16,6 +16,8 @@ export default function Pattern2(props) {
     const sketch = (p) => {
       p.setup = () => {
         p.createCanvas(800, 800);
+        p.pixelDensity(3); //Densité de  pixel
+        p.frameRate(60); //Taux de rafraichissement 
         p.noFill();
         // Générer des propriétés aléatoires pour chaque ligne
         for (let i = 0; i < numLines; i++) {

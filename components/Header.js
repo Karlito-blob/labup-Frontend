@@ -24,13 +24,18 @@ import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded';
 
 
 
-export default function Header({ chemin }) {
+export default function Header({ chemin, setTitle }) {
 
   console.log(chemin)
   const router = useRouter()
   const user = useSelector(((state) => state.user.value))
 
   const [titleFile, setTitleFile] = useState('');
+
+  // Fonction pour enregistrer le titre
+  const handleSaveTitle = () => {
+    setTitle(titleFile); // Met à jour le titre dans le composant parent
+  };
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -112,7 +117,7 @@ export default function Header({ chemin }) {
             <TextField
               size="small"
               variant="standard"
-              placeholder="Untitled"
+              placeholder=" Untitled"
               InputProps={{
                 disableUnderline: true,
               }}
@@ -120,9 +125,8 @@ export default function Header({ chemin }) {
               onChange={(e) => setTitleFile(e.target.value)} value={titleFile}
             />
 
-            <Button>Save</Button>
+            <Button onClick={handleSaveTitle}>Save</Button>
             {chemin === '/createFile' ? <Button>Export</Button> : <></>}
-
 
           </div>
 

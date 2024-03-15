@@ -9,6 +9,8 @@ import Button from '@mui/material/Button';
 
 import styles from '../../styles/LogIn.module.css'
 
+import { checkMail } from '../../modules/checkMail';
+
 export default function SignUp() {
 
   const router = useRouter()
@@ -20,8 +22,16 @@ export default function SignUp() {
 	const [signUpPassword, setSignUpPassword] = useState('');
   const [isDisabled, setIsDisabled] = useState(true);
 
+  const [erreur, setErreur] = useState({ statut: false, userName: true, email: true, message: '' })
+
+
   // Register by get the data of inputs
   const handleRegister = () => {
+
+    if (!checkMail(signupEmail)) {
+      setErreur({ statut: true, userName: true, email: false, message: 'Invalid email format' })
+    } else {
+
       fetch('http://localhost:3000/users/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -29,15 +39,23 @@ export default function SignUp() {
       }).then(response => response.json())
         .then(data => {
           if (data.result) {
-            dispatch(login({ token: data.token, userName: data.userName}));
+
+            dispatch(login({ token: data.token, userName: data.userName }));
             // setSignUpAvatar(URL.createObjectURL(e.target.files[0]));
             setSignUpUserName('');
             setSignUpEmail('');
             setSignUpPassword('');
             setIsDisabled(true);
+            setErreur({ statut: true, userName: true, email: true, message: '' })
+
             router.push("/dashboard")
+
+          } else {
+            setErreur({ statut: true, userName: data.userName, email: data.email, message: data.error })
           }
+
         });
+    }
 	};
 
   // Get the button Enable
@@ -64,9 +82,11 @@ export default function SignUp() {
       <div className={styles.box}>
         <h1>Sign up to LabUp</h1>
         <div className={styles.inputsContainer}>
-          <TextField id="outlined-basic" label="Username" variant="outlined" onChange={handleInputUsernameChange} value={signUpUserName}/>
-          <TextField id="outlined-basic" label="Email address" variant="outlined" onChange={handleEmailChange} value={signupEmail}/>
-          <TextField id="outlined-basic" label="Password" type="password" variant="outlined" onChange={handlePasswordChange} value={signUpPassword}/>
+          <TextField error={!erreur.userName} id="outlined-basic" label="Username" variant="outlined" onChange={handleInputUsernameChange} value={signUpUserName} />
+          <TextField error={!erreur.email} id="outlined-basic" label="Email address" variant="outlined" onChange={handleEmailChange} value={signupEmail} />
+          <TextField id="outlined-basic" label="Password" type="password" variant="outlined" onChange={handlePasswordChange} value={signUpPassword} />
+          {erreur.statut && <div style={{ color: 'red' }}> {erreur.message}</div>}
+
         </div>
         <Button variant="contained" disabled={isDisabled} onClick={handleRegister}> Create an account </Button> 
         <div className={styles.swtich}>
