@@ -40,6 +40,7 @@ export default function Dashboard(props) {
 
   const handleDownload = async (imageUrl) => {
     try {
+      console.log(imageUrl)
         // Effectuer une requête AJAX pour récupérer les données de l'image
         const response = await fetch(imageUrl);
         const blob = await response.blob();
@@ -230,7 +231,7 @@ export default function Dashboard(props) {
           <PublicRoundedIcon onClick={() => { handlePublish('modifiedPatterns', file._id, !file.public) }} />
         </div>
         <div className={styles.icones}>
-          <FileDownloadRoundedIcon />
+        <FileDownloadRoundedIcon onClick={() => handleDownload(file.patternImg)}/>
         </div>
         <div className={styles.icones}>
           <CloseRoundedIcon onClick={() => { handleDelete('modifiedPatterns', file._id) }} />
@@ -264,7 +265,7 @@ export default function Dashboard(props) {
         </div>
 
         <div className={styles.icones}>
-          <FileDownloadRoundedIcon />
+        <FileDownloadRoundedIcon onClick={() => handleDownload(file.documentImg)}/>
         </div>
 
         <div className={styles.icones}>
@@ -290,7 +291,7 @@ export default function Dashboard(props) {
         </div>
 
         <div className={styles.icones}>
-          <FileDownloadRoundedIcon />
+        <FileDownloadRoundedIcon onClick={() => handleDownload(file.exportImg)}/>
         </div>
 
         <div className={styles.icones}>
