@@ -223,3 +223,16 @@
   height: 60px;
   width: 60px;
 }
+
+.icones {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px;
+  height: 30px;
+  width: 30px;
+  background-color: white;
+  border-radius: 20px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}

@@ -13,6 +13,7 @@ import {
   AutoFixHigh as AutoFixHighIcon,
   AddBoxRounded as AddBoxRoundedIcon,
   PublicRounded as PublicRoundedIcon,
+  FileDownloadRounded as FileDownloadRoundedIcon,
   Diversity1TwoTone,
 } from '@mui/icons-material';
 
@@ -197,32 +198,20 @@ export default function Dashboard(props) {
       </div>
       <h5>{file.fileName}</h5>
 
-      <div style={{ display: 'flex' }}>
-        <div style={{
-          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '10px',
-          height: '40px', width: '40px', backgroundColor: 'white', borderRadius: '20px',
-          boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)'
-        }}>
-          <AutoFixHighIcon onClick={() => { handleNavigation('createPatterns', file._id) }} />
-
+      <div style={{
+        display: 'flex',
+      }}>
+        <div className={styles.icones}>
+          <AutoFixHighIcon onClick={() => { handleNavigation('createPatterns', file._id) }}  />
         </div>
-
-        <div style={{
-          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '10px',
-          height: '40px', width: '40px', backgroundColor: file.public ? 'lightblue' : 'white', borderRadius: '20px',
-          boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)'
-        }}>
+        <div className={styles.icones} style={{ backgroundColor: file.public ? 'lightblue' : 'white' }}>
           <PublicRoundedIcon onClick={() => { handlePublish('modifiedPatterns', file._id, !file.public) }} />
-
         </div>
-
-        <div style={{
-          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '10px',
-          height: '40px', width: '40px', backgroundColor: 'white', borderRadius: '20px',
-          boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)'
-        }}>
+        <div className={styles.icones}>
+          <FileDownloadRoundedIcon />
+        </div>
+        <div className={styles.icones}>
           <CloseRoundedIcon onClick={() => { handleDelete('modifiedPatterns', file._id) }} />
-
         </div>
 
       </div>
@@ -244,31 +233,20 @@ export default function Dashboard(props) {
       <h5>{file.fileName}</h5>
 
       <div style={{ display: 'flex' }}>
-        <div style={{
-          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '10px',
-          height: '40px', width: '40px', backgroundColor: 'white', borderRadius: '20px',
-          boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)'
-        }}>
+        <div className={styles.icones}>
           <AutoFixHighIcon onClick={() => { handleNavigation('createFile', file._id) }} />
-
         </div>
 
-        <div style={{
-          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '10px',
-          height: '40px', width: '40px', backgroundColor: file.public ? 'lightblue' : 'white', borderRadius: '20px',
-          boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)'
-        }}>
+        <div className={styles.icones} style={{ backgroundColor: file.public ? 'lightblue' : 'white' }}>
           <PublicRoundedIcon onClick={() => { handlePublish('document', file._id, !file.public) }} />
-
         </div>
 
-        <div style={{
-          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '10px',
-          height: '40px', width: '40px', backgroundColor: 'white', borderRadius: '20px',
-          boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)'
-        }}>
-          <CloseRoundedIcon onClick={() => { handleDelete('document', file._id) }} />
+        <div className={styles.icones}>
+          <FileDownloadRoundedIcon />
+        </div>
 
+        <div className={styles.icones}>
+          <CloseRoundedIcon onClick={() => { handleDelete('documents', file._id) }} />
         </div>
 
       </div>
@@ -285,31 +263,16 @@ export default function Dashboard(props) {
       <h5>{file.fileName}</h5>
 
       <div style={{ display: 'flex' }}>
-        {/* <div style={{
-          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '10px',
-          height: '40px', width: '40px', backgroundColor: 'white', borderRadius: '20px',
-          boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)'
-        }}>
-          <AutoFixHighIcon onClick={() => { handleNavigationPattern('export', file._id) }} />
-
-        </div> */}
-
-        <div style={{
-          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '10px',
-          height: '40px', width: '40px', backgroundColor: file.public ? 'lightblue' : 'white', borderRadius: '20px',
-          boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)'
-        }}>
+        <div className={styles.icones} style={{ backgroundColor: file.public ? 'lightblue' : 'white' }}>
           <PublicRoundedIcon onClick={() => { handlePublish('export', file._id, !file.public) }} />
-
         </div>
 
-        <div style={{
-          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '10px',
-          height: '40px', width: '40px', backgroundColor: 'white', borderRadius: '20px',
-          boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)'
-        }}>
-          <CloseRoundedIcon onClick={() => { handleDelete('export', file._id) }} />
+        <div className={styles.icones}>
+          <FileDownloadRoundedIcon />
+        </div>
 
+        <div className={styles.icones}>
+          <CloseRoundedIcon onClick={() => { handleDelete('export', file._id) }} />
         </div>
 
       </div>
@@ -381,7 +344,6 @@ export default function Dashboard(props) {
     <ThemeProvider theme={theme}>
       <div className={styles.container}>
 
-        <Header chemin={router.pathname} />
         <Header chemin={router.pathname} />
 
         <div className={styles.box} style={{ marginTop: '100px' }} >
