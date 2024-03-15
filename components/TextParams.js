@@ -68,7 +68,7 @@ export default function TextParams() {
   const [fileName, setFileName] = useState('');
   const [images, setImages] = useState()
   const [indexModif, setIndex] = useState(0);
-  const [indexImage, setIndexImage] = useState(null)
+  const [bgImage, setBgImage] = useState(null)
   const [success, setSuccess] = useState(false);
 
 
@@ -107,17 +107,19 @@ export default function TextParams() {
     if (ref.current) {
       html2canvas(ref.current) // Ajustez le scale au besoin
         .then((canvas) => {
+
           const image = canvas.toDataURL('image/png');
           const formData = new FormData();
           const imageData = image.toString().split(',')[1];
           const blob = b64toBlob(imageData, 'image/png');
           const file = new File([blob], 'photo.png', { type: 'image/png' });
 
-          console.log('image=', image, formData, imageData, blob, file)
+          console.log('bgImage', bgImage)
 
           formData.append("photoFromFront", file);
           formData.append("token", token);
           formData.append("fileName", title);
+          formData.append("backgroundImage", bgImage)
           formData.append("documentContent", JSON.stringify(inputParams));
           formData.append("canvaParams", JSON.stringify(canvaParams));
 
@@ -202,7 +204,7 @@ export default function TextParams() {
               height: canvaParams.height,
               justifyContent: canvaParams.justifyContent,
               padding: canvaParams.padding,
-              backgroundImage: canvaParams.documentImg, // Ajoutez une vérification au cas où backgroundImage n'est pas défini
+              // backgroundImage: data.Document.backgroundImage, // Ajoutez une vérification au cas où backgroundImage n'est pas défini
             });
 
             // Mise à jour de inputParams
@@ -218,7 +220,9 @@ export default function TextParams() {
               color: dc.color,
             })));
 
-            fetch(data.Document.documentImg)
+            console.log('back=>', data.Document.backgroundImage)
+
+            fetch(data.Document.backgroundImage)
               .then(response => response.blob())
               .then(blob => {
                 const reader = new FileReader();
@@ -246,6 +250,9 @@ export default function TextParams() {
       .catch(error => {
         console.error('Error fetching fonts:', error);
       });
+
+
+
   }, []);
 
   const nameFontOptions = fontData.map((font, index) => ({
@@ -259,6 +266,22 @@ export default function TextParams() {
       .then(data => {
         if (data.result) {
           setPatternsData(data.ModifiedPatterns);
+
+          if (!id) {
+            fetch(data.ModifiedPatterns[0].patternImg)
+              .then(response => response.blob())
+              .then(blob => {
+                const reader = new FileReader();
+                reader.readAsDataURL(blob);
+                reader.onloadend = function () {
+                  setImage64(reader.result);
+                  console.log(image64); // Utilisez cette chaîne Base64 comme source d'une image
+                }
+              });
+          }
+
+
+          // setBgImage(data.ModifiedPatterns[0].patternImg)
         }
       })
       .catch(error => {
@@ -408,8 +431,8 @@ export default function TextParams() {
     }));
   };
   const handleChangeBgImage = (newBackground, index) => {
-    setIndexImage(index)
 
+    setBgImage(newBackground)
 
     fetch(newBackground)
       .then(response => response.blob())
@@ -422,10 +445,10 @@ export default function TextParams() {
         }
       });
 
-    setCanvaParams(prevParams => ({
-      ...prevParams,
-      backgroundImage: `url(${newBackground})`,
-    }));
+    // setCanvaParams(prevParams => ({
+    //   ...prevParams,
+    //   backgroundImage: newBackground,
+    // }));
   }
   //////////////////////////////////
 
