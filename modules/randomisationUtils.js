@@ -1,6 +1,6 @@
 export const randomParams = async (setModifiedParams, patternID) => {
     try {
-        const response = await fetch(`http://localhost:3000/initialPatterns/${patternID}`);
+        const response = await fetch(`https://labup-backend.vercel.app/initialPatterns/${patternID}`);
         const data = await response.json();
         if (data.result) {
             const updatedParams = data.InitialPattern.params.reduce((acc, param) => {

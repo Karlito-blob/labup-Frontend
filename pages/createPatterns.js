@@ -202,7 +202,7 @@ export default function createPatterns() {
     formData.append("fileName", images[index].fileName);
 
     //utilisation de axios pour la requete en multiple formData CAR FETCH CEST NUL A *****
-    axios.post("http://localhost:3000/modifiedPatterns/", formData, {
+    axios.post("https://labup-backend.vercel.app/modifiedPatterns/", formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -296,7 +296,7 @@ export default function createPatterns() {
   // Récupération des paramètres lors du clic sur un autre pattern 
   const handlePatternData = (id, name) => {
 
-    fetch(`http://localhost:3000/initialPatterns/${id}`)
+    fetch(`https://labup-backend.vercel.app/initialPatterns/${id}`)
       .then(response => response.json())
       .then(data => {
         if (data.result) {
@@ -336,7 +336,7 @@ export default function createPatterns() {
   useEffect(() => {
 
     // Récupération des paramètres du Pattern
-    fetch(`http://localhost:3000/initialPatterns/`)
+    fetch(`https://labup-backend.vercel.app/initialPatterns/`)
       .then(response => response.json())
       .then(data => {
         if (data.result) {
@@ -355,7 +355,7 @@ export default function createPatterns() {
 
     if (!id) {
       // Récupération des paramètres du Pattern
-      fetch(`http://localhost:3000/initialPatterns/${patternID}`)
+      fetch(`https://labup-backend.vercel.app/initialPatterns/${patternID}`)
         .then(response => response.json())
         .then(data => {
           if (data.result) {
@@ -384,7 +384,7 @@ export default function createPatterns() {
       //Fetch les modified patterns
       // Récupération des paramètres du Pattern
 
-      fetch(`http://localhost:3000/modifiedPatterns/one/${id}`)
+      fetch(`https://labup-backend.vercel.app/modifiedPatterns/one/${id}`)
         .then(response => response.json())
         .then(data => {
           if (data.result) {
@@ -425,7 +425,7 @@ export default function createPatterns() {
   useEffect(() => {
 
     // Récupération des paramètres du Pattern
-    fetch(`http://localhost:3000/initialPatterns/${patternID}`)
+    fetch(`https://labup-backend.vercel.app/initialPatterns/${patternID}`)
       .then(response => response.json())
       .then(data => {
         if (data.result) {

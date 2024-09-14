@@ -123,7 +123,7 @@ export default function TextParams() {
           formData.append("documentContent", JSON.stringify(inputParams));
           formData.append("canvaParams", JSON.stringify(canvaParams));
 
-          axios.post("http://localhost:3000/documents/", formData, {
+          axios.post("https://labup-backend.vercel.app/documents/", formData, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }
@@ -158,7 +158,7 @@ export default function TextParams() {
           formData.append("exportName", title);
           formData.append("format", 'coucou');
 
-          axios.post("http://localhost:3000/exports/", formData, {
+          axios.post("https://labup-backend.vercel.app/exports/", formData, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }
@@ -192,7 +192,7 @@ export default function TextParams() {
   // Récupération d'un document 
   useEffect(() => {
     if (id) {
-      fetch(`http://localhost:3000/documents/${token}/${id}`)
+      fetch(`https://labup-backend.vercel.app/documents/${token}/${id}`)
         .then(response => response.json())
         .then(data => {
           if (data.result) {
@@ -244,7 +244,7 @@ export default function TextParams() {
   }, []);
 
   useEffect(() => {
-    fetch('http://localhost:3000/fonts')
+    fetch('https://labup-backend.vercel.app/fonts')
       .then(response => response.json())
       .then(data => {
         setFontData(data);
@@ -263,7 +263,7 @@ export default function TextParams() {
   }));
 
   useEffect(() => {
-    fetch(`http://localhost:3000/modifiedPatterns/${token}`)
+    fetch(`https://labup-backend.vercel.app/modifiedPatterns/${token}`)
       .then(response => response.json())
       .then(data => {
         if (data.result) {

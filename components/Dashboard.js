@@ -65,7 +65,7 @@ export default function Dashboard(props) {
   // Fonction générique pour effectuer les requêtes fetch
   const fetchModifiedPatterns = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/ModifiedPatterns/${token}`);
+      const response = await fetch(`https://labup-backend.vercel.app/ModifiedPatterns/${token}`);
 
       if (!response.ok) {
         throw new Error(`Erreur réseau: ${response.status}`);
@@ -85,7 +85,7 @@ export default function Dashboard(props) {
 
   const fetchDocuments = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/Documents/${token}`);
+      const response = await fetch(`https://labup-backend.vercel.app/Documents/${token}`);
 
       if (!response.ok) {
         throw new Error(`Erreur réseau: ${response.status}`);
@@ -105,7 +105,7 @@ export default function Dashboard(props) {
 
   const fetchExports = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/Exports/${token}`);
+      const response = await fetch(`https://labup-backend.vercel.app/Exports/${token}`);
 
       if (!response.ok) {
         throw new Error(`Erreur réseau: ${response.status}`);
@@ -132,7 +132,7 @@ export default function Dashboard(props) {
 
   // const handleCreateFolder = async () => {
   //   try {
-  //     const response = await fetch('http://localhost:3000/folders', {
+  //     const response = await fetch('https://labup-backend.vercel.app/folders', {
   //       method: 'POST',
   //       headers: {
   //         'Content-Type': 'application/json',
@@ -166,7 +166,7 @@ export default function Dashboard(props) {
 
   const handleDelete = async (path, fileID) => {
     try {
-      const response = await fetch(`http://localhost:3000/${path}/${fileID}`, {
+      const response = await fetch(`https://labup-backend.vercel.app/${path}/${fileID}`, {
         method: 'DELETE'
       });
 
@@ -189,7 +189,7 @@ export default function Dashboard(props) {
 
   const handlePublish = async (type, fileID, publish) => {
     try {
-      const response = await fetch(`http://localhost:3000/feed/updatePublic/${type}/${fileID}/${publish}`, {
+      const response = await fetch(`https://labup-backend.vercel.app/feed/updatePublic/${type}/${fileID}/${publish}`, {
         method: 'PUT'
       });
 

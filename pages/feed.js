@@ -14,7 +14,7 @@ export default function FeedCard() {
     const [expanded, setExpanded] = useState(null);
 
     useEffect(() => {
-        fetch(`http://localhost:3000/feed/`)
+        fetch(`https://labup-backend.vercel.app/feed/`)
             .then((response) => response.json())
             .then((data) => {
                 if (data.result) {
@@ -30,7 +30,7 @@ export default function FeedCard() {
 //    const [count, setCount] = useState()
 
     const handleLike = (fileId, type) => {
-        axios.put(`http://localhost:3000/feed/updateLike/${type}/${fileId}/${token}`, {
+        axios.put(`https://labup-backend.vercel.app/feed/updateLike/${type}/${fileId}/${token}`, {
                 headers: {
                     'Content-Type': 'application/json',
                 },

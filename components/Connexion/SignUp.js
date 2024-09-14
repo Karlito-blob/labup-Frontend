@@ -32,7 +32,7 @@ export default function SignUp() {
       setErreur({ statut: true, userName: true, email: false, message: 'Invalid email format' })
     } else {
 
-      fetch('http://localhost:3000/users/signup', {
+      fetch('https://labup-backend.vercel.app/users/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ avatar: signUpAvatar, userName: signUpUserName, email: signupEmail, password: signUpPassword }),

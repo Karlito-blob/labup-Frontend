@@ -37,7 +37,7 @@ export default function FeedCard() {
     const [expanded, setExpanded] = useState(null);
 
     useEffect(() => {
-        fetch(`http://localhost:3000/feed/`)
+        fetch(`https://labup-backend.vercel.app/feed/`)
             .then(response => response.json())
             .then(data => {
                 if (data.result) {

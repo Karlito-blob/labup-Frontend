@@ -53,7 +53,7 @@ const DeleteAccount = () => {
 
     setIsDeleting(true);
 
-    fetch('http://localhost:3000/users/', {
+    fetch('https://labup-backend.vercel.app/users/', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ token, password }),
